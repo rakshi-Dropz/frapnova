@@ -11,7 +11,8 @@
   "total_amount",
   "agent",
   "status",
-  "item_image"
+  "item_image",
+  "amended_from"
  ],
  "fields": [
   {
@@ -61,12 +62,23 @@
    "fieldname": "item_image",
    "fieldtype": "Read Only",
    "label": "Item Image"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Stock Order",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-09-16 18:53:35.930332",
+ "modified": "2026-09-16 19:20:22.131589",
  "modified_by": "Administrator",
  "module": "Stock Flow",
  "name": "Stock Order",
