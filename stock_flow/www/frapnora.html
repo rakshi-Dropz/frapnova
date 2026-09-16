@@ -1,146 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Frapnova</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 30px; background: #f4f6f8; }
-        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .logo-box {
-            width: 36px; height: 36px; background: #333; color: white; 
-            display: inline-flex; align-items: center; justify-content: center; 
-            font-weight: bold; border-radius: 6px; font-size: 20px; margin-right: 10px;
-        }
-        .header-title { display: flex; align-items: center; }
-        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .table th, .table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        .table th { background: #f0f0f0; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .badge-warning { background: #ffeaa7; color: #d63031; }
-        .badge-success { background: #55efc4; color: #00b894; }
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        .btn { padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; border: none; }
-    </style>
-</head>
-<body>
+{% extends "templates/web.html" %}
 
-    <div class="card header">
-        <div class="header-title">
-            <div class="logo-box">F</div>
-            <div>
-                <h2 style="margin:0;">Frapnova</h2>
-                <p style="margin:0; font-size:13px; color:#666;">User: <b>{{ context.user_fullname or context.user_email }}</b></p>
+{% block page_content %}
+<div class="container my-4">
+  <!-- Branded Portal Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+    <div class="d-flex align-items-center gap-3">
+      <img src="/assets/stock_flow/images/frapnora_logo.png" alt="Frapnora Logo" style="height: 45px; width: auto;" class="img-fluid">
+      <h2 class="m-0 fw-bold text-dark">Frapnova Portal</h2>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-muted">Logged in as: <strong class="text-dark">{{ user_fullname }}</strong></span>
+      <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+  </div>
+
+  <!-- ================= SUPPORT AGENT / MAKER VIEW ================= -->
+  {% if is_agent %}
+  <div class="agent-section mb-5">
+    <h3 class="mb-3">Item Catalog</h3>
+    <div class="row">
+      {% for item in stock_items %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+          {% if item.image %}
+            <img src="{{ item.image }}" class="card-img-top" alt="{{ item.item_name }}" style="height: 180px; object-fit: cover;">
+          {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+              <span class="text-muted">No Image</span>
             </div>
+          {% endif %}
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="card-title">{{ item.item_name }}</h5>
+              <p class="card-text text-muted mb-1">Stock Available: <strong>{{ item.current_stock }}</strong></p>
+              <p class="card-text fw-bold text-primary">₹{{ item.rate }}</p>
+            </div>
+            <button class="btn btn-primary w-100 mt-3" onclick="placeOrder('{{ item.name }}')">Order Item</button>
+          </div>
         </div>
-        {% if not context.is_guest %}
-            <a href="/api/method/logout" class="btn" style="background:#dc3545;">Log Out</a>
-        {% endif %}
+      </div>
+      {% endfor %}
     </div>
 
-    {% if context.is_guest %}
-        <div class="card">
-            <h3>Please Log In</h3>
-            <p>You must log in to access the portal.</p>
-            <a href="/login" class="btn">Go to Login Page</a>
-        </div>
+    <h3 class="mt-4 mb-3">My Order Requests</h3>
+    <div class="table-responsive">
+      <table class="table table-striped align-middle border">
+        <thead class="table-dark">
+          <tr>
+            <th>Order ID</th>
+            <th>Image</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in my_orders %}
+          <tr>
+            <td><strong>{{ order.name }}</strong></td>
+            <td>
+              {% if order.item_image %}
+                <img src="{{ order.item_image }}" width="45" height="45" style="object-fit: cover;" class="rounded">
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td>₹{{ order.total_amount }}</td>
+            <td>
+              {% if order.docstatus == 1 %}
+                <span class="badge bg-success">Submitted</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Draft</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
 
-    {% elif context.is_admin %}
-        <div class="card">
-            <h3>Administrator Dashboard</h3>
-            <p>Logged in as System Manager. Use Desk to configure roles, permissions, and stock entries.</p>
-            <a href="/app/users" class="btn">Go to Frappe Desk</a>
-        </div>
+  <!-- ================= STOCK MANAGER / CHECKER VIEW ================= -->
+  {% if is_manager %}
+  <div class="manager-section">
+    <h3 class="mb-3">Pending Approvals Queue</h3>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle border">
+        <thead class="table-secondary">
+          <tr>
+            <th>Order ID</th>
+            <th>Image</th>
+            <th>Item Code</th>
+            <th>Qty</th>
+            <th>Total Amount</th>
+            <th>Requested By</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in pending_orders %}
+          <tr>
+            <td><strong>{{ order.name }}</strong></td>
+            <td>
+              {% if order.item_image %}
+                <img src="{{ order.item_image }}" width="50" height="50" style="object-fit: cover;" class="rounded">
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td>{{ order.item }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>₹{{ order.total_amount }}</td>
+            <td>{{ order.owner }}</td>
+            <td>
+              <button class="btn btn-success btn-sm" onclick="approveOrder('{{ order.name }}')">Approve / Submit</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
 
-    {% elif context.is_checker %}
-        <div class="card">
-            <h3>Pending Stock Orders</h3>
-            {% if context.pending_entries %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Requested By</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in context.pending_entries %}
-                        <tr>
-                            <td><b>{{ entry.name }}</b></td>
-                            <td>{{ entry.owner }}</td>
-                            <td>{{ entry.creation }}</td>
-                            <td><span class="badge badge-warning">Pending Approval</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No pending stock orders found.</p>
-            {% endif %}
-        </div>
+<script>
+function placeOrder(itemCode) {
+    frappe.call({
+        method: "stock_flow.api.create_stock_order",
+        args: { item_code: itemCode, quantity: 1 },
+        callback: function(r) {
+            if (!r.exc) {
+                frappe.show_alert({ message: "Order placed successfully!", indicator: "green" });
+                location.reload();
+            }
+        }
+    });
+}
 
-        <div class="card">
-            <h3>Approved Orders</h3>
-            {% if context.approved_entries %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Requested By</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in context.approved_entries %}
-                        <tr>
-                            <td><b>{{ entry.name }}</b></td>
-                            <td>{{ entry.owner }}</td>
-                            <td>{{ entry.creation }}</td>
-                            <td><span class="badge badge-success">Approved</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No historical orders found.</p>
-            {% endif %}
-        </div>
-
-    {% elif context.is_maker %}
-        <div class="card">
-            <h3>My Stock Orders</h3>
-            {% if context.my_entries %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in context.my_entries %}
-                        <tr>
-                            <td><b>{{ entry.name }}</b></td>
-                            <td>{{ entry.creation }}</td>
-                            <td>
-                                {% if entry.docstatus == 0 %}
-                                    <span class="badge badge-warning">Draft</span>
-                                {% else %}
-                                    <span class="badge badge-success">Submitted</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No stock orders submitted yet.</p>
-            {% endif %}
-        </div>
-    {% endif %}
-
-</body>
-</html>
+function approveOrder(orderId) {
+    frappe.call({
+        method: "stock_flow.api.approve_stock_order",
+        args: { order_id: orderId },
+        callback: function(r) {
+            if (!r.exc) {
+                frappe.show_alert({ message: "Order approved and stock updated!", indicator: "green" });
+                location.reload();
+            }
+        }
+    });
+}
+</script>
+{% endblock %}
