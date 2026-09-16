@@ -2,15 +2,26 @@ import frappe
 
 @frappe.whitelist()
 def create_stock_order(item_code, quantity=1):
-    """ Allows Support Agents to create Draft orders from the portal """
     user_roles = frappe.get_roles()
     if "Support Agent" not in user_roles and "System Manager" not in user_roles:
         frappe.throw("Permission denied: Only Support Agents can create stock orders.")
 
+    qty = float(quantity)
+    if qty <= 0:
+        frappe.throw("Quantity must be greater than zero.")
+
+    # Fetch rate and image from master Stock Item
+    item_doc = frappe.get_doc("Stock Item", item_code)
+    rate = float(item_doc.rate or 0)
+    total_amount = rate * qty
+
     doc = frappe.get_doc({
         "doctype": "Stock Order",
         "item": item_code,
-        "quantity": int(quantity)
+        "quantity": qty,
+        "rate": rate,
+        "total_amount": total_amount,
+        "item_image": item_doc.image
     })
     doc.insert()
     return doc.name
@@ -18,7 +29,6 @@ def create_stock_order(item_code, quantity=1):
 
 @frappe.whitelist()
 def approve_stock_order(order_id):
-    """ Allows Stock Managers to submit/approve orders from the portal """
     user_roles = frappe.get_roles()
     if "Stock Manager" not in user_roles and "System Manager" not in user_roles:
         frappe.throw("Permission denied: Only Stock Managers can approve orders.")
