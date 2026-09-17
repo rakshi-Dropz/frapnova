@@ -3,47 +3,161 @@
 {% block page_content %}
 <div class="container my-4">
   <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-    <div class="d-flex align-items-center gap-3">
-      <img src="/assets/stock_flow/images/frapnora_logo.png" alt="Frapnora Logo" style="height: 40px; width: auto;" onerror="this.style.display='none'">
-      <h2 class="m-0 fw-bold">Frapnova Portal</h2>
-    </div>
+    <h2 class="m-0 fw-bold">Frapnova Portal</h2>
     <div>
       <span class="me-3">Logged in as: <strong>{{ user_fullname }}</strong></span>
       <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm">Logout</a>
     </div>
   </div>
 
-  <!-- ================= SUPPORT AGENT / MAKER VIEW ================= -->
-  {% if is_agent %}
-  <div class="agent-section mb-5">
-    <h3 class="mb-3">Item Catalog</h3>
-    <div class="row">
-      {% for item in stock_items %}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm border">
-          {% if item.image %}
-            <img src="{{ item.image }}" class="card-img-top" style="height: 180px; object-fit: cover;">
-          {% else %}
-            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
-              <span class="text-muted">No Image</span>
+  {% if is_admin %}
+<div class="card bg-light p-4 mb-5 border shadow-sm">
+  <h4 class="mb-3 text-primary">Add New Stock Item</h4>
+  <div class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Item Name</label>
+      <input type="text" id="add_item_name" class="form-control" placeholder="e.g. Headphones">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Price (₹)</label>
+      <input type="number" id="add_item_rate" class="form-control" placeholder="e.g. 2500">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Initial Stock</label>
+      <input type="number" id="add_item_stock" class="form-control" placeholder="e.g. 15">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Product Image</label>
+      <!-- Direct File Picker -->
+      <input type="file" id="add_item_image_file" class="form-control" accept="image/*">
+    </div>
+  </div>
+  <div class="mt-3 text-end">
+    <button type="button" class="btn btn-success fw-bold" id="btn_add_product" onclick="saveNewStockItem()">+ Add Product to Catalog</button>
+  </div>
+</div>
+{% endif %}
+
+ <!-- ITEM CATALOG -->
+<div class="agent-section mb-5">
+  <h3 class="mb-3">Item Catalog</h3>
+  <div class="row">
+    {% for item in stock_items %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm border">
+        {% if item.image %}
+          <img src="{{ item.image }}" class="card-img-top" style="height: 180px; object-fit: cover;" onerror="this.onerror=null; this.src='https://placehold.co/180x180?text=No+Image';">
+        {% else %}
+          <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+            <span class="text-muted">No Image</span>
+          </div>
+        {% endif %}
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title fw-bold">{{ item.item_name }}</h5>
+            <p class="card-text text-muted mb-1">Stock Available: <strong>{{ item.current_stock }}</strong></p>
+            <p class="card-text fw-bold text-primary">₹{{ item.rate }}</p>
+          </div>
+          <div>
+            {% if is_agent %}
+            <button class="btn btn-primary w-100 mt-2" data-item="{{ item.name }}" data-name="{{ item.item_name }}" onclick="triggerOrder(this)">Order Item</button>
+            {% endif %}
+
+            {% if is_admin %}
+            <div class="d-flex gap-2 mt-2">
+              <button class="btn btn-sm btn-outline-secondary w-50" onclick="editProduct('{{ item.name }}', '{{ item.rate }}', '{{ item.current_stock }}')">Edit / Add Image</button>
+              <button class="btn btn-sm btn-outline-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
             </div>
-          {% endif %}
-          <div class="card-body d-flex flex-column justify-content-between">
-            <div>
-              <h5 class="card-title">{{ item.item_name }}</h5>
-              <p class="card-text text-muted mb-1">Stock Available: <strong>{{ item.current_stock }}</strong></p>
-              <p class="card-text fw-bold text-primary">₹{{ item.rate }}</p>
-            </div>
-            <button class="btn btn-primary w-100 mt-3" data-item="{{ item.name }}" data-name="{{ item.item_name }}" data-rate="{{ item.rate }}" onclick="triggerOrder(this)">Order Item</button>
+            {% endif %}
           </div>
         </div>
       </div>
-      {% endfor %}
     </div>
+    {% endfor %}
+  </div>
+</div>
 
-    <h3 class="mt-4 mb-3">My Order Requests</h3>
+<script>
+function editProduct(itemCode, currentRate, currentStock) {
+    var newRate = prompt("Enter new Price (₹):", currentRate);
+    if (newRate === null) return;
+
+    var newStock = prompt("Enter new Stock Available:", currentStock);
+    if (newStock === null) return;
+
+    var uploadImage = confirm("Do you want to upload a new image for this product?");
+    if (uploadImage) {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            var formdata = new FormData();
+            formdata.append("file", file);
+            formdata.append("is_private", "0");
+
+            fetch("/api/method/upload_file", {
+                method: "POST",
+                headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
+                body: formdata
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message && data.message.file_url) {
+                    saveProductUpdate(itemCode, newRate, newStock, data.message.file_url);
+                } else {
+                    alert("Failed to upload image.");
+                }
+            });
+        };
+        input.click();
+    } else {
+        saveProductUpdate(itemCode, newRate, newStock, "");
+    }
+}
+
+function saveProductUpdate(itemCode, rate, stock, imageUrl) {
+    frappe.call({
+        method: "stock_flow.api.update_stock_item",
+        args: {
+            item_code: itemCode,
+            rate: rate,
+            current_stock: stock,
+            image_url: imageUrl
+        },
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Product updated successfully!");
+                location.reload();
+            }
+        }
+    });
+}
+
+function deleteProduct(itemCode) {
+    if (!confirm("Are you sure you want to delete '" + itemCode + "' from catalog?")) return;
+
+    frappe.call({
+        method: "stock_flow.api.delete_stock_item",
+        args: { item_code: itemCode },
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Product deleted successfully!");
+                location.reload();
+            }
+        }
+    });
+}
+</script>
+
+  <!-- AGENT ORDER REQUESTS -->
+  {% if is_agent %}
+  <div class="agent-orders mb-5">
+    <h3 class="mb-3">My Order Requests</h3>
     <div class="table-responsive">
-      <table class="table table-striped align-middle border">
+      <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
           <tr>
             <th>Order ID</th>
@@ -59,9 +173,9 @@
             <td><strong>{{ order.name }}</strong></td>
             <td>
               {% if order.item_image %}
-                <img src="{{ order.item_image }}" width="45" height="45" style="object-fit: cover;" class="rounded">
+                <img src="{{ order.item_image }}" style="width: 45px; height: 45px; object-fit: cover;" class="rounded border" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
               {% else %}
-                <span class="text-muted">—</span>
+                <span class="text-muted">-</span>
               {% endif %}
             </td>
             <td>{{ order.quantity }}</td>
@@ -74,6 +188,10 @@
               {% endif %}
             </td>
           </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-muted">No order requests placed yet.</td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -81,20 +199,20 @@
   </div>
   {% endif %}
 
-  <!-- ================= STOCK MANAGER / CHECKER VIEW ================= -->
+  <!-- MANAGER PENDING REQUESTS -->
   {% if is_manager %}
-  <div class="manager-section">
-    <h3 class="mb-3">Pending Approvals Queue</h3>
+  <div class="manager-orders mb-5">
+    <h3 class="mb-3 text-warning text-dark">Pending Order Approvals</h3>
     <div class="table-responsive">
-      <table class="table table-hover align-middle border">
-        <thead class="table-secondary">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
           <tr>
             <th>Order ID</th>
-            <th>Image</th>
-            <th>Item Code</th>
-            <th>Qty</th>
-            <th>Total Amount</th>
             <th>Requested By</th>
+            <th>Item</th>
+            <th>Image</th>
+            <th>Qty</th>
+            <th>Total</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -102,20 +220,24 @@
           {% for order in pending_orders %}
           <tr>
             <td><strong>{{ order.name }}</strong></td>
+            <td>{{ order.owner }}</td>
+            <td>{{ order.item }}</td>
             <td>
               {% if order.item_image %}
-                <img src="{{ order.item_image }}" width="50" height="50" style="object-fit: cover;" class="rounded">
+                <img src="{{ order.item_image }}" style="width: 45px; height: 45px; object-fit: cover;" class="rounded border" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
               {% else %}
-                <span class="text-muted">—</span>
+                <span class="text-muted">-</span>
               {% endif %}
             </td>
-            <td>{{ order.item }}</td>
             <td>{{ order.quantity }}</td>
             <td>₹{{ order.total_amount }}</td>
-            <td>{{ order.owner }}</td>
             <td>
-              <button class="btn btn-success btn-sm" onclick="approveOrder('{{ order.name }}')">Approve / Submit</button>
+              <button class="btn btn-sm btn-success fw-bold" onclick="approveOrder('{{ order.name }}')">Approve Order</button>
             </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-muted">No pending order requests.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -123,79 +245,60 @@
     </div>
   </div>
   {% endif %}
+
 </div>
 
 <script>
+function saveNewStockItem() {
+    var name = document.getElementById('add_item_name').value.trim();
+    var rate = document.getElementById('add_item_rate').value.trim();
+    var stock = document.getElementById('add_item_stock').value.trim();
+    var image = document.getElementById('add_item_image').value.trim();
+
+    if (!name || rate === "" || stock === "") {
+        alert("Please enter Item Name, Price, and Initial Stock.");
+        return;
+    }
+
+    frappe.call({
+        method: "stock_flow.api.create_stock_item",
+        args: { item_name: name, rate: parseFloat(rate), current_stock: parseFloat(stock), image_url: image },
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Product added successfully!");
+                location.reload();
+            }
+        }
+    });
+}
+
 function triggerOrder(btn) {
     var itemCode = btn.getAttribute('data-item');
     var itemName = btn.getAttribute('data-name');
-    var rate = parseFloat(btn.getAttribute('data-rate')) || 0;
-    openOrderDialog(itemCode, itemName, rate);
-}
+    var qty = prompt("Enter quantity for " + itemName + ":", "1");
+    if (!qty) return;
 
-function openOrderDialog(itemCode, itemName, rate) {
-    var d = new frappe.ui.Dialog({
-        title: 'Order: ' + itemName,
-        fields: [
-            {
-                label: 'Item Code',
-                fieldname: 'item_code',
-                fieldtype: 'Data',
-                default: itemCode,
-                read_only: 1
-            },
-            {
-                label: 'Price per Unit (₹)',
-                fieldname: 'rate',
-                fieldtype: 'Currency',
-                default: rate,
-                read_only: 1
-            },
-            {
-                label: 'Quantity',
-                fieldname: 'quantity',
-                fieldtype: 'Int',
-                default: 1,
-                reqd: 1,
-                onchange: function() {
-                    var qty = d.get_value('quantity') || 0;
-                    d.set_value('total_amount', qty * rate);
-                }
-            },
-            {
-                label: 'Total Amount (₹)',
-                fieldname: 'total_amount',
-                fieldtype: 'Currency',
-                default: rate,
-                read_only: 1
+    frappe.call({
+        method: "stock_flow.api.create_stock_order",
+        args: { item_code: itemCode, quantity: parseInt(qty) },
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Order request placed successfully!");
+                location.reload();
             }
-        ],
-        primary_action_label: 'Submit Order',
-        primary_action: function(values) {
-            frappe.call({
-                method: "stock_flow.api.create_stock_order",
-                args: { item_code: values.item_code, quantity: values.quantity },
-                callback: function(r) {
-                    if (!r.exc) {
-                        d.hide();
-                        frappe.show_alert({ message: "Order placed successfully!", indicator: "green" });
-                        location.reload();
-                    }
-                }
-            });
         }
     });
-
-    d.show();
 }
 
 function approveOrder(orderId) {
+    if (!confirm("Approve order " + orderId + "?")) return;
+
     frappe.call({
         method: "stock_flow.api.approve_stock_order",
         args: { order_id: orderId },
         callback: function(r) {
             if (!r.exc) {
-                frappe.show_alert({ message: "Order approved and stock updated!", indicator: "green" });
+                alert("Order approved successfully!");
                 location.reload();
             }
         }
