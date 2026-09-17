@@ -2,8 +2,8 @@
 # For license information, please see license.txt
 
 # import frappe
+import frappe
 from frappe.model.document import Document
 
-
-class Stockitem(Document):
-	pass
+class StockItem(Document):
+    pass
