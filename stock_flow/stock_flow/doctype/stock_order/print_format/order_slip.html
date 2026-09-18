@@ -1,0 +1,31 @@
+<div style="padding: 20px; font-family: Arial, sans-serif;">
+    <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 10px;">
+        <h2>FRAPNOVA ORDER SLIP</h2>
+        <h3>Order #: {{ doc.name }}</h3>
+    </div>
+
+    <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><b>Item Code:</b></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ doc.item }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><b>Quantity:</b></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ doc.quantity }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><b>Unit Rate:</b></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">₹{{ doc.rate }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><b>Total Amount:</b></td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><b>₹{{ doc.total_amount }}</b></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><b>Status:</b></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">
+                {% if doc.docstatus == 1 %} Approved {% else %} Pending Approval {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
