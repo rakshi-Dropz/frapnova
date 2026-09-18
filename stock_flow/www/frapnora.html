@@ -5,11 +5,15 @@
   <!-- HEADER WITH LOGO -->
   <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
     <div class="d-flex align-items-center gap-3">
-      <!-- Prominent Frapnova Logo -->
-      <img src="/assets/stock_flow/images/frapnova_logo.png" alt="Frapnova Logo" style="height: 55px; width: auto;" onerror="this.onerror=null; this.src='https://placehold.co/180x55?text=FRAPNOVA';">
-      <h2 class="m-0 fw-bold text-dark">Frapnova Portal</h2>
+    <!-- Prominent Frapnova Logo -->
+    <img src="/assets/stock_flow/images/frapnora_logo.png" alt="Frapnova Logo" style="height: 100px;">
+    
+    <!-- Vertical stack for Title and Subtitle -->
+    <div class="d-flex flex-column">
+        <h2 class="m-0 fw-bold text-dark">Frapnova</h2>
+        <h3 class="m-2 fs-6 text-muted">Stock • Orders • Approvals</h3>
     </div>
-    <div>
+</div>
       <span class="me-3">Logged in as: <strong>{{ user_fullname }}</strong></span>
       <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm">Logout</a>
     </div>
@@ -101,6 +105,7 @@
             <th>Qty</th>
             <th>Total Amount</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -123,10 +128,15 @@
                 <span class="badge bg-warning text-dark">Draft</span>
               {% endif %}
             </td>
+            <td>
+              <button class="btn btn-sm btn-outline-secondary fw-bold" onclick="downloadOrderPdf('{{ order.name }}')">
+                📥 Download PDF
+              </button>
+            </td>
           </tr>
           {% else %}
           <tr>
-            <td colspan="5" class="text-center text-muted">No order requests placed yet.</td>
+            <td colspan="6" class="text-center text-muted">No order requests placed yet.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -197,6 +207,18 @@ frappe.ready(function() {
         }, 7);
     });
 });
+
+// ==========================================
+// PDF DOWNLOAD FUNCTION (METHOD 3)
+// ==========================================
+function downloadOrderPdf(orderId) {
+    // Open printview with trigger_print=1 to prompt instant print/PDF save
+    var printUrl = "/printview?doctype=Stock%20Order&name=" 
+        + encodeURIComponent(orderId) 
+        + "&format=Order%20Slip&no_letterhead=1&trigger_print=1";
+
+    window.open(printUrl, '_blank');
+}
 
 // ==========================================
 // CATALOG MANAGEMENT FUNCTIONS

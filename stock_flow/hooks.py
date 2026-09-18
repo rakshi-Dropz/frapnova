@@ -255,3 +255,8 @@ app_license = "mit"
 
 # Force login redirect to custom portal UI
 login_redirect_url = "/frapnora"
+scheduler_events = {
+    "daily": [
+        "stock_flow.tasks.check_low_stock_and_notify"
+    ]
+}
