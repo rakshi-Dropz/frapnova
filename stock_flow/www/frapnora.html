@@ -2,8 +2,13 @@
 
 {% block page_content %}
 <div class="container my-4">
+  <!-- HEADER WITH LOGO -->
   <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-    <h2 class="m-0 fw-bold">Frapnova Portal</h2>
+    <div class="d-flex align-items-center gap-3">
+      <!-- Prominent Frapnova Logo -->
+      <img src="/assets/stock_flow/images/frapnova_logo.png" alt="Frapnova Logo" style="height: 55px; width: auto;" onerror="this.onerror=null; this.src='https://placehold.co/180x55?text=FRAPNOVA';">
+      <h2 class="m-0 fw-bold text-dark">Frapnova Portal</h2>
+    </div>
     <div>
       <span class="me-3">Logged in as: <strong>{{ user_fullname }}</strong></span>
       <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm">Logout</a>
@@ -11,146 +16,77 @@
   </div>
 
   {% if is_admin %}
-<div class="card bg-light p-4 mb-5 border shadow-sm">
-  <h4 class="mb-3 text-primary">Add New Stock Item</h4>
-  <div class="row g-3">
-    <div class="col-md-3">
-      <label class="form-label fw-bold">Item Name</label>
-      <input type="text" id="add_item_name" class="form-control" placeholder="e.g. Headphones">
+  <!-- ADMIN ADD PRODUCT CARD -->
+  <div class="card bg-light p-4 mb-5 border shadow-sm">
+    <h4 class="mb-3 text-primary">Add New Stock Item</h4>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Item Name</label>
+        <input type="text" id="add_item_name" class="form-control" placeholder="e.g. Headphones">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Price (₹)</label>
+        <input type="number" id="add_item_rate" class="form-control" placeholder="e.g. 2500">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Initial Stock</label>
+        <input type="number" id="add_item_stock" class="form-control" placeholder="e.g. 15">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Product Image</label>
+        <!-- Direct File Picker -->
+        <input type="file" id="add_item_image_file" class="form-control" accept="image/*">
+      </div>
     </div>
-    <div class="col-md-3">
-      <label class="form-label fw-bold">Price (₹)</label>
-      <input type="number" id="add_item_rate" class="form-control" placeholder="e.g. 2500">
-    </div>
-    <div class="col-md-3">
-      <label class="form-label fw-bold">Initial Stock</label>
-      <input type="number" id="add_item_stock" class="form-control" placeholder="e.g. 15">
-    </div>
-    <div class="col-md-3">
-      <label class="form-label fw-bold">Product Image</label>
-      <!-- Direct File Picker -->
-      <input type="file" id="add_item_image_file" class="form-control" accept="image/*">
+    <div class="mt-3 text-end">
+      <button type="button" class="btn btn-success fw-bold" id="btn_add_product" onclick="saveNewStockItem()">+ Add Product to Catalog</button>
     </div>
   </div>
-  <div class="mt-3 text-end">
-    <button type="button" class="btn btn-success fw-bold" id="btn_add_product" onclick="saveNewStockItem()">+ Add Product to Catalog</button>
-  </div>
-</div>
-{% endif %}
+  {% endif %}
 
- <!-- ITEM CATALOG -->
-<div class="agent-section mb-5">
-  <h3 class="mb-3">Item Catalog</h3>
-  <div class="row">
-    {% for item in stock_items %}
-    <div class="col-md-4 mb-4">
-      <div class="card h-100 shadow-sm border">
-        {% if item.image %}
-          <img src="{{ item.image }}" class="card-img-top" style="height: 180px; object-fit: cover;" onerror="this.onerror=null; this.src='https://placehold.co/180x180?text=No+Image';">
-        {% else %}
-          <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
-            <span class="text-muted">No Image</span>
-          </div>
-        {% endif %}
-        <div class="card-body d-flex flex-column justify-content-between">
-          <div>
-            <h5 class="card-title fw-bold">{{ item.item_name }}</h5>
-            <p class="card-text text-muted mb-1">Stock Available: <strong>{{ item.current_stock }}</strong></p>
-            <p class="card-text fw-bold text-primary">₹{{ item.rate }}</p>
-          </div>
-          <div>
-            {% if is_agent %}
-            <button class="btn btn-primary w-100 mt-2" data-item="{{ item.name }}" data-name="{{ item.item_name }}" onclick="triggerOrder(this)">Order Item</button>
-            {% endif %}
-
-            {% if is_admin %}
-            <div class="d-flex gap-2 mt-2">
-              <button class="btn btn-sm btn-outline-secondary w-50" onclick="editProduct('{{ item.name }}', '{{ item.rate }}', '{{ item.current_stock }}')">Edit / Add Image</button>
-              <button class="btn btn-sm btn-outline-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
+  <!-- ITEM CATALOG -->
+  <div class="agent-section mb-5">
+    <h3 class="mb-3">Item Catalog</h3>
+    <div class="row">
+      {% for item in stock_items %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border">
+          {% if item.image %}
+            <img src="{{ item.image }}" class="card-img-top" style="height: 180px; object-fit: cover;" onerror="this.onerror=null; this.src='https://placehold.co/180x180?text=No+Image';">
+          {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+              <span class="text-muted">No Image</span>
             </div>
-            {% endif %}
+          {% endif %}
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div>
+              <h5 class="card-title fw-bold">{{ item.item_name }}</h5>
+              <p class="card-text text-muted mb-1">
+                Stock Available: <strong>{{ item.current_stock }}</strong>
+                {% if item.current_stock <= 5 %}
+                  <span class="badge bg-warning text-dark ms-1">Low Stock</span>
+                {% endif %}
+              </p>
+              <p class="card-text fw-bold text-primary">₹{{ item.rate }}</p>
+            </div>
+            <div>
+              {% if is_agent %}
+              <button class="btn btn-primary w-100 mt-2" data-item="{{ item.name }}" data-name="{{ item.item_name }}" onclick="triggerOrder(this)">Order Item</button>
+              {% endif %}
+
+              {% if is_admin %}
+              <div class="d-flex gap-2 mt-2">
+                <button class="btn btn-sm btn-outline-secondary w-50" onclick="editProduct('{{ item.name }}', '{{ item.rate }}', '{{ item.current_stock }}')">Edit / Add Image</button>
+                <button class="btn btn-sm btn-outline-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
+              </div>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
-</div>
-
-<script>
-function editProduct(itemCode, currentRate, currentStock) {
-    var newRate = prompt("Enter new Price (₹):", currentRate);
-    if (newRate === null) return;
-
-    var newStock = prompt("Enter new Stock Available:", currentStock);
-    if (newStock === null) return;
-
-    var uploadImage = confirm("Do you want to upload a new image for this product?");
-    if (uploadImage) {
-        var input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = function(e) {
-            var file = e.target.files[0];
-            if (!file) return;
-
-            var formdata = new FormData();
-            formdata.append("file", file);
-            formdata.append("is_private", "0");
-
-            fetch("/api/method/upload_file", {
-                method: "POST",
-                headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
-                body: formdata
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.message && data.message.file_url) {
-                    saveProductUpdate(itemCode, newRate, newStock, data.message.file_url);
-                } else {
-                    alert("Failed to upload image.");
-                }
-            });
-        };
-        input.click();
-    } else {
-        saveProductUpdate(itemCode, newRate, newStock, "");
-    }
-}
-
-function saveProductUpdate(itemCode, rate, stock, imageUrl) {
-    frappe.call({
-        method: "stock_flow.api.update_stock_item",
-        args: {
-            item_code: itemCode,
-            rate: rate,
-            current_stock: stock,
-            image_url: imageUrl
-        },
-        callback: function(r) {
-            if (!r.exc) {
-                alert("Product updated successfully!");
-                location.reload();
-            }
-        }
-    });
-}
-
-function deleteProduct(itemCode) {
-    if (!confirm("Are you sure you want to delete '" + itemCode + "' from catalog?")) return;
-
-    frappe.call({
-        method: "stock_flow.api.delete_stock_item",
-        args: { item_code: itemCode },
-        callback: function(r) {
-            if (!r.exc) {
-                alert("Product deleted successfully!");
-                location.reload();
-            }
-        }
-    });
-}
-</script>
 
   <!-- AGENT ORDER REQUESTS -->
   {% if is_agent %}
@@ -248,24 +184,138 @@ function deleteProduct(itemCode) {
 
 </div>
 
+<!-- SCRIPT LOGIC -->
 <script>
+// ==========================================
+// STEP 6: REAL-TIME SOCKETIO LISTENER
+// ==========================================
+frappe.ready(function() {
+    frappe.realtime.on('low_stock_alert', function(data) {
+        frappe.show_alert({
+            message: __('Warning: ' + data.count + ' item(s) are low on stock!'),
+            indicator: 'orange'
+        }, 7);
+    });
+});
+
+// ==========================================
+// CATALOG MANAGEMENT FUNCTIONS
+// ==========================================
 function saveNewStockItem() {
     var name = document.getElementById('add_item_name').value.trim();
     var rate = document.getElementById('add_item_rate').value.trim();
     var stock = document.getElementById('add_item_stock').value.trim();
-    var image = document.getElementById('add_item_image').value.trim();
+    var fileInput = document.getElementById('add_item_image_file');
 
     if (!name || rate === "" || stock === "") {
         alert("Please enter Item Name, Price, and Initial Stock.");
         return;
     }
 
+    if (fileInput && fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        var formdata = new FormData();
+        formdata.append("file", file);
+        formdata.append("is_private", "0");
+
+        fetch("/api/method/upload_file", {
+            method: "POST",
+            headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
+            body: formdata
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message && data.message.file_url) {
+                createStockItemCall(name, rate, stock, data.message.file_url);
+            } else {
+                alert("Image upload failed.");
+            }
+        });
+    } else {
+        createStockItemCall(name, rate, stock, "");
+    }
+}
+
+function createStockItemCall(name, rate, stock, imageUrl) {
     frappe.call({
         method: "stock_flow.api.create_stock_item",
-        args: { item_name: name, rate: parseFloat(rate), current_stock: parseFloat(stock), image_url: image },
+        args: { item_name: name, rate: parseFloat(rate), current_stock: parseFloat(stock), image_url: imageUrl },
         callback: function(r) {
             if (!r.exc) {
                 alert("Product added successfully!");
+                location.reload();
+            }
+        }
+    });
+}
+
+function editProduct(itemCode, currentRate, currentStock) {
+    var newRate = prompt("Enter new Price (₹):", currentRate);
+    if (newRate === null) return;
+
+    var newStock = prompt("Enter new Stock Available:", currentStock);
+    if (newStock === null) return;
+
+    var uploadImage = confirm("Do you want to upload a new image for this product?");
+    if (uploadImage) {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            var formdata = new FormData();
+            formdata.append("file", file);
+            formdata.append("is_private", "0");
+
+            fetch("/api/method/upload_file", {
+                method: "POST",
+                headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
+                body: formdata
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message && data.message.file_url) {
+                    saveProductUpdate(itemCode, newRate, newStock, data.message.file_url);
+                } else {
+                    alert("Failed to upload image.");
+                }
+            });
+        };
+        input.click();
+    } else {
+        saveProductUpdate(itemCode, newRate, newStock, "");
+    }
+}
+
+function saveProductUpdate(itemCode, rate, stock, imageUrl) {
+    frappe.call({
+        method: "stock_flow.api.update_stock_item",
+        args: {
+            item_code: itemCode,
+            rate: rate,
+            current_stock: stock,
+            image_url: imageUrl
+        },
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Product updated successfully!");
+                location.reload();
+            }
+        }
+    });
+}
+
+function deleteProduct(itemCode) {
+    if (!confirm("Are you sure you want to delete '" + itemCode + "' from catalog?")) return;
+
+    frappe.call({
+        method: "stock_flow.api.delete_stock_item",
+        args: { item_code: itemCode },
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Product deleted successfully!");
                 location.reload();
             }
         }
