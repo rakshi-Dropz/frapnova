@@ -1,4 +1,5 @@
 import frappe
+import json
 
 @frappe.whitelist()
 def create_stock_item(item_name, rate, current_stock, image_url=None):
@@ -124,7 +125,9 @@ def approve_stock_order(order_id):
     doc.submit()
     frappe.db.commit()
     return "Success"
-    @frappe.whitelist(allow_guest=False)
+
+
+@frappe.whitelist(allow_guest=False)
 def bulk_process_orders(order_ids):
     """Whitelisted API endpoint to process multiple pending order approvals at once."""
     user_roles = frappe.get_roles()
@@ -132,11 +135,13 @@ def bulk_process_orders(order_ids):
         frappe.throw("Access denied: Stock Manager privileges required.")
 
     if isinstance(order_ids, str):
-        import json
         order_ids = json.loads(order_ids)
 
     processed = []
     for oid in order_ids:
+        if not frappe.db.exists("Stock Order", oid):
+            continue
+
         doc = frappe.get_doc("Stock Order", oid)
         if doc.docstatus == 0:
             doc.flags.ignore_permissions = True
