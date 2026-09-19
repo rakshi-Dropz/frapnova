@@ -1,228 +1,399 @@
 {% extends "templates/web.html" %}
 
 {% block page_content %}
-<div class="container my-4">
-  <!-- HEADER WITH LOGO -->
-  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-    <div class="d-flex align-items-center gap-3">
-    <!-- Prominent Frapnova Logo -->
-    <img src="/assets/stock_flow/images/frapnora_logo.png" alt="Frapnova Logo" style="height: 100px;">
+<style>
+  :root {
+    /* Base background: Deep cosmic indigo blending into blue-green and midnight */
+    --bg-base: #0c1322;
+    --bg-gradient: radial-gradient(circle at 12% 15%, rgba(0, 245, 212, 0.18) 0%, transparent 40%),
+                   radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.22) 0%, transparent 45%),
+                   radial-gradient(circle at 50% 45%, rgba(123, 44, 191, 0.18) 0%, transparent 50%),
+                   radial-gradient(circle at 75% 85%, rgba(16, 185, 129, 0.14) 0%, transparent 40%),
+                   linear-gradient(180deg, #10162a 0%, #090e1a 100%);
+                   
+    /* Frosted glass cards with dual cyan-to-purple iridescent borders */
+    --card-bg: rgba(14, 21, 38, 0.78);
+    --card-border: rgba(0, 245, 212, 0.28);
     
-    <!-- Vertical stack for Title and Subtitle -->
-    <div class="d-flex flex-column">
-        <h2 class="m-0 fw-bold text-dark">Frapnova</h2>
-        <h3 class="m-2 fs-6 text-muted">Stock • Orders • Approvals</h3>
-    </div>
-</div>
-      <span class="me-3">Logged in as: <strong>{{ user_fullname }}</strong></span>
-      <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm">Logout</a>
-    </div>
-  </div>
+    /* Vibrant spectrum variables matching the 3D logo */
+    --teal-glow: #00f5d4;
+    --cyan-bright: #0ea5e9;
+    --purple-glow: #a855f7;
+    --pink-glow: #f72585;
+    --emerald-accent: #10b981;
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
 
-  {% if is_admin %}
-  <!-- ADMIN ADD PRODUCT CARD -->
-  <div class="card bg-light p-4 mb-5 border shadow-sm">
-    <h4 class="mb-3 text-primary">Add New Stock Item</h4>
-    <div class="row g-3">
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Item Name</label>
-        <input type="text" id="add_item_name" class="form-control" placeholder="e.g. Headphones">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Price (₹)</label>
-        <input type="number" id="add_item_rate" class="form-control" placeholder="e.g. 2500">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Initial Stock</label>
-        <input type="number" id="add_item_stock" class="form-control" placeholder="e.g. 15">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-bold">Product Image</label>
-        <!-- Direct File Picker -->
-        <input type="file" id="add_item_image_file" class="form-control" accept="image/*">
-      </div>
-    </div>
-    <div class="mt-3 text-end">
-      <button type="button" class="btn btn-success fw-bold" id="btn_add_product" onclick="saveNewStockItem()">+ Add Product to Catalog</button>
-    </div>
-  </div>
-  {% endif %}
+  body {
+    background: var(--bg-base) !important;
+    background-image: var(--bg-gradient) !important;
+    background-attachment: fixed !important;
+    color: var(--text-main);
+  }
 
-  <!-- ANALYTICS REPORT SECTION (ADMIN & MANAGER) -->
-  {% if is_admin or is_manager %}
-  <div class="analytics-section mb-5">
-    <h3 class="mb-3 text-primary fw-bold">Agent Performance Summary</h3>
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped align-middle shadow-sm">
-        <thead class="table-dark">
-          <tr>
-            <th>Agent</th>
-            <th>Total Orders</th>
-            <th>Total Quantity</th>
-            <th>Total Revenue</th>
-          </tr>
-        </thead>
-        <tbody id="analytics-report-body">
-          <tr>
-            <td colspan="4" class="text-center text-muted">Loading summary metrics...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  {% endif %}
+  .frap-wrapper {
+    min-height: 100vh;
+  }
 
-  <!-- ITEM CATALOG -->
-  <div class="agent-section mb-5">
-    <h3 class="mb-3">Item Catalog</h3>
-    <div class="row">
-      {% for item in stock_items %}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm border">
-          {% if item.image %}
-            <img src="{{ item.image }}" class="card-img-top" style="height: 180px; object-fit: cover;" onerror="this.onerror=null; this.src='https://placehold.co/180x180?text=No+Image';">
-          {% else %}
-            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
-              <span class="text-muted">No Image</span>
-            </div>
-          {% endif %}
-          <div class="card-body d-flex flex-column justify-content-between">
+  /* Frosted Iridescent Glass Cards */
+  .vibrant-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(5, 10, 20, 0.65), 
+                0 0 20px rgba(168, 85, 247, 0.12),
+                0 0 15px rgba(0, 245, 212, 0.08);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .catalog-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(247, 37, 133, 0.55);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 
+                0 0 24px rgba(0, 245, 212, 0.25),
+                0 0 20px rgba(247, 37, 133, 0.2);
+  }
+
+  /* Spectrum Headings: Cyan -> Blue -> Purple -> Pink */
+  .vibrant-heading {
+    background: linear-gradient(90deg, #00f5d4 0%, #0ea5e9 30%, #a855f7 68%, #f72585 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  /* Aurora Table Headers */
+  .table-vibrant {
+    color: var(--text-main);
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+  }
+
+  .table-vibrant thead th {
+    background: linear-gradient(90deg, rgba(14, 38, 55, 0.95) 0%, rgba(35, 22, 60, 0.95) 100%) !important;
+    color: var(--teal-glow);
+    border-bottom: 2px solid rgba(247, 37, 133, 0.55) !important;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    padding: 14px 16px;
+  }
+
+  .table-vibrant tbody tr {
+    background: rgba(13, 20, 36, 0.6);
+    transition: background 0.2s ease;
+  }
+
+  .table-vibrant tbody tr:hover {
+    background: rgba(26, 32, 58, 0.85) !important;
+  }
+
+  .table-vibrant td {
+    padding: 14px 16px;
+    border-top: 1px solid rgba(168, 85, 247, 0.15);
+    vertical-align: middle;
+  }
+
+  /* Form Inputs with Dual Glow */
+  .form-control-vibrant {
+    background-color: rgba(9, 15, 28, 0.85) !important;
+    border: 1px solid rgba(0, 245, 212, 0.3) !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+  }
+
+  .form-control-vibrant:focus {
+    border-color: var(--pink-glow) !important;
+    box-shadow: 0 0 14px rgba(247, 37, 133, 0.35) !important;
+  }
+
+  /* Primary Action Button (Retained Cyan Glow) */
+  .btn-cyan-glow {
+    background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 100%);
+    color: #04141c !important;
+    font-weight: 700;
+    border: none;
+    border-radius: 7px;
+    box-shadow: 0 0 16px rgba(0, 245, 212, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .btn-cyan-glow:hover {
+    box-shadow: 0 0 26px rgba(0, 245, 212, 0.75);
+    transform: scale(1.02);
+  }
+
+  /* Secondary Buttons with Purple / Pink Hue Shift */
+  .btn-outline-cyan {
+    border: 1px solid var(--teal-glow);
+    color: var(--teal-glow) !important;
+    background: rgba(0, 245, 212, 0.06);
+    transition: all 0.2s ease;
+  }
+
+  .btn-outline-cyan:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: var(--purple-glow);
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.45);
+  }
+
+  /* Badges */
+  .badge-low-stock {
+    background: rgba(247, 37, 133, 0.2);
+    color: #ff4d94;
+    border: 1px solid rgba(247, 37, 133, 0.65);
+    box-shadow: 0 0 10px rgba(247, 37, 133, 0.35);
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 5px;
+  }
+
+  .badge-submitted {
+    background: rgba(168, 85, 247, 0.2);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+
+  .badge-draft {
+    background: rgba(0, 245, 212, 0.18);
+    color: #00f5d4;
+    border: 1px solid rgba(0, 245, 212, 0.55);
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+</style>
+
+<div class="frap-wrapper py-4">
+  <div class="container">
+    
+    <!-- HEADER WITH LOGO -->
+    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-light border-opacity-10">
+      <div class="d-flex align-items-center gap-3">
+        <img src="/assets/stock_flow/images/frapnora_logo1.png" alt="Frapnova Logo" style="height: 95px; object-fit: contain; filter: drop-shadow(0 8px 22px rgba(247, 37, 133, 0.28)) drop-shadow(0 4px 12px rgba(0, 245, 212, 0.25));">
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-light text-opacity-75">Logged in as: <strong class="text-white">{{ user_fullname }}</strong></span>
+        <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm px-3">Logout</a>
+      </div>
+    </div>
+
+    {% if is_admin %}
+    <!-- ADMIN ADD PRODUCT CARD -->
+    <div class="vibrant-card p-4 mb-5">
+      <h4 class="mb-3 vibrant-heading">Add New Stock Item</h4>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-light text-opacity-75">Item Name</label>
+          <input type="text" id="add_item_name" class="form-control form-control-vibrant" placeholder="e.g. Mechanical Keyboard">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-light text-opacity-75">Price (₹)</label>
+          <input type="number" id="add_item_rate" class="form-control form-control-vibrant" placeholder="e.g. 2500">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-light text-opacity-75">Initial Stock</label>
+          <input type="number" id="add_item_stock" class="form-control form-control-vibrant" placeholder="e.g. 15">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-light text-opacity-75">Product Image</label>
+          <input type="file" id="add_item_image_file" class="form-control form-control-vibrant" accept="image/*">
+        </div>
+      </div>
+      <div class="mt-4 text-end">
+        <button type="button" class="btn btn-cyan-glow px-4 py-2" id="btn_add_product" onclick="saveNewStockItem()">+ Add Product to Catalog</button>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ANALYTICS REPORT SECTION (ADMIN & MANAGER) -->
+    {% if is_admin or is_manager %}
+    <div class="analytics-section mb-5">
+      <h3 class="mb-3 vibrant-heading">Agent Performance Summary</h3>
+      <div class="vibrant-card p-0 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table-vibrant m-0">
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Total Orders</th>
+                <th>Total Quantity</th>
+                <th>Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="analytics-report-body">
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">Loading summary metrics...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ITEM CATALOG -->
+    <div class="agent-section mb-5">
+      <h3 class="mb-3 vibrant-heading">Item Catalog</h3>
+      <div class="row">
+        {% for item in stock_items %}
+        <div class="col-md-4 mb-4">
+          <div class="vibrant-card catalog-card h-100 p-0 overflow-hidden d-flex flex-column justify-content-between">
             <div>
-              <h5 class="card-title fw-bold">{{ item.item_name }}</h5>
-              <p class="card-text text-muted mb-1">
-                Stock Available: <strong>{{ item.current_stock }}</strong>
-                {% if item.current_stock <= 5 %}
-                  <span class="badge bg-warning text-dark ms-1">Low Stock</span>
-                {% endif %}
-              </p>
-              <p class="card-text fw-bold text-primary">₹{{ item.rate }}</p>
+              {% if item.image %}
+                <img src="{{ item.image }}" class="w-100" style="height: 180px; object-fit: cover; border-bottom: 1px solid var(--card-border);" onerror="this.onerror=null; this.src='https://placehold.co/180x180?text=No+Image';">
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center" style="height: 180px; background: rgba(14, 21, 38, 0.6); border-bottom: 1px solid var(--card-border);">
+                  <span class="text-muted">No Image</span>
+                </div>
+              {% endif %}
+              <div class="p-3">
+                <h5 class="fw-bold text-white mb-1">{{ item.item_name }}</h5>
+                <p class="text-muted small mb-2">
+                  Stock Available: <strong class="text-white">{{ item.current_stock }}</strong>
+                  {% if item.current_stock <= 5 %}
+                    <span class="badge-low-stock ms-1">Low Stock</span>
+                  {% endif %}
+                </p>
+                <h4 class="fw-bold m-0" style="color: var(--teal-glow);">₹{{ item.rate }}</h4>
+              </div>
             </div>
-            <div>
+            <div class="p-3 pt-0">
               {% if is_agent %}
-              <button class="btn btn-primary w-100 mt-2" data-item="{{ item.name }}" data-name="{{ item.item_name }}" onclick="triggerOrder(this)">Order Item</button>
+              <button class="btn btn-cyan-glow w-100 mt-2" data-item="{{ item.name }}" data-name="{{ item.item_name }}" onclick="triggerOrder(this)">Order Item</button>
               {% endif %}
 
               {% if is_admin %}
               <div class="d-flex gap-2 mt-2">
-                <button class="btn btn-sm btn-outline-secondary w-50" onclick="editProduct('{{ item.name }}', '{{ item.rate }}', '{{ item.current_stock }}')">Edit / Add Image</button>
+                <button class="btn btn-sm btn-outline-cyan w-50" onclick="editProduct('{{ item.name }}', '{{ item.rate }}', '{{ item.current_stock }}')">Edit / Stock</button>
                 <button class="btn btn-sm btn-outline-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
               </div>
               {% endif %}
             </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
-  </div>
 
-  <!-- AGENT ORDER REQUESTS -->
-  {% if is_agent %}
-  <div class="agent-orders mb-5">
-    <h3 class="mb-3">My Order Requests</h3>
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>Order ID</th>
-            <th>Image</th>
-            <th>Qty</th>
-            <th>Total Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in my_orders %}
-          <tr>
-            <td><strong>{{ order.name }}</strong></td>
-            <td>
-              {% if order.item_image %}
-                <img src="{{ order.item_image }}" style="width: 45px; height: 45px; object-fit: cover;" class="rounded border" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
+    <!-- AGENT ORDER REQUESTS -->
+    {% if is_agent %}
+    <div class="agent-orders mb-5">
+      <h3 class="mb-3 vibrant-heading">My Order Requests</h3>
+      <div class="vibrant-card p-0 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table-vibrant m-0">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Image</th>
+                <th>Qty</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in my_orders %}
+              <tr>
+                <td><strong style="color: var(--teal-glow);">{{ order.name }}</strong></td>
+                <td>
+                  {% if order.item_image %}
+                    <img src="{{ order.item_image }}" style="width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--card-border);" class="rounded" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td>{{ order.quantity }}</td>
+                <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
+                <td>
+                  {% if order.docstatus == 1 %}
+                    <span class="badge-submitted">Submitted</span>
+                  {% else %}
+                    <span class="badge-draft">Draft</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline-cyan" onclick="downloadOrderPdf('{{ order.name }}')">
+                    📥 PDF
+                  </button>
+                </td>
+              </tr>
               {% else %}
-                <span class="text-muted">-</span>
-              {% endif %}
-            </td>
-            <td>{{ order.quantity }}</td>
-            <td>₹{{ order.total_amount }}</td>
-            <td>
-              {% if order.docstatus == 1 %}
-                <span class="badge bg-success">Submitted</span>
-              {% else %}
-                <span class="badge bg-warning text-dark">Draft</span>
-              {% endif %}
-            </td>
-            <td>
-              <button class="btn btn-sm btn-outline-secondary fw-bold" onclick="downloadOrderPdf('{{ order.name }}')">
-                📥 Download PDF
-              </button>
-            </td>
-          </tr>
-          {% else %}
-          <tr>
-            <td colspan="6" class="text-center text-muted">No order requests placed yet.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">No order requests placed yet.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-  {% endif %}
+    {% endif %}
 
-  <!-- MANAGER PENDING REQUESTS -->
-  {% if is_manager %}
-  <div class="manager-orders mb-5">
-    <h3 class="mb-3 text-warning text-dark">Pending Order Approvals</h3>
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>Order ID</th>
-            <th>Requested By</th>
-            <th>Item</th>
-            <th>Image</th>
-            <th>Qty</th>
-            <th>Total</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in pending_orders %}
-          <tr>
-            <td><strong>{{ order.name }}</strong></td>
-            <td>{{ order.owner }}</td>
-            <td>{{ order.item }}</td>
-            <td>
-              {% if order.item_image %}
-                <img src="{{ order.item_image }}" style="width: 45px; height: 45px; object-fit: cover;" class="rounded border" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
+    <!-- MANAGER PENDING REQUESTS -->
+    {% if is_manager %}
+    <div class="manager-orders mb-5">
+      <h3 class="mb-3 vibrant-heading">Pending Order Approvals</h3>
+      <div class="vibrant-card p-0 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table-vibrant m-0">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Requested By</th>
+                <th>Item</th>
+                <th>Image</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in pending_orders %}
+              <tr>
+                <td><strong style="color: var(--teal-glow);">{{ order.name }}</strong></td>
+                <td>{{ order.owner }}</td>
+                <td>{{ order.item }}</td>
+                <td>
+                  {% if order.item_image %}
+                    <img src="{{ order.item_image }}" style="width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--card-border);" class="rounded" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td>{{ order.quantity }}</td>
+                <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
+                <td>
+                  <button class="btn btn-sm btn-cyan-glow" onclick="approveOrder('{{ order.name }}')">Approve</button>
+                </td>
+              </tr>
               {% else %}
-                <span class="text-muted">-</span>
-              {% endif %}
-            </td>
-            <td>{{ order.quantity }}</td>
-            <td>₹{{ order.total_amount }}</td>
-            <td>
-              <button class="btn btn-sm btn-success fw-bold" onclick="approveOrder('{{ order.name }}')">Approve Order</button>
-            </td>
-          </tr>
-          {% else %}
-          <tr>
-            <td colspan="7" class="text-center text-muted">No pending order requests.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">No pending order requests.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-  {% endif %}
+    {% endif %}
 
+  </div>
 </div>
 
 <!-- SCRIPT LOGIC -->
 <script>
-// ==========================================
-// STEP 6: REAL-TIME SOCKETIO LISTENER
-// ==========================================
 frappe.ready(function() {
     frappe.realtime.on('low_stock_alert', function(data) {
         frappe.show_alert({
@@ -231,15 +402,11 @@ frappe.ready(function() {
         }, 7);
     });
 
-    // Automatically load analytics report if table body exists on the page
     if (document.getElementById('analytics-report-body')) {
         loadAgentSummaryReport();
     }
 });
 
-// ==========================================
-// LOAD ANALYTICAL REPORT DATA
-// ==========================================
 function loadAgentSummaryReport() {
     frappe.call({
         method: "stock_flow.api.get_agent_performance_summary",
@@ -249,7 +416,7 @@ function loadAgentSummaryReport() {
             tbody.innerHTML = '';
 
             if (!r.message || r.message.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No submitted order metrics found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No submitted order metrics found.</td></tr>';
                 return;
             }
 
@@ -261,10 +428,10 @@ function loadAgentSummaryReport() {
 
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${agent}</strong></td>
+                    <td><strong class="text-white">${agent}</strong></td>
                     <td>${totalOrders}</td>
                     <td>${totalQty}</td>
-                    <td class="fw-bold text-success">₹${parseFloat(totalRev).toFixed(2)}</td>
+                    <td class="fw-bold" style="color: var(--teal-glow);">₹${parseFloat(totalRev).toFixed(2)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -272,20 +439,13 @@ function loadAgentSummaryReport() {
     });
 }
 
-// ==========================================
-// PDF DOWNLOAD FUNCTION (METHOD 3)
-// ==========================================
 function downloadOrderPdf(orderId) {
     var printUrl = "/printview?doctype=Stock%20Order&name=" 
         + encodeURIComponent(orderId) 
         + "&format=Order%20Slip&no_letterhead=1&trigger_print=1";
-
     window.open(printUrl, '_blank');
 }
 
-// ==========================================
-// CATALOG MANAGEMENT FUNCTIONS
-// ==========================================
 function saveNewStockItem() {
     var name = document.getElementById('add_item_name').value.trim();
     var rate = document.getElementById('add_item_rate').value.trim();
