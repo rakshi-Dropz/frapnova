@@ -153,3 +153,20 @@ def bulk_process_orders(order_ids):
 
     frappe.db.commit()
     return {"status": "Success", "approved_orders": processed}
+    import frappe
+
+@frappe.whitelist()
+def get_agent_performance_summary():
+    if not (frappe.has_permission("Stock Order", "read") or "Manager" in frappe.get_roles() or "Administrator" in frappe.get_roles()):
+        frappe.throw("Not permitted", frappe.PermissionError)
+        
+    return frappe.db.sql("""
+        SELECT 
+            owner AS agent,
+            COUNT(name) as total_orders,
+            SUM(quantity) as total_quantity,
+            SUM(total_amount) as total_revenue
+        FROM `tabStock Order`
+        WHERE docstatus = 1
+        GROUP BY owner
+    """, as_dict=True)

@@ -48,6 +48,30 @@
   </div>
   {% endif %}
 
+  <!-- ANALYTICS REPORT SECTION (ADMIN & MANAGER) -->
+  {% if is_admin or is_manager %}
+  <div class="analytics-section mb-5">
+    <h3 class="mb-3 text-primary fw-bold">Agent Performance Summary</h3>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Agent</th>
+            <th>Total Orders</th>
+            <th>Total Quantity</th>
+            <th>Total Revenue</th>
+          </tr>
+        </thead>
+        <tbody id="analytics-report-body">
+          <tr>
+            <td colspan="4" class="text-center text-muted">Loading summary metrics...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- ITEM CATALOG -->
   <div class="agent-section mb-5">
     <h3 class="mb-3">Item Catalog</h3>
@@ -206,13 +230,52 @@ frappe.ready(function() {
             indicator: 'orange'
         }, 7);
     });
+
+    // Automatically load analytics report if table body exists on the page
+    if (document.getElementById('analytics-report-body')) {
+        loadAgentSummaryReport();
+    }
 });
+
+// ==========================================
+// LOAD ANALYTICAL REPORT DATA
+// ==========================================
+function loadAgentSummaryReport() {
+    frappe.call({
+        method: "stock_flow.api.get_agent_performance_summary",
+        callback: function(r) {
+            var tbody = document.getElementById('analytics-report-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!r.message || r.message.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No submitted order metrics found.</td></tr>';
+                return;
+            }
+
+            r.message.forEach(function(row) {
+                var agent = row.agent || 'Unknown';
+                var totalOrders = row.total_orders || 0;
+                var totalQty = row.total_quantity || 0;
+                var totalRev = row.total_revenue || 0;
+
+                var tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${agent}</strong></td>
+                    <td>${totalOrders}</td>
+                    <td>${totalQty}</td>
+                    <td class="fw-bold text-success">₹${parseFloat(totalRev).toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    });
+}
 
 // ==========================================
 // PDF DOWNLOAD FUNCTION (METHOD 3)
 // ==========================================
 function downloadOrderPdf(orderId) {
-    // Open printview with trigger_print=1 to prompt instant print/PDF save
     var printUrl = "/printview?doctype=Stock%20Order&name=" 
         + encodeURIComponent(orderId) 
         + "&format=Order%20Slip&no_letterhead=1&trigger_print=1";
