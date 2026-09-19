@@ -9,22 +9,25 @@ def get_context(context):
         return
 
     user_roles = frappe.get_roles(user)
+    
+    # 1. User Role Flags (System Manager / Administrator gets full access across all views)
     context.is_admin = "System Manager" in user_roles or user == "Administrator"
     context.is_manager = "Stock Manager" in user_roles or context.is_admin
-    context.is_agent = "Support Agent" in user_roles or context.is_admin
+    context.is_agent = "Support Agent" in user_roles or "Stock Agent" in user_roles or context.is_admin
     context.user_fullname = frappe.utils.get_fullname(user)
 
-    # Fetch active catalog items
+    # 2. Fetch Active Catalog Items
     stock_items = frappe.db.get_all(
         "Stock Item",
-        fields=["name", "item_name", "image", "rate", "current_stock"]
+        fields=["name", "item_name", "image", "rate", "current_stock"],
+        order_by="creation desc"
     )
     for item in stock_items:
         if item.get("image") and item["image"].startswith("/private/files/"):
             item["image"] = item["image"].replace("/private/files/", "/files/")
     context.stock_items = stock_items
 
-    # Fetch pending orders for Manager view
+    # 3. Pending Orders for Managers/Admins (Draft status = 0)
     if context.is_manager:
         pending_orders = frappe.db.get_all(
             "Stock Order",
@@ -37,7 +40,7 @@ def get_context(context):
                 order["item_image"] = order["item_image"].replace("/private/files/", "/files/")
         context.pending_orders = pending_orders
 
-    # Fetch user orders for Agent view
+    # 4. Agent Order List (Shows Drafts, Submitted, and Rejected/Cancelled)
     if context.is_agent:
         my_orders = frappe.db.get_all(
             "Stock Order",

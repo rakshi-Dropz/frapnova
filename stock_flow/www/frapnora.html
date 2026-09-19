@@ -61,7 +61,7 @@
   /* Spectrum Headings: Cyan -> Blue -> Purple -> Pink */
   .vibrant-heading {
     background: linear-gradient(90deg, #00f5d4 0%, #0ea5e9 30%, #a855f7 68%, #f72585 100%);
-    -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 800;
     letter-spacing: 0.5px;
@@ -171,6 +171,40 @@
     padding: 4px 8px;
     border-radius: 5px;
   }
+
+  .badge-rejected {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.6);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+  /* Ensure Frappe modals and alert text stay readable */
+.modal-content, 
+.modal-dialog,
+.msgprint,
+.modal-body {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+.modal-content * {
+  color: #111827 !important;
+}
+/* Fix Frappe popup modal text contrast */
+.modal-content, 
+.modal-dialog,
+.modal-body,
+.msgprint {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+.modal-content * {
+  color: #111827 !important;
+}
+
 </style>
 
 <div class="frap-wrapper py-4">
@@ -269,7 +303,11 @@
             </div>
             <div class="p-3 pt-0">
               {% if is_agent %}
-              <button class="btn btn-cyan-glow w-100 mt-2" data-item="{{ item.name }}" data-name="{{ item.item_name }}" onclick="triggerOrder(this)">Order Item</button>
+              <button class="btn btn-cyan-glow w-100 mt-2" 
+               data-item="{{ item.name }}" 
+               data-name="{{ item.item_name }}" 
+               data-stock="{{ item.current_stock }}" 
+               onclick="triggerOrder(this)">Order Item</button>
               {% endif %}
 
               {% if is_admin %}
@@ -316,12 +354,14 @@
                 <td>{{ order.quantity }}</td>
                 <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
                 <td>
-                  {% if order.docstatus == 1 %}
-                    <span class="badge-submitted">Submitted</span>
-                  {% else %}
-                    <span class="badge-draft">Draft</span>
-                  {% endif %}
-                </td>
+              {% if order.docstatus == 1 %}
+                <span class="badge-submitted">Submitted</span>
+              {% elif order.docstatus == 2 %}
+                <span class="badge-rejected">Rejected</span>
+              {% else %}
+                <span class="badge-draft">Draft</span>
+              {% endif %}
+            </td>
                 <td>
                   <button class="btn btn-sm btn-outline-cyan" onclick="downloadOrderPdf('{{ order.name }}')">
                     📥 PDF
@@ -374,7 +414,10 @@
                 <td>{{ order.quantity }}</td>
                 <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
                 <td>
-                  <button class="btn btn-sm btn-cyan-glow" onclick="approveOrder('{{ order.name }}')">Approve</button>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-cyan-glow" onclick="approveOrder('{{ order.name }}')">Approve</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="rejectOrder('{{ order.name }}')">Reject</button>
+                  </div>
                 </td>
               </tr>
               {% else %}
@@ -570,12 +613,30 @@ function deleteProduct(itemCode) {
 function triggerOrder(btn) {
     var itemCode = btn.getAttribute('data-item');
     var itemName = btn.getAttribute('data-name');
-    var qty = prompt("Enter quantity for " + itemName + ":", "1");
+    var availableStock = parseInt(btn.getAttribute('data-stock') || 0);
+
+    if (availableStock <= 0) {
+        alert(itemName + " is currently out of stock!");
+        return;
+    }
+
+    var qty = prompt("Enter quantity for " + itemName + " (Available: " + availableStock + "):", "1");
     if (!qty) return;
+
+    var requestedQty = parseInt(qty);
+    if (isNaN(requestedQty) || requestedQty <= 0) {
+        alert("Please enter a valid quantity.");
+        return;
+    }
+
+    if (requestedQty > availableStock) {
+        alert("Cannot order " + requestedQty + " units. Only " + availableStock + " available in stock.");
+        return;
+    }
 
     frappe.call({
         method: "stock_flow.api.create_stock_order",
-        args: { item_code: itemCode, quantity: parseInt(qty) },
+        args: { item_code: itemCode, quantity: requestedQty },
         callback: function(r) {
             if (!r.exc) {
                 alert("Order request placed successfully!");
@@ -596,6 +657,31 @@ function approveOrder(orderId) {
                 alert("Order approved successfully!");
                 location.reload();
             }
+        }
+    });
+}
+
+function rejectOrder(orderId) {
+    if (!confirm("Are you sure you want to reject order " + orderId + "?")) return;
+
+    frappe.call({
+        method: "stock_flow.api.reject_stock_order",
+        args: { order_id: orderId },
+        freeze: true,
+        freeze_message: "Rejecting order...",
+        callback: function(r) {
+            if (!r.exc) {
+                frappe.show_alert({
+                    message: __("Order " + orderId + " was rejected."),
+                    indicator: "green"
+                }, 4);
+                setTimeout(function() {
+                    location.reload();
+                }, 800);
+            }
+        },
+        error: function(r) {
+            console.error("Rejection failed:", r);
         }
     });
 }
