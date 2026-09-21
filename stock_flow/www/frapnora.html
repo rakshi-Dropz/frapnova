@@ -113,7 +113,7 @@
     box-shadow: 0 0 14px rgba(247, 37, 133, 0.35) !important;
   }
 
-  /* Primary Action Button (Retained Cyan Glow) */
+  /* Primary Action Button */
   .btn-cyan-glow {
     background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 100%);
     color: #04141c !important;
@@ -129,7 +129,7 @@
     transform: scale(1.02);
   }
 
-  /* Secondary Buttons with Purple / Pink Hue Shift */
+  /* Secondary Buttons */
   .btn-outline-cyan {
     border: 1px solid var(--teal-glow);
     color: var(--teal-glow) !important;
@@ -180,31 +180,52 @@
     padding: 4px 8px;
     border-radius: 5px;
   }
-  /* Ensure Frappe modals and alert text stay readable */
-.modal-content, 
-.modal-dialog,
-.msgprint,
-.modal-body {
-  color: #111827 !important;
-  background-color: #ffffff !important;
-}
 
-.modal-content * {
-  color: #111827 !important;
-}
-/* Fix Frappe popup modal text contrast */
-.modal-content, 
-.modal-dialog,
-.modal-body,
-.msgprint {
-  color: #111827 !important;
-  background-color: #ffffff !important;
-}
+  /* Fix Frappe popup modal text contrast */
+  .modal-content, 
+  .modal-dialog,
+  .modal-body,
+  .msgprint {
+    color: #111827 !important;
+    background-color: #ffffff !important;
+  }
 
-.modal-content * {
-  color: #111827 !important;
-}
+  .modal-content * {
+    color: #111827 !important;
+  }
 
+  /* Floating Real-time Toast Card */
+  .aurora-toast-card {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100000 !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    border: 1px solid rgba(247, 37, 133, 0.8) !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(247, 37, 133, 0.35) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #ffffff !important;
+    min-width: 320px;
+    max-width: 420px;
+    border-radius: 12px;
+    display: none;
+    animation: fadeInSlide 0.3s ease-out;
+  }
+
+  @keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* In-Page Notification Banner */
+  .in-page-alert-banner {
+    display: none;
+    border: 1px solid rgba(247, 37, 133, 0.75);
+    background: rgba(247, 37, 133, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(247, 37, 133, 0.22);
+  }
 </style>
 
 <div class="frap-wrapper py-4">
@@ -217,7 +238,22 @@
       </div>
       <div class="d-flex align-items-center gap-3">
         <span class="text-light text-opacity-75">Logged in as: <strong class="text-white">{{ user_fullname }}</strong></span>
+        <button type="button" class="btn btn-outline-cyan btn-sm px-3" onclick="triggerTestAlert()">🔔 Live Alert</button>
         <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm px-3">Logout</a>
+      </div>
+    </div>
+
+    <!-- REALTIME IN-PAGE NOTIFICATION BANNER -->
+    <div id="liveStockBanner" class="p-3 mb-5 in-page-alert-banner">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <span class="fs-3">⚠️</span>
+          <div>
+            <h6 class="m-0 fw-bold text-white" id="bannerTitle">Low Stock Warning</h6>
+            <span class="small text-light text-opacity-85" id="bannerMessage"></span>
+          </div>
+        </div>
+        <button class="btn btn-sm btn-outline-light" onclick="document.getElementById('liveStockBanner').style.display='none'">Dismiss</button>
       </div>
     </div>
 
@@ -280,7 +316,7 @@
       <h3 class="mb-3 vibrant-heading">Item Catalog</h3>
       <div class="row">
         {% for item in stock_items %}
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4 catalog-item-wrapper" data-item-name="{{ item.name }}" data-item-title="{{ item.item_name }}">
           <div class="vibrant-card catalog-card h-100 p-0 overflow-hidden d-flex flex-column justify-content-between">
             <div>
               {% if item.image %}
@@ -292,11 +328,13 @@
               {% endif %}
               <div class="p-3">
                 <h5 class="fw-bold text-white mb-1">{{ item.item_name }}</h5>
-                <p class="text-muted small mb-2">
-                  Stock Available: <strong class="text-white">{{ item.current_stock }}</strong>
-                  {% if item.current_stock <= 5 %}
-                    <span class="badge-low-stock ms-1">Low Stock</span>
-                  {% endif %}
+                <p class="text-muted small mb-2 stock-info">
+                  Stock Available: <strong class="text-white current-stock-number">{{ item.current_stock }}</strong>
+                  <span class="stock-badge-container">
+                    {% if item.current_stock <= 5 %}
+                      <span class="badge-low-stock ms-1">Low Stock</span>
+                    {% endif %}
+                  </span>
                 </p>
                 <h4 class="fw-bold m-0" style="color: var(--teal-glow);">₹{{ item.rate }}</h4>
               </div>
@@ -354,14 +392,14 @@
                 <td>{{ order.quantity }}</td>
                 <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
                 <td>
-              {% if order.docstatus == 1 %}
-                <span class="badge-submitted">Submitted</span>
-              {% elif order.docstatus == 2 %}
-                <span class="badge-rejected">Rejected</span>
-              {% else %}
-                <span class="badge-draft">Draft</span>
-              {% endif %}
-            </td>
+                  {% if order.docstatus == 1 %}
+                    <span class="badge-submitted">Submitted</span>
+                  {% elif order.docstatus == 2 %}
+                    <span class="badge-rejected">Rejected</span>
+                  {% else %}
+                    <span class="badge-draft">Draft</span>
+                  {% endif %}
+                </td>
                 <td>
                   <button class="btn btn-sm btn-outline-cyan" onclick="downloadOrderPdf('{{ order.name }}')">
                     📥 PDF
@@ -435,20 +473,89 @@
   </div>
 </div>
 
+<!-- FLOATING TOAST CARD -->
+<div id="liveAlertToast" class="aurora-toast-card p-3">
+  <div class="d-flex align-items-center justify-content-between mb-1">
+    <div class="d-flex align-items-center gap-2">
+      <span class="fs-4">⚠️</span>
+      <strong id="liveAlertTitle" class="fw-bold" style="color: var(--teal-glow);">Inventory Alert</strong>
+    </div>
+    <button type="button" class="btn btn-sm text-light p-0 ms-3" onclick="closeRealtimeToast()">✕</button>
+  </div>
+  <div id="liveAlertBody" class="small text-light text-opacity-85 mt-1"></div>
+</div>
+
 <!-- SCRIPT LOGIC -->
 <script>
 frappe.ready(function() {
+    // 1. SocketIO listener for low-stock events
     frappe.realtime.on('low_stock_alert', function(data) {
-        frappe.show_alert({
-            message: __('Warning: ' + data.count + ' item(s) are low on stock!'),
-            indicator: 'orange'
-        }, 7);
+        handleIncomingLowStockAlert(data);
     });
 
     if (document.getElementById('analytics-report-body')) {
         loadAgentSummaryReport();
     }
 });
+
+function handleIncomingLowStockAlert(data) {
+    var count = data.count || (data.items ? data.items.length : 1);
+    var title = data.title || "Live SocketIO Alert";
+    var itemsList = Array.isArray(data.items) ? data.items.join(", ") : "";
+
+    // 1. Trigger the single styled custom floating toast
+    showRealtimeToast(title, count + " item(s) have critically low inventory: " + itemsList);
+
+    // 2. Update the in-page top banner
+    var banner = document.getElementById('liveStockBanner');
+    var bannerMsg = document.getElementById('bannerMessage');
+    if (banner && bannerMsg) {
+        bannerMsg.innerText = count + " item(s) are low on stock (" + itemsList + "). Please reorder.";
+        banner.style.display = 'block';
+    }
+
+    // 3. Highlight badges dynamically on Item Catalog cards
+    if (data.items && Array.isArray(data.items)) {
+        data.items.forEach(function(itemIdentifier) {
+            var card = document.querySelector('[data-item-name="' + itemIdentifier + '"]') || 
+                       document.querySelector('[data-item-title="' + itemIdentifier + '"]');
+            if (card) {
+                var container = card.querySelector('.stock-badge-container');
+                if (container && !container.querySelector('.badge-low-stock')) {
+                    container.innerHTML = '<span class="badge-low-stock ms-1">Low Stock</span>';
+                }
+            }
+        });
+    }
+}
+function triggerTestAlert() {
+    handleIncomingLowStockAlert({
+        title: "Live SocketIO Alert",
+        count: 2,
+        items: ["Watch", "Harry Potter : The Complete Collection"]
+    });
+}
+
+function showRealtimeToast(title, message) {
+    var toast = document.getElementById('liveAlertToast');
+    var titleEl = document.getElementById('liveAlertTitle');
+    var bodyEl = document.getElementById('liveAlertBody');
+
+    if (toast && titleEl && bodyEl) {
+        titleEl.innerText = title;
+        bodyEl.innerText = message;
+        toast.style.display = 'block';
+
+        setTimeout(function() {
+            closeRealtimeToast();
+        }, 8000);
+    }
+}
+
+function closeRealtimeToast() {
+    var toast = document.getElementById('liveAlertToast');
+    if (toast) toast.style.display = 'none';
+}
 
 function loadAgentSummaryReport() {
     frappe.call({
