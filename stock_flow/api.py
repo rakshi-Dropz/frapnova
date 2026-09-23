@@ -128,12 +128,61 @@ def approve_stock_order(order_id):
     doc.submit()
     frappe.db.commit()
 
+    # 1. Dispatch Email to Agent via tabEmail Queue
+    recipient_email = doc.get("agent") or doc.owner
+    email_message = f"""
+    <p>Dear <b>{recipient_email}</b>,</p>
+    <p>Your stock order <b>{doc.name}</b> has been officially approved and processed.</p>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
+      <thead>
+        <tr style="background-color: #f3f4f6; text-align: left;">
+          <th style="padding: 8px; border: 1px solid #e5e7eb;">Item</th>
+          <th style="padding: 8px; border: 1px solid #e5e7eb;">Quantity</th>
+          <th style="padding: 8px; border: 1px solid #e5e7eb;">Rate</th>
+          <th style="padding: 8px; border: 1px solid #e5e7eb;">Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e5e7eb;">{doc.item}</td>
+          <td style="padding: 8px; border: 1px solid #e5e7eb;">{doc.quantity}</td>
+          <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{doc.rate}</td>
+          <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{doc.total_amount}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Warehouse inventory has been updated accordingly.</p>
+    <p>Best regards,<br><b>Frapnova Operations Team</b></p>
+    """
+
+    frappe.sendmail(
+        recipients=[recipient_email],
+        subject=f"Order {doc.name} Approved",
+        message=email_message,
+        reference_doctype="Stock Order",
+        reference_name=doc.name,
+        now=False
+    )
+
+    # 2. Create in-app system notification for the agent
+    if frappe.db.exists("User", recipient_email):
+        frappe.get_doc({
+            "doctype": "Notification Log",
+            "subject": f"Order {doc.name} Approved",
+            "for_user": recipient_email,
+            "type": "Alert",
+            "document_type": "Stock Order",
+            "document_name": doc.name
+        }).insert(ignore_permissions=True)
+
+    # 3. Trigger low stock check background worker
     frappe.enqueue(
         "stock_flow.tasks.check_low_stock_and_notify",
         queue="short",
         now=False
     )
 
+    frappe.db.commit()
     return "Success"
 
 

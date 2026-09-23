@@ -44,7 +44,7 @@
    "read_only": 1
   },
   {
-   "default": "session.user",
+   "default": "__user",
    "fieldname": "agent",
    "fieldtype": "Data",
    "label": "Agent",
