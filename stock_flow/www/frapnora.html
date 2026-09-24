@@ -181,19 +181,6 @@
     border-radius: 5px;
   }
 
-  /* Fix Frappe popup modal text contrast */
-  .modal-content, 
-  .modal-dialog,
-  .modal-body,
-  .msgprint {
-    color: #111827 !important;
-    background-color: #ffffff !important;
-  }
-
-  .modal-content * {
-    color: #111827 !important;
-  }
-
   /* Floating Real-time Toast Card */
   .aurora-toast-card {
     position: fixed;
@@ -225,6 +212,100 @@
     background: rgba(247, 37, 133, 0.12);
     border-radius: 12px;
     box-shadow: 0 0 18px rgba(247, 37, 133, 0.22);
+  }
+
+  /* Option 1: Right-Side Floating Glass Action Capsule */
+  .floating-order-trigger {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(14, 21, 38, 0.88);
+    border: 1px solid var(--teal-glow);
+    color: var(--teal-glow);
+    padding: 12px 22px;
+    border-radius: 50px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 18px rgba(0, 245, 212, 0.3);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .floating-order-trigger:hover {
+    transform: translateY(-3px) scale(1.03);
+    border-color: var(--pink-glow);
+    color: #ffffff;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7), 0 0 22px rgba(247, 37, 133, 0.45);
+  }
+
+  /* Custom Orders Modal Styling */
+  .custom-orders-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(8, 12, 22, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .custom-orders-modal-dialog {
+    background: rgba(14, 21, 38, 0.96);
+    border: 1px solid rgba(0, 245, 212, 0.4);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 
+                0 0 30px rgba(168, 85, 247, 0.25),
+                0 0 20px rgba(0, 245, 212, 0.15);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 950px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes modalPopIn {
+    from { opacity: 0; transform: scale(0.96) translateY(12px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .custom-orders-modal-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    background: linear-gradient(90deg, rgba(14, 38, 55, 0.7) 0%, rgba(35, 22, 60, 0.7) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .custom-orders-modal-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .custom-orders-modal-close:hover {
+    color: var(--pink-glow);
+  }
+
+  .custom-orders-modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
   }
 </style>
 
@@ -361,63 +442,6 @@
       </div>
     </div>
 
-    <!-- AGENT ORDER REQUESTS -->
-    {% if is_agent %}
-    <div class="agent-orders mb-5">
-      <h3 class="mb-3 vibrant-heading">My Order Requests</h3>
-      <div class="vibrant-card p-0 overflow-hidden">
-        <div class="table-responsive">
-          <table class="table-vibrant m-0">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Image</th>
-                <th>Qty</th>
-                <th>Total Amount</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for order in my_orders %}
-              <tr>
-                <td><strong style="color: var(--teal-glow);">{{ order.name }}</strong></td>
-                <td>
-                  {% if order.item_image %}
-                    <img src="{{ order.item_image }}" style="width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--card-border);" class="rounded" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
-                  {% else %}
-                    <span class="text-muted">-</span>
-                  {% endif %}
-                </td>
-                <td>{{ order.quantity }}</td>
-                <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
-                <td>
-                  {% if order.docstatus == 1 %}
-                    <span class="badge-submitted">Submitted</span>
-                  {% elif order.docstatus == 2 %}
-                    <span class="badge-rejected">Rejected</span>
-                  {% else %}
-                    <span class="badge-draft">Draft</span>
-                  {% endif %}
-                </td>
-                <td>
-                  <button class="btn btn-sm btn-outline-cyan" onclick="downloadOrderPdf('{{ order.name }}')">
-                    📥 PDF
-                  </button>
-                </td>
-              </tr>
-              {% else %}
-              <tr>
-                <td colspan="6" class="text-center text-muted py-4">No order requests placed yet.</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-
     <!-- MANAGER PENDING REQUESTS -->
     {% if is_manager %}
     <div class="manager-orders mb-5">
@@ -473,6 +497,79 @@
   </div>
 </div>
 
+{% if is_agent %}
+<!-- OPTION 1: FLOATING ORDER REQUESTS TRIGGER CAPSULE -->
+<button type="button" class="floating-order-trigger" onclick="openOrdersModal()">
+  <span class="fs-5">📋</span>
+  <span class="fw-semibold">My Requests</span>
+  <span class="badge rounded-pill bg-danger ms-1" style="font-size: 0.75rem;">{{ my_orders|length }}</span>
+</button>
+
+<!-- POPUP MODAL: AGENT ORDER REQUESTS -->
+<div id="ordersModalOverlay" class="custom-orders-modal-overlay" onclick="handleModalOverlayClick(event)">
+  <div class="custom-orders-modal-dialog">
+    <div class="custom-orders-modal-header">
+      <div class="d-flex align-items-center gap-2">
+        <h4 class="m-0 vibrant-heading">My Order Requests</h4>
+        <span class="badge rounded-pill bg-light text-dark ms-2">{{ my_orders|length }} total</span>
+      </div>
+      <button type="button" class="custom-orders-modal-close" onclick="closeOrdersModal()">&times;</button>
+    </div>
+    
+    <div class="custom-orders-modal-body p-0">
+      <div class="table-responsive">
+        <table class="table-vibrant m-0">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Image</th>
+              <th>Qty</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in my_orders %}
+            <tr>
+              <td><strong style="color: var(--teal-glow);">{{ order.name }}</strong></td>
+              <td>
+                {% if order.item_image %}
+                  <img src="{{ order.item_image }}" style="width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--card-border);" class="rounded" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
+                {% else %}
+                  <span class="text-muted">-</span>
+                {% endif %}
+              </td>
+              <td>{{ order.quantity }}</td>
+              <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
+              <td>
+                {% if order.docstatus == 1 %}
+                  <span class="badge-submitted">Submitted</span>
+                {% elif order.docstatus == 2 %}
+                  <span class="badge-rejected">Rejected</span>
+                {% else %}
+                  <span class="badge-draft">Draft</span>
+                {% endif %}
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-cyan" onclick="downloadOrderPdf('{{ order.name }}')">
+                  📥 PDF
+                </button>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-muted py-5">No order requests placed yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <!-- FLOATING TOAST CARD -->
 <div id="liveAlertToast" class="aurora-toast-card p-3">
   <div class="d-flex align-items-center justify-content-between mb-1">
@@ -498,15 +595,37 @@ frappe.ready(function() {
     }
 });
 
+// Modal Controls
+function openOrdersModal() {
+    var modal = document.getElementById('ordersModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeOrdersModal() {
+    var modal = document.getElementById('ordersModalOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function handleModalOverlayClick(event) {
+    if (event.target && event.target.id === 'ordersModalOverlay') {
+        closeOrdersModal();
+    }
+}
+
+// Low stock alert handler
 function handleIncomingLowStockAlert(data) {
     var count = data.count || (data.items ? data.items.length : 1);
     var title = data.title || "Live SocketIO Alert";
     var itemsList = Array.isArray(data.items) ? data.items.join(", ") : "";
 
-    // 1. Trigger the single styled custom floating toast
     showRealtimeToast(title, count + " item(s) have critically low inventory: " + itemsList);
 
-    // 2. Update the in-page top banner
     var banner = document.getElementById('liveStockBanner');
     var bannerMsg = document.getElementById('bannerMessage');
     if (banner && bannerMsg) {
@@ -514,7 +633,6 @@ function handleIncomingLowStockAlert(data) {
         banner.style.display = 'block';
     }
 
-    // 3. Highlight badges dynamically on Item Catalog cards
     if (data.items && Array.isArray(data.items)) {
         data.items.forEach(function(itemIdentifier) {
             var card = document.querySelector('[data-item-name="' + itemIdentifier + '"]') || 
@@ -528,6 +646,7 @@ function handleIncomingLowStockAlert(data) {
         });
     }
 }
+
 function triggerTestAlert() {
     handleIncomingLowStockAlert({
         title: "Live SocketIO Alert",
