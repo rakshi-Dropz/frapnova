@@ -67,6 +67,43 @@
     letter-spacing: 0.5px;
   }
 
+  /* High-Impact Animated Glowing Action Button */
+  .btn-aurora-glow {
+    position: relative;
+    background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 35%, #a855f7 70%, #f72585 100%);
+    background-size: 250% 250%;
+    color: #030a16 !important;
+    font-weight: 800;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 22px;
+    font-size: 0.9rem;
+    letter-spacing: 0.4px;
+    box-shadow: 0 0 18px rgba(0, 245, 212, 0.45), 0 0 28px rgba(247, 37, 133, 0.25);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: auroraShift 4s ease infinite;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  @keyframes auroraShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .btn-aurora-glow:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 0 28px rgba(0, 245, 212, 0.8), 0 0 40px rgba(247, 37, 133, 0.5);
+    color: #ffffff !important;
+  }
+
+  .btn-aurora-glow:active {
+    transform: scale(0.98);
+  }
+
   /* Aurora Table Headers */
   .table-vibrant {
     color: var(--text-main);
@@ -214,7 +251,7 @@
     box-shadow: 0 0 18px rgba(247, 37, 133, 0.22);
   }
 
-  /* Option 1: Right-Side Floating Glass Action Capsule */
+  /* Floating Order Requests Trigger Capsule */
   .floating-order-trigger {
     position: fixed;
     bottom: 28px;
@@ -242,7 +279,7 @@
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7), 0 0 22px rgba(247, 37, 133, 0.45);
   }
 
-  /* Custom Orders Modal Styling */
+  /* Generic Modal Styling */
   .custom-orders-modal-overlay {
     position: fixed;
     top: 0;
@@ -273,6 +310,14 @@
     flex-direction: column;
     overflow: hidden;
     animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .custom-add-item-dialog {
+    max-width: 650px !important;
+    border-color: rgba(247, 37, 133, 0.45) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85),
+                0 0 35px rgba(247, 37, 133, 0.25),
+                0 0 20px rgba(0, 245, 212, 0.2) !important;
   }
 
   @keyframes modalPopIn {
@@ -307,6 +352,89 @@
     padding: 20px 24px;
     overflow-y: auto;
   }
+
+  /* File Drop Box in Add Item Modal */
+  .aurora-file-dropzone {
+    border: 2px dashed rgba(0, 245, 212, 0.35);
+    background: rgba(9, 15, 28, 0.55);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .aurora-file-dropzone:hover {
+    border-color: var(--pink-glow);
+    background: rgba(247, 37, 133, 0.08);
+  }
+
+  /* Executive Agent Performance Grid & Summary Styles */
+  .agent-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.2rem;
+  }
+
+  .agent-avatar-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #050d1a;
+    background: linear-gradient(135deg, var(--teal-glow) 0%, var(--purple-glow) 100%);
+    box-shadow: 0 0 12px rgba(0, 245, 212, 0.35);
+  }
+
+  .metric-badge-pill {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.4);
+    color: #38bdf8;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metric-badge-qty {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: #c084fc;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .revenue-pill {
+    font-size: 1.05rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #00f5d4 0%, #10b981 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(0, 245, 212, 0.25);
+  }
+
+  .stat-card-micro {
+    background: rgba(14, 21, 38, 0.65);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 10px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 </style>
 
 <div class="frap-wrapper py-4">
@@ -338,47 +466,41 @@
       </div>
     </div>
 
-    {% if is_admin %}
-    <!-- ADMIN ADD PRODUCT CARD -->
-    <div class="vibrant-card p-4 mb-5">
-      <h4 class="mb-3 vibrant-heading">Add New Stock Item</h4>
-      <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label fw-semibold text-light text-opacity-75">Item Name</label>
-          <input type="text" id="add_item_name" class="form-control form-control-vibrant" placeholder="e.g. Mechanical Keyboard">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-semibold text-light text-opacity-75">Price (₹)</label>
-          <input type="number" id="add_item_rate" class="form-control form-control-vibrant" placeholder="e.g. 2500">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-semibold text-light text-opacity-75">Initial Stock</label>
-          <input type="number" id="add_item_stock" class="form-control form-control-vibrant" placeholder="e.g. 15">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-semibold text-light text-opacity-75">Product Image</label>
-          <input type="file" id="add_item_image_file" class="form-control form-control-vibrant" accept="image/*">
-        </div>
-      </div>
-      <div class="mt-4 text-end">
-        <button type="button" class="btn btn-cyan-glow px-4 py-2" id="btn_add_product" onclick="saveNewStockItem()">+ Add Product to Catalog</button>
-      </div>
-    </div>
-    {% endif %}
-
-    <!-- ANALYTICS REPORT SECTION (ADMIN & MANAGER) -->
+    <!-- AGENT PERFORMANCE SUMMARY (ADMIN & MANAGER) -->
     {% if is_admin or is_manager %}
     <div class="analytics-section mb-5">
-      <h3 class="mb-3 vibrant-heading">Agent Performance Summary</h3>
+      <div class="agent-summary-header">
+        <div>
+          <h3 class="m-0 vibrant-heading">Agent Performance Summary</h3>
+          <small class="text-muted">Live submitted order analytics and verified sales throughput</small>
+        </div>
+        <div class="d-none d-md-flex align-items-center gap-3">
+          <div class="stat-card-micro">
+            <span class="fs-4">👥</span>
+            <div>
+              <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase;">Active Agents</div>
+              <strong id="statActiveAgents" class="text-white">0</strong>
+            </div>
+          </div>
+          <div class="stat-card-micro">
+            <span class="fs-4">💎</span>
+            <div>
+              <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase;">Total Volume</div>
+              <strong id="statTotalRev" style="color: var(--teal-glow);">₹0.00</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="vibrant-card p-0 overflow-hidden">
         <div class="table-responsive">
           <table class="table-vibrant m-0">
             <thead>
               <tr>
-                <th>Agent</th>
-                <th>Total Orders</th>
-                <th>Total Quantity</th>
-                <th>Total Revenue</th>
+                <th style="padding-left: 24px;">Agent Identity</th>
+                <th class="text-center">Total Orders</th>
+                <th class="text-center">Units Sold</th>
+                <th class="text-end" style="padding-right: 24px;">Revenue Contribution</th>
               </tr>
             </thead>
             <tbody id="analytics-report-body">
@@ -394,7 +516,23 @@
 
     <!-- ITEM CATALOG -->
     <div class="agent-section mb-5">
-      <h3 class="mb-3 vibrant-heading">Item Catalog</h3>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="m-0 vibrant-heading">Item Catalog</h3>
+          <small class="text-muted">Browse available warehouse inventory and place stock orders</small>
+        </div>
+        {% if is_admin %}
+        <!-- SINGLE PRIMARY ADD ITEM BUTTON -->
+        <button class="btn-aurora-glow" onclick="openAddItemModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <span>Add Stock Item</span>
+        </button>
+        {% endif %}
+      </div>
       <div class="row">
         {% for item in stock_items %}
         <div class="col-md-4 mb-4 catalog-item-wrapper" data-item-name="{{ item.name }}" data-item-title="{{ item.item_name }}">
@@ -506,7 +644,7 @@
 </button>
 
 <!-- POPUP MODAL: AGENT ORDER REQUESTS -->
-<div id="ordersModalOverlay" class="custom-orders-modal-overlay" onclick="handleModalOverlayClick(event)">
+<div id="ordersModalOverlay" class="custom-orders-modal-overlay" onclick="handleModalOverlayClick(event, 'ordersModalOverlay')">
   <div class="custom-orders-modal-dialog">
     <div class="custom-orders-modal-header">
       <div class="d-flex align-items-center gap-2">
@@ -570,6 +708,59 @@
 </div>
 {% endif %}
 
+{% if is_admin %}
+<!-- POPUP MODAL: ADD NEW STOCK ITEM -->
+<div id="addItemModalOverlay" class="custom-orders-modal-overlay" onclick="handleModalOverlayClick(event, 'addItemModalOverlay')">
+  <div class="custom-orders-modal-dialog custom-add-item-dialog">
+    <div class="custom-orders-modal-header">
+      <div class="d-flex align-items-center gap-2">
+        <span class="fs-4">📦</span>
+        <h4 class="m-0 vibrant-heading">Add New Product</h4>
+      </div>
+      <button type="button" class="custom-orders-modal-close" onclick="closeAddItemModal()">&times;</button>
+    </div>
+    
+    <div class="custom-orders-modal-body p-4">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label small text-light text-opacity-80 fw-semibold">Item Name</label>
+          <input type="text" id="add_item_name" class="form-control form-control-vibrant" placeholder="e.g. Mechanical Keyboard RGB">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small text-light text-opacity-80 fw-semibold">Price (₹)</label>
+          <input type="number" id="add_item_rate" class="form-control form-control-vibrant" placeholder="e.g. 2500">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small text-light text-opacity-80 fw-semibold">Initial Quantity</label>
+          <input type="number" id="add_item_stock" class="form-control form-control-vibrant" placeholder="e.g. 20">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label small text-light text-opacity-80 fw-semibold">Product Artwork / Photo</label>
+          <div class="aurora-file-dropzone" onclick="document.getElementById('add_item_image_file').click()">
+            <div id="imagePreviewContainer" style="display: none; margin-bottom: 10px;">
+              <img id="previewImageEl" src="" style="height: 90px; border-radius: 8px; border: 1px solid var(--teal-glow); object-fit: cover;">
+            </div>
+            <span class="fs-3">📁</span>
+            <p class="small text-light text-opacity-75 m-0" id="dropzoneLabel">Click to select an image file</p>
+            <input type="file" id="add_item_image_file" class="d-none" accept="image/*" onchange="handleImageSelection(this)">
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top border-light border-opacity-10">
+        <button type="button" class="btn btn-outline-light btn-sm px-3" onclick="closeAddItemModal()">Cancel</button>
+        <button type="button" class="btn-aurora-glow px-4 py-2" id="btn_add_product" onclick="saveNewStockItem()">
+          <span>+ Add to Catalog</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <!-- FLOATING TOAST CARD -->
 <div id="liveAlertToast" class="aurora-toast-card p-3">
   <div class="d-flex align-items-center justify-content-between mb-1">
@@ -585,7 +776,6 @@
 <!-- SCRIPT LOGIC -->
 <script>
 frappe.ready(function() {
-    // 1. SocketIO listener for low-stock events
     frappe.realtime.on('low_stock_alert', function(data) {
         handleIncomingLowStockAlert(data);
     });
@@ -595,7 +785,7 @@ frappe.ready(function() {
     }
 });
 
-// Modal Controls
+// Modal Controls - Order Requests
 function openOrdersModal() {
     var modal = document.getElementById('ordersModalOverlay');
     if (modal) {
@@ -612,13 +802,42 @@ function closeOrdersModal() {
     }
 }
 
-function handleModalOverlayClick(event) {
-    if (event.target && event.target.id === 'ordersModalOverlay') {
-        closeOrdersModal();
+// Modal Controls - Add Stock Item
+function openAddItemModal() {
+    var modal = document.getElementById('addItemModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 }
 
-// Low stock alert handler
+function closeAddItemModal() {
+    var modal = document.getElementById('addItemModalOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function handleImageSelection(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImageEl').src = e.target.result;
+            document.getElementById('imagePreviewContainer').style.display = 'block';
+            document.getElementById('dropzoneLabel').innerText = input.files[0].name;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function handleModalOverlayClick(event, overlayId) {
+    if (event.target && event.target.id === overlayId) {
+        if (overlayId === 'ordersModalOverlay') closeOrdersModal();
+        if (overlayId === 'addItemModalOverlay') closeAddItemModal();
+    }
+}
+
 function handleIncomingLowStockAlert(data) {
     var count = data.count || (data.items ? data.items.length : 1);
     var title = data.title || "Live SocketIO Alert";
@@ -689,21 +908,50 @@ function loadAgentSummaryReport() {
                 return;
             }
 
+            var totalRevSum = 0;
+            var agentCount = r.message.length;
+
             r.message.forEach(function(row) {
                 var agent = row.agent || 'Unknown';
                 var totalOrders = row.total_orders || 0;
                 var totalQty = row.total_quantity || 0;
-                var totalRev = row.total_revenue || 0;
+                var totalRev = parseFloat(row.total_revenue || 0);
+                totalRevSum += totalRev;
+
+                var initial = agent.charAt(0).toUpperCase();
 
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong class="text-white">${agent}</strong></td>
-                    <td>${totalOrders}</td>
-                    <td>${totalQty}</td>
-                    <td class="fw-bold" style="color: var(--teal-glow);">₹${parseFloat(totalRev).toFixed(2)}</td>
+                    <td style="padding-left: 24px;">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="agent-avatar-badge">${initial}</span>
+                            <div>
+                                <strong class="text-white d-block">${agent}</strong>
+                                <span class="text-muted small">Verified Sales Rep</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span class="metric-badge-pill">
+                          📦 ${totalOrders} Orders
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="metric-badge-qty">
+                          📊 ${totalQty} Units
+                        </span>
+                    </td>
+                    <td class="text-end" style="padding-right: 24px;">
+                        <span class="revenue-pill">₹${totalRev.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            var elAgents = document.getElementById('statActiveAgents');
+            var elRev = document.getElementById('statTotalRev');
+            if (elAgents) elAgents.innerText = agentCount;
+            if (elRev) elRev.innerText = "₹" + totalRevSum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
     });
 }
@@ -726,6 +974,12 @@ function saveNewStockItem() {
         return;
     }
 
+    var addBtn = document.getElementById('btn_add_product');
+    if (addBtn) {
+        addBtn.disabled = true;
+        addBtn.innerText = "Adding...";
+    }
+
     if (fileInput && fileInput.files.length > 0) {
         var file = fileInput.files[0];
         var formdata = new FormData();
@@ -743,6 +997,7 @@ function saveNewStockItem() {
                 createStockItemCall(name, rate, stock, data.message.file_url);
             } else {
                 alert("Image upload failed.");
+                if (addBtn) { addBtn.disabled = false; addBtn.innerText = "+ Add to Catalog"; }
             }
         });
     } else {
@@ -758,6 +1013,9 @@ function createStockItemCall(name, rate, stock, imageUrl) {
             if (!r.exc) {
                 alert("Product added successfully!");
                 location.reload();
+            } else {
+                var addBtn = document.getElementById('btn_add_product');
+                if (addBtn) { addBtn.disabled = false; addBtn.innerText = "+ Add to Catalog"; }
             }
         }
     });
