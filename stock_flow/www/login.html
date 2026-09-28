@@ -1,0 +1,136 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<style>
+  :root {
+    --bg-base: #0c1322;
+    --bg-gradient: radial-gradient(circle at 12% 15%, rgba(0, 245, 212, 0.18) 0%, transparent 40%),
+                   radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.22) 0%, transparent 45%),
+                   radial-gradient(circle at 50% 45%, rgba(123, 44, 191, 0.18) 0%, transparent 50%),
+                   radial-gradient(circle at 75% 85%, rgba(16, 185, 129, 0.14) 0%, transparent 40%),
+                   linear-gradient(180deg, #10162a 0%, #090e1a 100%);
+    --card-bg: rgba(14, 21, 38, 0.85);
+    --card-border: rgba(0, 245, 212, 0.3);
+    --teal-glow: #00f5d4;
+    --pink-glow: #f72585;
+    --text-main: #f8fafc;
+  }
+
+  body {
+    background: var(--bg-base) !important;
+    background-image: var(--bg-gradient) !important;
+    background-attachment: fixed !important;
+    color: var(--text-main);
+  }
+
+  .login-card-vibrant {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(5, 10, 20, 0.8), 
+                0 0 30px rgba(168, 85, 247, 0.15),
+                0 0 20px rgba(0, 245, 212, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .form-control-vibrant {
+    background-color: rgba(9, 15, 28, 0.9) !important;
+    border: 1px solid rgba(0, 245, 212, 0.3) !important;
+    color: #ffffff !important;
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+
+  .form-control-vibrant:focus {
+    border-color: var(--pink-glow) !important;
+    box-shadow: 0 0 16px rgba(247, 37, 133, 0.4) !important;
+  }
+
+  .btn-cyan-glow {
+    background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 100%);
+    color: #04141c !important;
+    font-weight: 800;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+    transition: all 0.2s ease;
+    width: 100%;
+  }
+
+  .btn-cyan-glow:hover {
+    box-shadow: 0 0 30px rgba(0, 245, 212, 0.75);
+    transform: scale(1.02);
+  }
+</style>
+
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 85vh;">
+  
+  <!-- LOGO HEADER -->
+  <div class="text-center mb-4">
+    <img src="/assets/stock_flow/images/frapnora_logo1.png" alt="Frapnova Logo" style="height: 110px; object-fit: contain; filter: drop-shadow(0 8px 22px rgba(247, 37, 133, 0.3));">
+    <h3 class="mt-3 fw-bold" style="background: linear-gradient(90deg, #00f5d4 0%, #0ea5e9 30%, #a855f7 68%, #f72585 100%); background-clip: text; -webkit-text-fill-color: transparent;">Stock Flow Portal</h3>
+  </div>
+
+  <!-- LOGIN CARD -->
+  <div class="login-card-vibrant">
+    <form id="login-form" method="post" onsubmit="return false;">
+      <div class="mb-3">
+        <label class="form-label small text-muted fw-semibold">Email Address or Username</label>
+        <input type="text" id="login_email" class="form-control form-control-vibrant" placeholder="name@example.com" required autofocus>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small text-muted fw-semibold">Password</label>
+        <input type="password" id="login_password" class="form-control form-control-vibrant" placeholder="••••••••" required>
+      </div>
+
+      <button type="button" id="btn-login" class="btn btn-cyan-glow mb-3" onclick="executeCustomLogin()">Sign In to Portal</button>
+    </form>
+    
+    <div id="login-message" class="text-center small mt-2" style="color: #f87171;"></div>
+  </div>
+</div>
+
+<script>
+function executeCustomLogin() {
+    var usr = document.getElementById('login_email').value.trim();
+    var pwd = document.getElementById('login_password').value;
+    var msgEl = document.getElementById('login-message');
+
+    if (!usr || !pwd) {
+        msgEl.innerText = "Please enter both username and password.";
+        return;
+    }
+
+    msgEl.innerText = "Authenticating...";
+
+    frappe.call({
+        method: "login",
+        args: { usr: usr, pwd: pwd },
+        callback: function(r) {
+            if (!r.exc) {
+                // Successful login -> Redirect directly to frapnora portal
+                window.location.href = "/frapnora";
+            } else {
+                msgEl.innerText = "Invalid login credentials. Please try again.";
+            }
+        },
+        error: function(r) {
+            msgEl.innerText = "Connection error. Please try again.";
+        }
+    });
+}
+
+// Allow Enter key to submit
+document.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        executeCustomLogin();
+    }
+});
+</script>
+{% endblock %}

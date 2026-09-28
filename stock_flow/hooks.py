@@ -12,13 +12,13 @@ app_license = "mit"
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
-# 	{
-# 		"name": "stock_flow",
-# 		"logo": "/assets/stock_flow/logo.png",
-# 		"title": "Stock Flow",
-# 		"route": "/stock_flow",
-# 		"has_permission": "stock_flow.api.permission.has_app_permission"
-# 	}
+#   {
+#       "name": "stock_flow",
+#       "logo": "/assets/stock_flow/logo.png",
+#       "title": "Stock Flow",
+#       "route": "/stock_flow",
+#       "has_permission": "stock_flow.api.permission.has_app_permission"
+#   }
 # ]
 
 # Includes in <head>
@@ -61,8 +61,11 @@ app_license = "mit"
 
 # website user home page (by Role)
 # role_home_page = {
-# 	"Role": "home_page"
+#   "Role": "home_page"
 # }
+
+# Force login redirect to custom portal UI
+login_redirect_url = "/frapnora"
 
 # Generators
 # ----------
@@ -75,8 +78,8 @@ app_license = "mit"
 
 # add methods and filters to jinja environment
 # jinja = {
-# 	"methods": "stock_flow.utils.jinja_methods",
-# 	"filters": "stock_flow.utils.jinja_filters"
+#   "methods": "stock_flow.utils.jinja_methods",
+#   "filters": "stock_flow.utils.jinja_filters"
 # }
 
 # Installation
@@ -124,11 +127,11 @@ app_license = "mit"
 # Permissions evaluated in scripted ways
 
 # permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+#   "Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
 #
 # has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
+#   "Event": "frappe.desk.doctype.event.event.has_permission",
 # }
 
 # DocType Class
@@ -136,7 +139,7 @@ app_license = "mit"
 # Override standard doctype classes
 
 # override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
+#   "ToDo": "custom_app.overrides.CustomToDo"
 # }
 
 # Document Events
@@ -144,33 +147,21 @@ app_license = "mit"
 # Hook on document methods and events
 
 # doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
+#   "*": {
+#       "on_update": "method",
+#       "on_cancel": "method",
+#       "on_trash": "method"
+#   }
 # }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"stock_flow.tasks.all"
-# 	],
-# 	"daily": [
-# 		"stock_flow.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"stock_flow.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"stock_flow.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"stock_flow.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+    "daily": [
+        "stock_flow.tasks.check_low_stock_and_notify"
+    ]
+}
 
 # Testing
 # -------
@@ -181,14 +172,14 @@ app_license = "mit"
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "stock_flow.event.get_events"
+#   "frappe.desk.doctype.event.event.get_events": "stock_flow.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "stock_flow.task.get_dashboard_data"
+#   "Task": "stock_flow.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -214,49 +205,41 @@ app_license = "mit"
 # --------------------
 
 # user_data_fields = [
-# 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_3}",
-# 		"strict": False,
-# 	},
-# 	{
-# 		"doctype": "{doctype_4}"
-# 	}
+#   {
+#       "doctype": "{doctype_1}",
+#       "filter_by": "{filter_by}",
+#       "redact_fields": ["{field_1}", "{field_2}"],
+#       "partial": 1,
+#   },
+#   {
+#       "doctype": "{doctype_2}",
+#       "filter_by": "{filter_by}",
+#       "partial": 1,
+#   },
+#   {
+#       "doctype": "{doctype_3}",
+#       "strict": False,
+#   },
+#   {
+#       "doctype": "{doctype_4}"
+#   }
 # ]
 
 # Authentication and authorization
 # --------------------------------
 
 # auth_hooks = [
-# 	"stock_flow.auth.validate"
+#   "stock_flow.auth.validate"
 # ]
 
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
 
 # default_log_clearing_doctypes = {
-# 	"Logging DocType Name": 30  # days to retain logs
+#   "Logging DocType Name": 30  # days to retain logs
 # }
 
 # Translation
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-
-# Force login redirect to custom portal UI
-login_redirect_url = "/frapnora"
-scheduler_events = {
-    "daily": [
-        "stock_flow.tasks.check_low_stock_and_notify"
-    ]
-}

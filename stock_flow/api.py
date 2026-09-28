@@ -1,6 +1,13 @@
 import frappe
 import json
 
+def redirect_to_portal(login_manager):
+    """Post-login hook to redirect users directly to /frapnora instead of the Desk."""
+    roles = frappe.get_roles(login_manager.user)
+    if "Agent" in roles or "Stock Manager" in roles or "System Manager" in roles or login_manager.user == "Administrator":
+        if not frappe.local.request.path.startswith("/api"):
+            frappe.local.response["home_page"] = "/frapnora"
+
 @frappe.whitelist()
 def create_stock_item(item_name, rate, current_stock, image_url=None):
     user_roles = frappe.get_roles()
@@ -128,7 +135,6 @@ def approve_stock_order(order_id):
     doc.submit()
     frappe.db.commit()
 
-    # 1. Dispatch Email to Agent via tabEmail Queue
     recipient_email = doc.get("agent") or doc.owner
     email_message = f"""
     <p>Dear <b>{recipient_email}</b>,</p>
@@ -164,7 +170,6 @@ def approve_stock_order(order_id):
         now=False
     )
 
-    # 2. Create in-app system notification for the agent
     if frappe.db.exists("User", recipient_email):
         frappe.get_doc({
             "doctype": "Notification Log",
@@ -175,7 +180,6 @@ def approve_stock_order(order_id):
             "document_name": doc.name
         }).insert(ignore_permissions=True)
 
-    # 3. Trigger low stock check background worker
     frappe.enqueue(
         "stock_flow.tasks.check_low_stock_and_notify",
         queue="short",
@@ -188,7 +192,6 @@ def approve_stock_order(order_id):
 
 @frappe.whitelist()
 def reject_stock_order(order_id):
-    """Marks a draft order as cancelled/rejected without altering stock."""
     if frappe.session.user == "Guest":
         frappe.throw("Please log in.")
 
