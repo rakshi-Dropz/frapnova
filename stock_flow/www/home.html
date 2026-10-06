@@ -1,0 +1,219 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --kite-blue: #387ed1;
+    --kite-blue-hover: #2969b5;
+    --kite-orange: #ff5722;
+    --text-primary: #424242;
+    --text-heading: #222222;
+    --border-light: #eeeeee;
+    --bg-light: #fbfbfb;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Zerodha Clean Fixed Navbar */
+  .zerodha-header {
+    border-bottom: 1px solid var(--border-light);
+    background: #ffffff;
+    padding: 18px 0;
+  }
+
+  .brand-logo-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--kite-blue);
+    letter-spacing: -0.5px;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-link-custom {
+    color: #666666 !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+  }
+
+  .nav-link-custom:hover {
+    color: var(--kite-blue) !important;
+  }
+
+  /* Primary Button (Zerodha Blue Pill/Block) */
+  .btn-zerodha-blue {
+    background-color: var(--kite-blue);
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 10px 28px;
+    border-radius: 4px;
+    border: none;
+    text-decoration: none !important;
+    display: inline-block;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-zerodha-blue:hover {
+    background-color: var(--kite-blue-hover);
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding: 80px 0 60px 0;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--text-heading);
+    letter-spacing: -1px;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #666666;
+    margin-bottom: 34px;
+    font-weight: 400;
+  }
+
+  /* Features Grid */
+  .feature-icon-box {
+    width: 48px;
+    height: 48px;
+    background: #f4f8fd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--kite-blue);
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+
+  .feature-heading {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: 8px;
+  }
+
+  .feature-desc {
+    font-size: 0.9rem;
+    color: #666666;
+    line-height: 1.6;
+  }
+
+  /* Zerodha Clean Minimal Footer */
+  .zerodha-footer {
+    border-top: 1px solid var(--border-light);
+    background: #fbfbfb;
+    padding: 30px 0;
+    margin-top: 80px;
+  }
+</style>
+
+<!-- HEADER NAVBAR -->
+<header class="zerodha-header">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="/home" class="brand-logo-text">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="#387ed1" />
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="#387ed1" />
+        <line x1="12" y1="22.08" x2="12" y2="12" stroke="#387ed1" />
+      </svg>
+      <span>FRAPNORA</span>
+    </a>
+    
+    <div class="d-flex align-items-center gap-4">
+      <a href="#features" class="nav-link-custom d-none d-md-inline">Workflow</a>
+      <a href="#about" class="nav-link-custom d-none d-md-inline">About</a>
+      <a href="/login" class="btn-zerodha-blue">Log In</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h1 class="hero-title">High-speed stock flow & warehouse inventory</h1>
+        <p class="hero-subtitle">Modern, reliable stock control engineered for agents, floor managers, and system administrators.</p>
+        <a href="/login" class="btn-zerodha-blue px-4 py-2" style="font-size: 1.05rem;">Access Portal</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP OVERVIEW / FEATURES -->
+<section id="features" class="py-5" style="border-top: 1px solid var(--border-light);">
+  <div class="container py-4">
+    <div class="row g-4">
+      
+      <div class="col-md-4">
+        <div class="p-4">
+          <div class="feature-icon-box">📦</div>
+          <h3 class="feature-heading">Catalog & Stock Orders</h3>
+          <p class="feature-desc">Agents browse real-time inventory levels, review unit rates, and submit requests without double-deduction risks or ledger errors.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4">
+          <div class="feature-icon-box">⚡</div>
+          <h3 class="feature-heading">Manager Authorization</h3>
+          <p class="feature-desc">One-click order review, stock verification, and dynamic rejection workflows built with instant ledger updates.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4">
+          <div class="feature-icon-box">🔔</div>
+          <h3 class="feature-heading">Critical Stock Alerts</h3>
+          <p class="feature-desc">Automated queue notifications alerting warehouse managers whenever stock levels cross the threshold of 5 units.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM ECOSYSTEM -->
+<section id="about" class="py-5" style="background: var(--bg-light); border-top: 1px solid var(--border-light);">
+  <div class="container py-4 text-center">
+    <h3 style="font-weight: 600; color: var(--text-heading); margin-bottom: 12px;">Engineered for high reliability</h3>
+    <p class="text-muted col-lg-6 mx-auto mb-4" style="font-size: 0.95rem;">
+      Frapnora simplifies everyday stock movements by eliminating clunky desktop screens in favor of an ultra-fast web interface.
+    </p>
+    <a href="/login" class="btn-zerodha-blue">Sign in to your account</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="zerodha-footer">
+  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+    <span class="small text-muted">© 2026 Frapnora Inventory Systems. Designed after the Zerodha Kite fintech interface.</span>
+    <div class="d-flex gap-3 small text-muted">
+      <a href="/login" class="nav-link-custom">Login</a>
+      <span>•</span>
+      <a href="/home" class="nav-link-custom">Overview</a>
+    </div>
+  </div>
+</footer>
+{% endblock %}
