@@ -2,98 +2,170 @@
 
 {% block page_content %}
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
   :root {
-    --bg-base: #0c1322;
-    --bg-gradient: radial-gradient(circle at 12% 15%, rgba(0, 245, 212, 0.18) 0%, transparent 40%),
-                   radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.22) 0%, transparent 45%),
-                   radial-gradient(circle at 50% 45%, rgba(123, 44, 191, 0.18) 0%, transparent 50%),
-                   radial-gradient(circle at 75% 85%, rgba(16, 185, 129, 0.14) 0%, transparent 40%),
-                   linear-gradient(180deg, #10162a 0%, #090e1a 100%);
-    --card-bg: rgba(14, 21, 38, 0.85);
-    --card-border: rgba(0, 245, 212, 0.3);
-    --teal-glow: #00f5d4;
-    --pink-glow: #f72585;
-    --text-main: #f8fafc;
+    --kite-blue: #387ed1;
+    --kite-blue-hover: #2969b5;
+    --kite-orange: #ff5722;
+    --text-dark: #424242;
+    --text-heading: #222222;
+    --border-color: #e0e0e0;
+  }
+
+  /* Reset Frappe outer container background */
+  html, body, .web-page, .page-container, .main-section {
+    background-color: #fcfcfc !important;
   }
 
   body {
-    background: var(--bg-base) !important;
-    background-image: var(--bg-gradient) !important;
-    background-attachment: fixed !important;
-    color: var(--text-main);
+    color: var(--text-dark) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .login-card-vibrant {
-    background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
-    box-shadow: 0 20px 45px rgba(5, 10, 20, 0.8), 
-                0 0 30px rgba(168, 85, 247, 0.15),
-                0 0 20px rgba(0, 245, 212, 0.1);
-    padding: 40px;
+  .kite-login-wrapper {
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .kite-card-container {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
     width: 100%;
-    max-width: 440px;
+    max-width: 380px;
+    padding: 40px 36px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
   }
 
-  .form-control-vibrant {
-    background-color: rgba(9, 15, 28, 0.9) !important;
-    border: 1px solid rgba(0, 245, 212, 0.3) !important;
+  .brand-logo-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px;
+    color: var(--kite-blue);
+  }
+
+  .kite-brand-title {
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--text-heading);
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .kite-form-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #666666;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .kite-input {
+    width: 100%;
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #333333 !important;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .kite-input:focus {
+    border-color: var(--kite-blue) !important;
+    box-shadow: 0 0 0 1px var(--kite-blue) !important;
+  }
+
+  .btn-kite-submit {
+    background-color: var(--kite-blue);
     color: #ffffff !important;
-    border-radius: 10px;
-    padding: 12px 16px;
-  }
-
-  .form-control-vibrant:focus {
-    border-color: var(--pink-glow) !important;
-    box-shadow: 0 0 16px rgba(247, 37, 133, 0.4) !important;
-  }
-
-  .btn-cyan-glow {
-    background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 100%);
-    color: #04141c !important;
-    font-weight: 800;
     border: none;
-    border-radius: 10px;
-    padding: 12px;
-    box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
-    transition: all 0.2s ease;
     width: 100%;
+    padding: 11px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    margin-top: 10px;
   }
 
-  .btn-cyan-glow:hover {
-    box-shadow: 0 0 30px rgba(0, 245, 212, 0.75);
-    transform: scale(1.02);
+  .btn-kite-submit:hover {
+    background-color: var(--kite-blue-hover);
+  }
+
+  .btn-kite-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .kite-error-box {
+    display: none;
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #b91c1c;
+    font-size: 0.82rem;
+    padding: 8px 12px;
+    border-radius: 3px;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .back-to-home {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: #777777;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .back-to-home:hover {
+    color: var(--kite-blue);
   }
 </style>
 
-<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 85vh;">
+<div class="kite-login-wrapper">
   
-  <!-- LOGO HEADER -->
-  <div class="text-center mb-4">
-    <img src="/assets/stock_flow/images/frapnora_logo1.png" alt="Frapnova Logo" style="height: 110px; object-fit: contain; filter: drop-shadow(0 8px 22px rgba(247, 37, 133, 0.3));">
-    <h3 class="mt-3 fw-bold" style="background: linear-gradient(90deg, #00f5d4 0%, #0ea5e9 30%, #a855f7 68%, #f72585 100%); background-clip: text; -webkit-text-fill-color: transparent;">Stock Flow Portal</h3>
-  </div>
+  <div class="kite-card-container">
+    <div class="brand-logo-icon">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="#387ed1" />
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="#387ed1" />
+        <line x1="12" y1="22.08" x2="12" y2="12" stroke="#387ed1" />
+      </svg>
+    </div>
 
-  <!-- LOGIN CARD -->
-  <div class="login-card-vibrant">
+    <div class="kite-brand-title">Login to Frapnora</div>
+
     <form id="login-form" method="post" onsubmit="return false;">
       <div class="mb-3">
-        <label class="form-label small text-muted fw-semibold">Email Address or Username</label>
-        <input type="text" id="login_email" class="form-control form-control-vibrant" placeholder="name@example.com" required autofocus>
+        <label class="kite-form-label" for="login_email">User ID or Email</label>
+        <input type="text" id="login_email" class="kite-input" placeholder="e.g. manager@frapnora.com" required autofocus autocomplete="username">
       </div>
 
       <div class="mb-4">
-        <label class="form-label small text-muted fw-semibold">Password</label>
-        <input type="password" id="login_password" class="form-control form-control-vibrant" placeholder="••••••••" required>
+        <label class="kite-form-label" for="login_password">Password</label>
+        <input type="password" id="login_password" class="kite-input" placeholder="••••••••" required autocomplete="current-password">
       </div>
 
-      <button type="button" id="btn-login" class="btn btn-cyan-glow mb-3" onclick="executeCustomLogin()">Sign In to Portal</button>
+      <button type="button" id="btn-login" class="btn-kite-submit" onclick="executeCustomLogin()">
+        Login
+      </button>
     </form>
     
-    <div id="login-message" class="text-center small mt-2" style="color: #f87171;"></div>
+    <div id="login-message" class="kite-error-box"></div>
   </div>
+
+  <a href="/home" class="back-to-home">← Back to Overview</a>
 </div>
 
 <script>
@@ -101,32 +173,40 @@ function executeCustomLogin() {
     var usr = document.getElementById('login_email').value.trim();
     var pwd = document.getElementById('login_password').value;
     var msgEl = document.getElementById('login-message');
+    var btn = document.getElementById('btn-login');
 
     if (!usr || !pwd) {
-        msgEl.innerText = "Please enter both username and password.";
+        msgEl.innerText = "Please provide both User ID and Password.";
+        msgEl.style.display = "block";
         return;
     }
 
-    msgEl.innerText = "Authenticating...";
+    msgEl.style.display = "none";
+    btn.disabled = true;
+    btn.innerText = "Signing in...";
 
     frappe.call({
         method: "login",
         args: { usr: usr, pwd: pwd },
         callback: function(r) {
             if (!r.exc) {
-                // Successful login -> Redirect directly to frapnora portal
                 window.location.href = "/frapnora";
             } else {
-                msgEl.innerText = "Invalid login credentials. Please try again.";
+                btn.disabled = false;
+                btn.innerText = "Login";
+                msgEl.innerText = "Invalid credentials. Please verify your username and password.";
+                msgEl.style.display = "block";
             }
         },
         error: function(r) {
+            btn.disabled = false;
+            btn.innerText = "Login";
             msgEl.innerText = "Connection error. Please try again.";
+            msgEl.style.display = "block";
         }
     });
 }
 
-// Allow Enter key to submit
 document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         executeCustomLogin();
