@@ -2,575 +2,433 @@
 
 {% block page_content %}
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+
   :root {
-    /* Base background: Deep cosmic indigo blending into blue-green and midnight */
-    --bg-base: #0c1322;
-    --bg-gradient: radial-gradient(circle at 12% 15%, rgba(0, 245, 212, 0.18) 0%, transparent 40%),
-                   radial-gradient(circle at 88% 12%, rgba(247, 37, 133, 0.22) 0%, transparent 45%),
-                   radial-gradient(circle at 50% 45%, rgba(123, 44, 191, 0.18) 0%, transparent 50%),
-                   radial-gradient(circle at 75% 85%, rgba(16, 185, 129, 0.14) 0%, transparent 40%),
-                   linear-gradient(180deg, #10162a 0%, #090e1a 100%);
-                   
-    /* Frosted glass cards with dual cyan-to-purple iridescent borders */
-    --card-bg: rgba(14, 21, 38, 0.78);
-    --card-border: rgba(0, 245, 212, 0.28);
-    
-    /* Vibrant spectrum variables matching the 3D logo */
-    --teal-glow: #00f5d4;
-    --cyan-bright: #0ea5e9;
-    --purple-glow: #a855f7;
-    --pink-glow: #f72585;
-    --emerald-accent: #10b981;
-    
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
+    --kite-blue: #387ed1;
+    --kite-blue-hover: #2969b5;
+    --kite-orange: #ff5722;
+    --kite-green: #10b981;
+    --kite-red: #ef4444;
+
+    --bg-body: #fbfbfb;
+    --bg-card: #ffffff;
+    --border-kite: #e5e7eb;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-dark: #111827;
+  }
+
+  /* Reset Frappe default styles */
+  html, body, .web-page, .page-container, .main-section {
+    background-color: var(--bg-body) !important;
   }
 
   body {
-    background: var(--bg-base) !important;
-    background-image: var(--bg-gradient) !important;
-    background-attachment: fixed !important;
-    color: var(--text-main);
+    color: var(--text-primary) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace !important;
   }
 
   .frap-wrapper {
     min-height: 100vh;
   }
 
-  /* Frosted Iridescent Glass Cards */
-  .vibrant-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(5, 10, 20, 0.65), 
-                0 0 20px rgba(168, 85, 247, 0.12),
-                0 0 15px rgba(0, 245, 212, 0.08);
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  /* Zerodha Minimalist Top Navigation */
+  .zerodha-nav {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-kite);
+    padding: 14px 0;
   }
 
-  .catalog-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(247, 37, 133, 0.55);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 
-                0 0 24px rgba(0, 245, 212, 0.25),
-                0 0 20px rgba(247, 37, 133, 0.2);
-  }
-
-  /* Spectrum Headings: Cyan -> Blue -> Purple -> Pink */
-  .vibrant-heading {
-    background: linear-gradient(90deg, #00f5d4 0%, #0ea5e9 30%, #a855f7 68%, #f72585 100%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-  }
-
-  /* High-Impact Animated Glowing Action Button */
-  .btn-aurora-glow {
-    position: relative;
-    background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 35%, #a855f7 70%, #f72585 100%);
-    background-size: 250% 250%;
-    color: #030a16 !important;
-    font-weight: 800;
-    border: none;
-    border-radius: 50px;
-    padding: 8px 22px;
-    font-size: 0.9rem;
-    letter-spacing: 0.4px;
-    box-shadow: 0 0 18px rgba(0, 245, 212, 0.45), 0 0 28px rgba(247, 37, 133, 0.25);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: auroraShift 4s ease infinite;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-
-  @keyframes auroraShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  .btn-aurora-glow:hover {
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 0 28px rgba(0, 245, 212, 0.8), 0 0 40px rgba(247, 37, 133, 0.5);
-    color: #ffffff !important;
-  }
-
-  .btn-aurora-glow:active {
-    transform: scale(0.98);
-  }
-
-  /* Aurora Table Headers */
-  .table-vibrant {
-    color: var(--text-main);
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-  }
-
-  .table-vibrant thead th {
-    background: linear-gradient(90deg, rgba(14, 38, 55, 0.95) 0%, rgba(35, 22, 60, 0.95) 100%) !important;
-    color: var(--teal-glow);
-    border-bottom: 2px solid rgba(247, 37, 133, 0.55) !important;
-    text-transform: uppercase;
-    font-size: 0.82rem;
-    letter-spacing: 1px;
-    padding: 14px 16px;
-  }
-
-  .table-vibrant tbody tr {
-    background: rgba(13, 20, 36, 0.6);
-    transition: background 0.2s ease;
-  }
-
-  .table-vibrant tbody tr:hover {
-    background: rgba(26, 32, 58, 0.85) !important;
-  }
-
-  .table-vibrant td {
-    padding: 14px 16px;
-    border-top: 1px solid rgba(168, 85, 247, 0.15);
-    vertical-align: middle;
-  }
-
-  /* Form Inputs with Dual Glow */
-  .form-control-vibrant {
-    background-color: rgba(9, 15, 28, 0.85) !important;
-    border: 1px solid rgba(0, 245, 212, 0.3) !important;
-    color: #ffffff !important;
-    border-radius: 8px;
-  }
-
-  .form-control-vibrant:focus {
-    border-color: var(--pink-glow) !important;
-    box-shadow: 0 0 14px rgba(247, 37, 133, 0.35) !important;
-  }
-
-  /* Primary Action Button */
-  .btn-cyan-glow {
-    background: linear-gradient(135deg, #00f5d4 0%, #0ea5e9 100%);
-    color: #04141c !important;
-    font-weight: 700;
-    border: none;
-    border-radius: 7px;
-    box-shadow: 0 0 16px rgba(0, 245, 212, 0.4);
-    transition: all 0.2s ease;
-  }
-
-  .btn-cyan-glow:hover {
-    box-shadow: 0 0 26px rgba(0, 245, 212, 0.75);
-    transform: scale(1.02);
-  }
-
-  /* Secondary Buttons */
-  .btn-outline-cyan {
-    border: 1px solid var(--teal-glow);
-    color: var(--teal-glow) !important;
-    background: rgba(0, 245, 212, 0.06);
-    transition: all 0.2s ease;
-  }
-
-  .btn-outline-cyan:hover {
-    background: rgba(168, 85, 247, 0.2);
-    border-color: var(--purple-glow);
-    color: #ffffff !important;
-    box-shadow: 0 0 14px rgba(168, 85, 247, 0.45);
-  }
-
-  /* Badges */
-  .badge-low-stock {
-    background: rgba(247, 37, 133, 0.2);
-    color: #ff4d94;
-    border: 1px solid rgba(247, 37, 133, 0.65);
-    box-shadow: 0 0 10px rgba(247, 37, 133, 0.35);
-    font-size: 0.75rem;
-    padding: 3px 8px;
-    border-radius: 5px;
-  }
-
-  .badge-submitted {
-    background: rgba(168, 85, 247, 0.2);
-    color: #c084fc;
-    border: 1px solid rgba(168, 85, 247, 0.6);
-    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
-    padding: 4px 8px;
-    border-radius: 5px;
-  }
-
-  .badge-draft {
-    background: rgba(0, 245, 212, 0.18);
-    color: #00f5d4;
-    border: 1px solid rgba(0, 245, 212, 0.55);
-    padding: 4px 8px;
-    border-radius: 5px;
-  }
-
-  .badge-rejected {
-    background: rgba(239, 68, 68, 0.2);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.6);
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 5px;
-  }
-
-  /* Floating Real-time Toast Card */
-  .aurora-toast-card {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 100000 !important;
-    background: rgba(15, 23, 42, 0.95) !important;
-    border: 1px solid rgba(247, 37, 133, 0.8) !important;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(247, 37, 133, 0.35) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    color: #ffffff !important;
-    min-width: 320px;
-    max-width: 420px;
-    border-radius: 12px;
-    display: none;
-    animation: fadeInSlide 0.3s ease-out;
-  }
-
-  @keyframes fadeInSlide {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* In-Page Notification Banner */
-  .in-page-alert-banner {
-    display: none;
-    border: 1px solid rgba(247, 37, 133, 0.75);
-    background: rgba(247, 37, 133, 0.12);
-    border-radius: 12px;
-    box-shadow: 0 0 18px rgba(247, 37, 133, 0.22);
-  }
-
-  /* Floating Order Requests Trigger Capsule */
-  .floating-order-trigger {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 9999;
+  .brand-container {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(14, 21, 38, 0.88);
-    border: 1px solid var(--teal-glow);
-    color: var(--teal-glow);
-    padding: 12px 22px;
-    border-radius: 50px;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 18px rgba(0, 245, 212, 0.3);
+    text-decoration: none !important;
+    user-select: none;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    background: #f4f8fd;
+    border: 1px solid rgba(56, 126, 209, 0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--kite-blue);
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--kite-green);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Kite Surface Cards */
+  .kite-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-kite);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .kite-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Action Buttons */
+  .btn-kite-buy {
+    background: var(--kite-blue);
+    color: #ffffff !important;
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 7px 16px;
+    border-radius: 3px;
+    border: none;
+    transition: background-color 0.15s ease;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none !important;
   }
 
-  .floating-order-trigger:hover {
-    transform: translateY(-3px) scale(1.03);
-    border-color: var(--pink-glow);
-    color: #ffffff;
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.7), 0 0 22px rgba(247, 37, 133, 0.45);
+  .btn-kite-buy:hover {
+    background: var(--kite-blue-hover);
   }
 
-  /* Generic Modal Styling */
-  .custom-orders-modal-overlay {
+  .btn-kite-secondary {
+    background: #ffffff;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-kite);
+    font-weight: 500;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+
+  .btn-kite-secondary:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  .btn-kite-danger {
+    background: #ffffff;
+    color: var(--kite-red) !important;
+    border: 1px solid #fee2e2;
+    font-weight: 500;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+
+  .btn-kite-danger:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+  }
+
+  /* Badges */
+  .badge-status {
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .badge-low-stock {
+    background: #fff7ed;
+    color: #ea580c;
+    border: 1px solid #ffedd5;
+  }
+
+  .badge-out-of-stock {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fee2e2;
+  }
+
+  .badge-in-stock {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #dcfce7;
+  }
+
+  .badge-submitted {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #dcfce7;
+  }
+
+  .badge-draft {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+  }
+
+  /* Kite High-Density Tables */
+  .kite-table {
+    width: 100%;
+    color: var(--text-primary);
+    border-collapse: collapse;
+  }
+
+  .kite-table thead th {
+    background: #f9fafb;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-kite);
+  }
+
+  .kite-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border-kite);
+    font-size: 0.86rem;
+    vertical-align: middle;
+  }
+
+  .kite-table tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  /* Form Controls */
+  .form-control-kite {
+    background-color: #ffffff !important;
+    border: 1px solid var(--border-kite) !important;
+    color: var(--text-dark) !important;
+    border-radius: 3px;
+    padding: 9px 12px;
+    font-size: 0.88rem;
+  }
+
+  .form-control-kite:focus {
+    border-color: var(--kite-blue) !important;
+    box-shadow: 0 0 0 1px var(--kite-blue) !important;
+  }
+
+  /* Modals */
+  .shadcn-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(8, 12, 22, 0.82);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.45);
     z-index: 99999;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
   }
 
-  .custom-orders-modal-dialog {
-    background: rgba(14, 21, 38, 0.96);
-    border: 1px solid rgba(0, 245, 212, 0.4);
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 
-                0 0 30px rgba(168, 85, 247, 0.25),
-                0 0 20px rgba(0, 245, 212, 0.15);
-    border-radius: 16px;
+  .shadcn-modal-dialog {
+    background: #ffffff;
+    border: 1px solid var(--border-kite);
+    border-radius: 4px;
     width: 100%;
-    max-width: 950px;
+    max-width: 820px;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   }
 
-  .custom-add-item-dialog {
-    max-width: 650px !important;
-    border-color: rgba(247, 37, 133, 0.45) !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85),
-                0 0 35px rgba(247, 37, 133, 0.25),
-                0 0 20px rgba(0, 245, 212, 0.2) !important;
-  }
-
-  @keyframes modalPopIn {
-    from { opacity: 0; transform: scale(0.96) translateY(12px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  .custom-orders-modal-header {
-    padding: 18px 24px;
-    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-    background: linear-gradient(90deg, rgba(14, 38, 55, 0.7) 0%, rgba(35, 22, 60, 0.7) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .custom-orders-modal-close {
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    font-size: 1.6rem;
-    line-height: 1;
+  .floating-order-trigger {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1px solid var(--border-kite);
+    color: var(--text-dark);
+    padding: 10px 18px;
+    border-radius: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: color 0.15s ease;
-  }
-
-  .custom-orders-modal-close:hover {
-    color: var(--pink-glow);
-  }
-
-  .custom-orders-modal-body {
-    padding: 20px 24px;
-    overflow-y: auto;
-  }
-
-  /* File Drop Box in Add Item Modal */
-  .aurora-file-dropzone {
-    border: 2px dashed rgba(0, 245, 212, 0.35);
-    background: rgba(9, 15, 28, 0.55);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .aurora-file-dropzone:hover {
-    border-color: var(--pink-glow);
-    background: rgba(247, 37, 133, 0.08);
-  }
-
-  /* Executive Agent Performance Grid & Summary Styles */
-  .agent-summary-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 1.2rem;
-  }
-
-  .agent-avatar-badge {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    font-weight: 800;
+    gap: 8px;
     font-size: 0.85rem;
-    color: #050d1a;
-    background: linear-gradient(135deg, var(--teal-glow) 0%, var(--purple-glow) 100%);
-    box-shadow: 0 0 12px rgba(0, 245, 212, 0.35);
+    font-weight: 500;
   }
 
-  .metric-badge-pill {
-    background: rgba(14, 165, 233, 0.15);
-    border: 1px solid rgba(14, 165, 233, 0.4);
-    color: #38bdf8;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .metric-badge-qty {
-    background: rgba(168, 85, 247, 0.15);
-    border: 1px solid rgba(168, 85, 247, 0.4);
-    color: #c084fc;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .revenue-pill {
-    font-size: 1.05rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, #00f5d4 0%, #10b981 100%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 18px rgba(0, 245, 212, 0.25);
-  }
-
-  .stat-card-micro {
-    background: rgba(14, 21, 38, 0.65);
-    border: 1px solid rgba(168, 85, 247, 0.2);
-    border-radius: 10px;
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .floating-order-trigger:hover {
+    border-color: var(--kite-blue);
   }
 </style>
 
-<div class="frap-wrapper py-4">
-  <div class="container">
-    
-    <!-- HEADER WITH LOGO -->
-    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-light border-opacity-10">
-      <div class="d-flex align-items-center gap-3">
-        <img src="/assets/stock_flow/images/frapnora_logo1.png" alt="Frapnova Logo" style="height: 95px; object-fit: contain; filter: drop-shadow(0 8px 22px rgba(247, 37, 133, 0.28)) drop-shadow(0 4px 12px rgba(0, 245, 212, 0.25));">
-      </div>
-      <div class="d-flex align-items-center gap-3">
-        <span class="text-light text-opacity-75">Logged in as: <strong class="text-white">{{ user_fullname }}</strong></span>
-        <button type="button" class="btn btn-outline-cyan btn-sm px-3" onclick="triggerTestAlert()">🔔 Live Alert</button>
-        <a href="/?cmd=web_logout" class="btn btn-outline-danger btn-sm px-3">Logout</a>
-      </div>
-    </div>
+<div class="frap-wrapper">
+  <!-- NAVIGATION -->
+  <header class="zerodha-nav mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+      
+      <a href="/frapnora" class="brand-container">
+        <div class="brand-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="#387ed1" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="#387ed1" />
+            <line x1="12" y1="22.08" x2="12" y2="12" stroke="#387ed1" />
+          </svg>
+        </div>
+        <div>
+          <span class="brand-title">FRAPNORA</span>
+          <span class="badge ms-2" style="background: #f4f8fd; color: var(--kite-blue); font-size: 0.7rem; font-weight: 600;">PORTAL</span>
+        </div>
+      </a>
 
-    <!-- REALTIME IN-PAGE NOTIFICATION BANNER -->
-    <div id="liveStockBanner" class="p-3 mb-5 in-page-alert-banner">
+      <div class="d-flex align-items-center gap-3">
+        <span class="small text-secondary">User: <strong class="text-dark">{{ user_fullname }}</strong></span>
+        <button type="button" class="btn btn-kite-secondary btn-sm" onclick="checkLiveStockAlert()">🔔 Low Stock</button>
+        <a href="/?cmd=web_logout" class="btn btn-kite-danger btn-sm">Log out</a>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="container pb-5">
+    
+    <!-- BANNER -->
+    <div id="liveStockBanner" class="p-3 mb-4 kite-card" style="display: none; border-color: #ffedd5; background: #fff7ed;">
       <div class="d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center gap-3">
-          <span class="fs-3">⚠️</span>
+        <div class="d-flex align-items-center gap-2">
+          <span style="color: var(--kite-orange); font-size: 1.1rem;">●</span>
           <div>
-            <h6 class="m-0 fw-bold text-white" id="bannerTitle">Low Stock Warning</h6>
-            <span class="small text-light text-opacity-85" id="bannerMessage"></span>
+            <strong class="text-dark small" id="bannerTitle">Low Stock Warning</strong>
+            <span class="small text-secondary ms-2" id="bannerMessage"></span>
           </div>
         </div>
-        <button class="btn btn-sm btn-outline-light" onclick="document.getElementById('liveStockBanner').style.display='none'">Dismiss</button>
+        <button class="btn btn-sm btn-kite-secondary py-1 px-2" onclick="document.getElementById('liveStockBanner').style.display='none'">Dismiss</button>
       </div>
     </div>
 
-    <!-- AGENT PERFORMANCE SUMMARY (ADMIN & MANAGER) -->
+    <!-- AGENT ANALYTICS (ADMIN & MANAGER) -->
     {% if is_admin or is_manager %}
-    <div class="analytics-section mb-5">
-      <div class="agent-summary-header">
+    <section class="mb-5">
+      <div class="d-flex justify-content-between align-items-end mb-3">
         <div>
-          <h3 class="m-0 vibrant-heading">Agent Performance Summary</h3>
-          <small class="text-muted">Live submitted order analytics and verified sales throughput</small>
+          <h5 class="fw-semibold text-dark m-0">Performance Overview</h5>
+          <span class="small text-secondary">Verified sales metrics across authorized agents</span>
         </div>
         <div class="d-none d-md-flex align-items-center gap-3">
-          <div class="stat-card-micro">
-            <span class="fs-4">👥</span>
-            <div>
-              <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase;">Active Agents</div>
-              <strong id="statActiveAgents" class="text-white">0</strong>
-            </div>
+          <div class="kite-card py-2 px-3">
+            <span class="text-secondary small d-block" style="font-size: 0.72rem; text-transform: uppercase;">Active Agents</span>
+            <span id="statActiveAgents" class="fw-bold font-mono text-dark">0</span>
           </div>
-          <div class="stat-card-micro">
-            <span class="fs-4">💎</span>
-            <div>
-              <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase;">Total Volume</div>
-              <strong id="statTotalRev" style="color: var(--teal-glow);">₹0.00</strong>
-            </div>
+          <div class="kite-card py-2 px-3">
+            <span class="text-secondary small d-block" style="font-size: 0.72rem; text-transform: uppercase;">Gross Volume</span>
+            <span id="statTotalRev" class="fw-bold font-mono" style="color: var(--kite-blue);">₹0.00</span>
           </div>
         </div>
       </div>
 
-      <div class="vibrant-card p-0 overflow-hidden">
+      <div class="kite-card overflow-hidden">
         <div class="table-responsive">
-          <table class="table-vibrant m-0">
+          <table class="kite-table m-0">
             <thead>
               <tr>
-                <th style="padding-left: 24px;">Agent Identity</th>
-                <th class="text-center">Total Orders</th>
+                <th style="padding-left: 20px;">Agent</th>
+                <th class="text-center">Orders</th>
                 <th class="text-center">Units Sold</th>
-                <th class="text-end" style="padding-right: 24px;">Revenue Contribution</th>
+                <th class="text-end" style="padding-right: 20px;">Revenue</th>
               </tr>
             </thead>
             <tbody id="analytics-report-body">
               <tr>
-                <td colspan="4" class="text-center text-muted py-4">Loading summary metrics...</td>
+                <td colspan="4" class="text-center text-secondary py-4 small">Fetching records...</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </div>
+    </section>
     {% endif %}
 
-    <!-- ITEM CATALOG -->
-    <div class="agent-section mb-5">
+    <!-- CATALOG GRID -->
+    <section class="mb-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h3 class="m-0 vibrant-heading">Item Catalog</h3>
-          <small class="text-muted">Browse available warehouse inventory and place stock orders</small>
+          <h5 class="fw-semibold text-dark m-0">Stock Inventory</h5>
+          <span class="small text-secondary">Browse catalog products and place purchase orders</span>
         </div>
         {% if is_admin %}
-        <!-- SINGLE PRIMARY ADD ITEM BUTTON -->
-        <button class="btn-aurora-glow" onclick="openAddItemModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-          </svg>
-          <span>Add Stock Item</span>
+        <button class="btn btn-kite-buy" onclick="openAddItemModal()">
+          <span>+ Add Stock Item</span>
         </button>
         {% endif %}
       </div>
-      <div class="row">
+
+      <div class="row g-3">
         {% for item in stock_items %}
-        <div class="col-md-4 mb-4 catalog-item-wrapper" data-item-name="{{ item.name }}" data-item-title="{{ item.item_name }}">
-          <div class="vibrant-card catalog-card h-100 p-0 overflow-hidden d-flex flex-column justify-content-between">
+        <div class="col-md-4 catalog-item-wrapper" data-item-name="{{ item.name }}" data-item-title="{{ item.item_name }}">
+          <div class="kite-card h-100 d-flex flex-column justify-content-between overflow-hidden">
             <div>
               {% if item.image %}
-                <img src="{{ item.image }}" class="w-100" style="height: 180px; object-fit: cover; border-bottom: 1px solid var(--card-border);" onerror="this.onerror=null; this.src='https://placehold.co/180x180?text=No+Image';">
+                <img src="{{ item.image }}" class="w-100" style="height: 170px; object-fit: cover; border-bottom: 1px solid var(--border-kite);" onerror="this.onerror=null; this.src='https://placehold.co/240x170/f4f4f5/71717a?text=Product';">
               {% else %}
-                <div class="d-flex align-items-center justify-content-center" style="height: 180px; background: rgba(14, 21, 38, 0.6); border-bottom: 1px solid var(--card-border);">
-                  <span class="text-muted">No Image</span>
+                <div class="d-flex align-items-center justify-content-center text-secondary" style="height: 170px; background: #f9fafb; border-bottom: 1px solid var(--border-kite);">
+                  <span class="small">No image available</span>
                 </div>
               {% endif %}
               <div class="p-3">
-                <h5 class="fw-bold text-white mb-1">{{ item.item_name }}</h5>
-                <p class="text-muted small mb-2 stock-info">
-                  Stock Available: <strong class="text-white current-stock-number">{{ item.current_stock }}</strong>
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="fw-semibold text-dark m-0">{{ item.item_name }}</h6>
                   <span class="stock-badge-container">
-                    {% if item.current_stock <= 5 %}
-                      <span class="badge-low-stock ms-1">Low Stock</span>
+                    {% if item.current_stock <= 5 and item.current_stock > 0 %}
+                      <span class="badge-status badge-low-stock">Low: {{ item.current_stock }}</span>
+                    {% elif item.current_stock <= 0 %}
+                      <span class="badge-status badge-out-of-stock">Out of Stock</span>
+                    {% else %}
+                      <span class="badge-status badge-in-stock">{{ item.current_stock }} available</span>
                     {% endif %}
                   </span>
-                </p>
-                <h4 class="fw-bold m-0" style="color: var(--teal-glow);">₹{{ item.rate }}</h4>
+                </div>
+                <div class="font-mono fs-5 fw-bold" style="color: var(--kite-blue);">₹{{ item.rate }}</div>
+                <div class="d-none current-stock-number">{{ item.current_stock }}</div>
               </div>
             </div>
+
             <div class="p-3 pt-0">
               {% if is_agent %}
-              <button class="btn btn-cyan-glow w-100 mt-2" 
+              <button class="btn btn-kite-buy w-100" 
                data-item="{{ item.name }}" 
                data-name="{{ item.item_name }}" 
                data-stock="{{ item.current_stock }}" 
-               onclick="triggerOrder(this)">Order Item</button>
+               onclick="triggerOrder(this)">Buy / Order Item</button>
               {% endif %}
 
               {% if is_admin %}
-              <div class="d-flex gap-2 mt-2">
-                <button class="btn btn-sm btn-outline-cyan w-50" onclick="editProduct('{{ item.name }}', '{{ item.rate }}', '{{ item.current_stock }}')">Edit / Stock</button>
-                <button class="btn btn-sm btn-outline-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
+              <div class="d-flex gap-2">
+                <button class="btn btn-kite-secondary w-50" 
+                  data-item="{{ item.name }}" 
+                  data-rate="{{ item.rate }}" 
+                  data-stock="{{ item.current_stock }}" 
+                  data-image="{{ item.image or '' }}" 
+                  onclick="triggerEditModal(this)">Edit</button>
+                <button class="btn btn-kite-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
               </div>
               {% endif %}
             </div>
@@ -578,202 +436,208 @@
         </div>
         {% endfor %}
       </div>
-    </div>
+    </section>
 
-    <!-- MANAGER PENDING REQUESTS -->
+    <!-- PENDING APPROVALS (MANAGER) -->
     {% if is_manager %}
-    <div class="manager-orders mb-5">
-      <h3 class="mb-3 vibrant-heading">Pending Order Approvals</h3>
-      <div class="vibrant-card p-0 overflow-hidden">
+    <section class="mb-5">
+      <div class="mb-3">
+        <h5 class="fw-semibold text-dark m-0">Order Approvals</h5>
+        <span class="small text-secondary">Authorize requests and adjust real-time stock balances</span>
+      </div>
+      <div class="kite-card overflow-hidden">
         <div class="table-responsive">
-          <table class="table-vibrant m-0">
+          <table class="kite-table m-0">
             <thead>
               <tr>
-                <th>Order ID</th>
+                <th style="padding-left: 20px;">Order ID</th>
                 <th>Requested By</th>
                 <th>Item</th>
-                <th>Image</th>
-                <th>Qty</th>
+                <th class="text-center">Qty</th>
                 <th>Total</th>
-                <th>Action</th>
+                <th class="text-end" style="padding-right: 20px;">Action</th>
               </tr>
             </thead>
             <tbody>
               {% for order in pending_orders %}
               <tr>
-                <td><strong style="color: var(--teal-glow);">{{ order.name }}</strong></td>
-                <td>{{ order.owner }}</td>
-                <td>{{ order.item }}</td>
-                <td>
-                  {% if order.item_image %}
-                    <img src="{{ order.item_image }}" style="width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--card-border);" class="rounded" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
-                  {% else %}
-                    <span class="text-muted">-</span>
-                  {% endif %}
-                </td>
-                <td>{{ order.quantity }}</td>
-                <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
-                <td>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-cyan-glow" onclick="approveOrder('{{ order.name }}')">Approve</button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="rejectOrder('{{ order.name }}')">Reject</button>
+                <td style="padding-left: 20px;"><strong class="font-mono text-dark">{{ order.name }}</strong></td>
+                <td class="text-secondary small">{{ order.owner }}</td>
+                <td class="text-dark">{{ order.item }}</td>
+                <td class="text-center font-mono">{{ order.quantity }}</td>
+                <td class="font-mono text-dark fw-semibold">₹{{ order.total_amount }}</td>
+                <td class="text-end" style="padding-right: 20px;">
+                  <div class="d-inline-flex gap-2">
+                    <button class="btn btn-kite-buy btn-sm py-1 px-3" onclick="approveOrder('{{ order.name }}')">Approve</button>
+                    <button class="btn btn-kite-danger btn-sm py-1 px-3" onclick="rejectOrder('{{ order.name }}')">Reject</button>
                   </div>
                 </td>
               </tr>
               {% else %}
               <tr>
-                <td colspan="7" class="text-center text-muted py-4">No pending order requests.</td>
+                <td colspan="6" class="text-center text-secondary py-4 small">No pending order requests.</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
-    </div>
+    </section>
     {% endif %}
 
   </div>
 </div>
 
 {% if is_agent %}
-<!-- OPTION 1: FLOATING ORDER REQUESTS TRIGGER CAPSULE -->
+<!-- FLOATING REQUEST TRIGGER -->
 <button type="button" class="floating-order-trigger" onclick="openOrdersModal()">
-  <span class="fs-5">📋</span>
-  <span class="fw-semibold">My Requests</span>
-  <span class="badge rounded-pill bg-danger ms-1" style="font-size: 0.75rem;">{{ my_orders|length }}</span>
+  <span>📋 My Orders</span>
+  <span class="badge rounded-pill bg-light text-dark font-mono ms-1 border">{{ my_orders|length }}</span>
 </button>
 
-<!-- POPUP MODAL: AGENT ORDER REQUESTS -->
-<div id="ordersModalOverlay" class="custom-orders-modal-overlay" onclick="handleModalOverlayClick(event, 'ordersModalOverlay')">
-  <div class="custom-orders-modal-dialog">
-    <div class="custom-orders-modal-header">
-      <div class="d-flex align-items-center gap-2">
-        <h4 class="m-0 vibrant-heading">My Order Requests</h4>
-        <span class="badge rounded-pill bg-light text-dark ms-2">{{ my_orders|length }} total</span>
-      </div>
-      <button type="button" class="custom-orders-modal-close" onclick="closeOrdersModal()">&times;</button>
+<!-- ORDERS MODAL -->
+<div id="ordersModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'ordersModalOverlay')">
+  <div class="shadcn-modal-dialog">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color: var(--border-kite) !important;">
+      <h6 class="fw-semibold text-dark m-0">My Submitted Orders</h6>
+      <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeOrdersModal()">✕</button>
     </div>
     
-    <div class="custom-orders-modal-body p-0">
-      <div class="table-responsive">
-        <table class="table-vibrant m-0">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Image</th>
-              <th>Qty</th>
-              <th>Total Amount</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for order in my_orders %}
-            <tr>
-              <td><strong style="color: var(--teal-glow);">{{ order.name }}</strong></td>
-              <td>
-                {% if order.item_image %}
-                  <img src="{{ order.item_image }}" style="width: 44px; height: 44px; object-fit: cover; border: 1px solid var(--card-border);" class="rounded" onerror="this.onerror=null; this.src='https://placehold.co/45x45?text=NA';">
-                {% else %}
-                  <span class="text-muted">-</span>
-                {% endif %}
-              </td>
-              <td>{{ order.quantity }}</td>
-              <td class="fw-bold text-white">₹{{ order.total_amount }}</td>
-              <td>
-                {% if order.docstatus == 1 %}
-                  <span class="badge-submitted">Submitted</span>
-                {% elif order.docstatus == 2 %}
-                  <span class="badge-rejected">Rejected</span>
-                {% else %}
-                  <span class="badge-draft">Draft</span>
-                {% endif %}
-              </td>
-              <td>
-                <button class="btn btn-sm btn-outline-cyan" onclick="downloadOrderPdf('{{ order.name }}')">
-                  📥 PDF
-                </button>
-              </td>
-            </tr>
-            {% else %}
-            <tr>
-              <td colspan="6" class="text-center text-muted py-5">No order requests placed yet.</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <div class="p-0 overflow-auto">
+      <table class="kite-table m-0">
+        <thead>
+          <tr>
+            <th style="padding-left: 18px;">Order</th>
+            <th class="text-center">Qty</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th class="text-end" style="padding-right: 18px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in my_orders %}
+          <tr>
+            <td style="padding-left: 18px;"><strong class="font-mono text-dark">{{ order.name }}</strong></td>
+            <td class="text-center font-mono">{{ order.quantity }}</td>
+            <td class="font-mono text-dark">₹{{ order.total_amount }}</td>
+            <td>
+              {% if order.docstatus == 1 %}
+                <span class="badge-status badge-submitted">Approved</span>
+              {% elif order.docstatus == 2 %}
+                <span class="badge-status badge-out-of-stock">Rejected</span>
+              {% else %}
+                <span class="badge-status badge-draft">Pending</span>
+              {% endif %}
+            </td>
+            <td class="text-end" style="padding-right: 18px;">
+              <button class="btn btn-kite-secondary btn-sm py-1 px-2" onclick="downloadOrderPdf('{{ order.name }}')">PDF Slip</button>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-secondary py-4 small">No orders recorded.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 {% endif %}
 
 {% if is_admin %}
-<!-- POPUP MODAL: ADD NEW STOCK ITEM -->
-<div id="addItemModalOverlay" class="custom-orders-modal-overlay" onclick="handleModalOverlayClick(event, 'addItemModalOverlay')">
-  <div class="custom-orders-modal-dialog custom-add-item-dialog">
-    <div class="custom-orders-modal-header">
-      <div class="d-flex align-items-center gap-2">
-        <span class="fs-4">📦</span>
-        <h4 class="m-0 vibrant-heading">Add New Product</h4>
-      </div>
-      <button type="button" class="custom-orders-modal-close" onclick="closeAddItemModal()">&times;</button>
+<!-- ADD PRODUCT MODAL -->
+<div id="addItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'addItemModalOverlay')">
+  <div class="shadcn-modal-dialog" style="max-width: 500px;">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color: var(--border-kite) !important;">
+      <h6 class="fw-semibold text-dark m-0">Add New Product</h6>
+      <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeAddItemModal()">✕</button>
     </div>
     
-    <div class="custom-orders-modal-body p-4">
-      <div class="row g-3">
-        <div class="col-12">
-          <label class="form-label small text-light text-opacity-80 fw-semibold">Item Name</label>
-          <input type="text" id="add_item_name" class="form-control form-control-vibrant" placeholder="e.g. Mechanical Keyboard RGB">
-        </div>
+    <div class="p-4">
+      <div class="mb-3">
+        <label class="form-label small text-secondary fw-semibold">Item Name</label>
+        <input type="text" id="add_item_name" class="form-control form-control-kite" placeholder="e.g. Mechanical Keyboard RGB">
+      </div>
 
-        <div class="col-md-6">
-          <label class="form-label small text-light text-opacity-80 fw-semibold">Price (₹)</label>
-          <input type="number" id="add_item_rate" class="form-control form-control-vibrant" placeholder="e.g. 2500">
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label small text-secondary fw-semibold">Price (₹)</label>
+          <input type="number" id="add_item_rate" class="form-control form-control-kite" placeholder="1500">
         </div>
-
-        <div class="col-md-6">
-          <label class="form-label small text-light text-opacity-80 fw-semibold">Initial Quantity</label>
-          <input type="number" id="add_item_stock" class="form-control form-control-vibrant" placeholder="e.g. 20">
-        </div>
-
-        <div class="col-12">
-          <label class="form-label small text-light text-opacity-80 fw-semibold">Product Artwork / Photo</label>
-          <div class="aurora-file-dropzone" onclick="document.getElementById('add_item_image_file').click()">
-            <div id="imagePreviewContainer" style="display: none; margin-bottom: 10px;">
-              <img id="previewImageEl" src="" style="height: 90px; border-radius: 8px; border: 1px solid var(--teal-glow); object-fit: cover;">
-            </div>
-            <span class="fs-3">📁</span>
-            <p class="small text-light text-opacity-75 m-0" id="dropzoneLabel">Click to select an image file</p>
-            <input type="file" id="add_item_image_file" class="d-none" accept="image/*" onchange="handleImageSelection(this)">
-          </div>
+        <div class="col-6">
+          <label class="form-label small text-secondary fw-semibold">Initial Stock</label>
+          <input type="number" id="add_item_stock" class="form-control form-control-kite" placeholder="20">
         </div>
       </div>
 
-      <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top border-light border-opacity-10">
-        <button type="button" class="btn btn-outline-light btn-sm px-3" onclick="closeAddItemModal()">Cancel</button>
-        <button type="button" class="btn-aurora-glow px-4 py-2" id="btn_add_product" onclick="saveNewStockItem()">
-          <span>+ Add to Catalog</span>
-        </button>
+      <div class="mb-4">
+        <label class="form-label small text-secondary fw-semibold">Product Photo</label>
+        <input type="file" id="add_item_image_file" class="form-control form-control-kite" accept="image/*">
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-kite-secondary" onclick="closeAddItemModal()">Cancel</button>
+        <button type="button" class="btn btn-kite-buy" id="btn_add_product" onclick="saveNewStockItem()">Save to Catalog</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL (IMAGE + RATE + STOCK) -->
+<div id="editItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'editItemModalOverlay')">
+  <div class="shadcn-modal-dialog" style="max-width: 500px;">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color: var(--border-kite) !important;">
+      <h6 class="fw-semibold text-dark m-0">Edit Stock Item</h6>
+      <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeEditItemModal()">✕</button>
+    </div>
+    
+    <div class="p-4">
+      <input type="hidden" id="edit_item_code">
+      
+      <div class="mb-3">
+        <label class="form-label small text-secondary fw-semibold">Item Code</label>
+        <input type="text" id="edit_item_name_display" class="form-control form-control-kite text-secondary" disabled>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label small text-secondary fw-semibold">Price (₹)</label>
+          <input type="number" id="edit_item_rate" class="form-control form-control-kite" placeholder="1500">
+        </div>
+        <div class="col-6">
+          <label class="form-label small text-secondary fw-semibold">Stock Available</label>
+          <input type="number" id="edit_item_stock" class="form-control form-control-kite" placeholder="20">
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small text-secondary fw-semibold">Product Photo</label>
+        <div id="editImagePreviewContainer" class="mb-2" style="display: none;">
+          <img id="editPreviewImageEl" src="" style="height: 75px; width: 75px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-kite);">
+        </div>
+        <input type="file" id="edit_item_image_file" class="form-control form-control-kite" accept="image/*" onchange="handleEditImagePreview(this)">
+        <small class="text-secondary d-block mt-1" style="font-size: 0.72rem;">Leave empty to retain existing image.</small>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-kite-secondary" onclick="closeEditItemModal()">Cancel</button>
+        <button type="button" class="btn btn-kite-buy" id="btn_update_product" onclick="saveEditedStockItem()">Update Product</button>
       </div>
     </div>
   </div>
 </div>
 {% endif %}
 
-<!-- FLOATING TOAST CARD -->
-<div id="liveAlertToast" class="aurora-toast-card p-3">
+<!-- TOAST NOTIFICATION -->
+<div id="liveAlertToast" class="kite-card p-3" style="position: fixed; bottom: 24px; right: 24px; z-index: 100000; min-width: 300px; display: none;">
   <div class="d-flex align-items-center justify-content-between mb-1">
-    <div class="d-flex align-items-center gap-2">
-      <span class="fs-4">⚠️</span>
-      <strong id="liveAlertTitle" class="fw-bold" style="color: var(--teal-glow);">Inventory Alert</strong>
-    </div>
-    <button type="button" class="btn btn-sm text-light p-0 ms-3" onclick="closeRealtimeToast()">✕</button>
+    <strong id="liveAlertTitle" class="small fw-semibold text-dark">Notice</strong>
+    <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeRealtimeToast()">✕</button>
   </div>
-  <div id="liveAlertBody" class="small text-light text-opacity-85 mt-1"></div>
+  <div id="liveAlertBody" class="small text-secondary"></div>
 </div>
 
-<!-- SCRIPT LOGIC -->
 <script>
 frappe.ready(function() {
     frappe.realtime.on('low_stock_alert', function(data) {
@@ -785,7 +649,6 @@ frappe.ready(function() {
     }
 });
 
-// Modal Controls - Order Requests
 function openOrdersModal() {
     var modal = document.getElementById('ordersModalOverlay');
     if (modal) {
@@ -802,7 +665,6 @@ function closeOrdersModal() {
     }
 }
 
-// Modal Controls - Add Stock Item
 function openAddItemModal() {
     var modal = document.getElementById('addItemModalOverlay');
     if (modal) {
@@ -819,13 +681,52 @@ function closeAddItemModal() {
     }
 }
 
-function handleImageSelection(input) {
+function triggerEditModal(btn) {
+    var itemCode = btn.getAttribute('data-item');
+    var rate = btn.getAttribute('data-rate');
+    var stock = btn.getAttribute('data-stock');
+    var image = btn.getAttribute('data-image') || '';
+
+    openEditModal(itemCode, rate, stock, image);
+}
+
+function openEditModal(itemCode, currentRate, currentStock, currentImage) {
+    document.getElementById('edit_item_code').value = itemCode;
+    document.getElementById('edit_item_name_display').value = itemCode;
+    document.getElementById('edit_item_rate').value = currentRate;
+    document.getElementById('edit_item_stock').value = currentStock;
+    document.getElementById('edit_item_image_file').value = "";
+
+    var previewContainer = document.getElementById('editImagePreviewContainer');
+    var previewImg = document.getElementById('editPreviewImageEl');
+    if (currentImage && currentImage.trim() !== "") {
+        previewImg.src = currentImage;
+        previewContainer.style.display = 'block';
+    } else {
+        previewContainer.style.display = 'none';
+    }
+
+    var modal = document.getElementById('editItemModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeEditItemModal() {
+    var modal = document.getElementById('editItemModalOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function handleEditImagePreview(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('previewImageEl').src = e.target.result;
-            document.getElementById('imagePreviewContainer').style.display = 'block';
-            document.getElementById('dropzoneLabel').innerText = input.files[0].name;
+            document.getElementById('editPreviewImageEl').src = e.target.result;
+            document.getElementById('editImagePreviewContainer').style.display = 'block';
         };
         reader.readAsDataURL(input.files[0]);
     }
@@ -835,43 +736,47 @@ function handleModalOverlayClick(event, overlayId) {
     if (event.target && event.target.id === overlayId) {
         if (overlayId === 'ordersModalOverlay') closeOrdersModal();
         if (overlayId === 'addItemModalOverlay') closeAddItemModal();
+        if (overlayId === 'editItemModalOverlay') closeEditItemModal();
     }
 }
 
 function handleIncomingLowStockAlert(data) {
     var count = data.count || (data.items ? data.items.length : 1);
-    var title = data.title || "Live SocketIO Alert";
+    var title = data.title || "Low Stock Notice";
     var itemsList = Array.isArray(data.items) ? data.items.join(", ") : "";
 
-    showRealtimeToast(title, count + " item(s) have critically low inventory: " + itemsList);
+    showRealtimeToast(title, count + " item(s) running low: " + itemsList);
 
     var banner = document.getElementById('liveStockBanner');
     var bannerMsg = document.getElementById('bannerMessage');
     if (banner && bannerMsg) {
-        bannerMsg.innerText = count + " item(s) are low on stock (" + itemsList + "). Please reorder.";
+        bannerMsg.innerText = count + " item(s) below threshold (" + itemsList + ").";
         banner.style.display = 'block';
-    }
-
-    if (data.items && Array.isArray(data.items)) {
-        data.items.forEach(function(itemIdentifier) {
-            var card = document.querySelector('[data-item-name="' + itemIdentifier + '"]') || 
-                       document.querySelector('[data-item-title="' + itemIdentifier + '"]');
-            if (card) {
-                var container = card.querySelector('.stock-badge-container');
-                if (container && !container.querySelector('.badge-low-stock')) {
-                    container.innerHTML = '<span class="badge-low-stock ms-1">Low Stock</span>';
-                }
-            }
-        });
     }
 }
 
-function triggerTestAlert() {
-    handleIncomingLowStockAlert({
-        title: "Live SocketIO Alert",
-        count: 2,
-        items: ["Watch", "Harry Potter : The Complete Collection"]
+function checkLiveStockAlert() {
+    var lowItems = [];
+    document.querySelectorAll('.catalog-item-wrapper').forEach(function(card) {
+        var stockEl = card.querySelector('.current-stock-number');
+        var title = card.getAttribute('data-item-title') || card.getAttribute('data-item-name');
+        if (stockEl) {
+            var stockVal = parseInt(stockEl.innerText.trim(), 10);
+            if (!isNaN(stockVal) && stockVal <= 5) {
+                lowItems.push(title + " (" + stockVal + ")");
+            }
+        }
     });
+
+    if (lowItems.length > 0) {
+        handleIncomingLowStockAlert({
+            title: "Low Stock Alert",
+            count: lowItems.length,
+            items: lowItems
+        });
+    } else {
+        showRealtimeToast("Status Normal", "All products have sufficient inventory.");
+    }
 }
 
 function showRealtimeToast(title, message) {
@@ -886,7 +791,7 @@ function showRealtimeToast(title, message) {
 
         setTimeout(function() {
             closeRealtimeToast();
-        }, 8000);
+        }, 5000);
     }
 }
 
@@ -904,7 +809,7 @@ function loadAgentSummaryReport() {
             tbody.innerHTML = '';
 
             if (!r.message || r.message.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No submitted order metrics found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-secondary py-3 small">No completed order records found.</td></tr>';
                 return;
             }
 
@@ -918,31 +823,15 @@ function loadAgentSummaryReport() {
                 var totalRev = parseFloat(row.total_revenue || 0);
                 totalRevSum += totalRev;
 
-                var initial = agent.charAt(0).toUpperCase();
-
                 var tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="padding-left: 24px;">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="agent-avatar-badge">${initial}</span>
-                            <div>
-                                <strong class="text-white d-block">${agent}</strong>
-                                <span class="text-muted small">Verified Sales Rep</span>
-                            </div>
-                        </div>
+                    <td style="padding-left: 20px;">
+                        <span class="text-dark fw-semibold">${agent}</span>
                     </td>
-                    <td class="text-center">
-                        <span class="metric-badge-pill">
-                          📦 ${totalOrders} Orders
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <span class="metric-badge-qty">
-                          📊 ${totalQty} Units
-                        </span>
-                    </td>
-                    <td class="text-end" style="padding-right: 24px;">
-                        <span class="revenue-pill">₹${totalRev.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <td class="text-center font-mono text-secondary">${totalOrders}</td>
+                    <td class="text-center font-mono text-secondary">${totalQty}</td>
+                    <td class="text-end font-mono text-dark fw-semibold" style="padding-right: 20px;">
+                        ₹${totalRev.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -977,7 +866,7 @@ function saveNewStockItem() {
     var addBtn = document.getElementById('btn_add_product');
     if (addBtn) {
         addBtn.disabled = true;
-        addBtn.innerText = "Adding...";
+        addBtn.innerText = "Saving...";
     }
 
     if (fileInput && fileInput.files.length > 0) {
@@ -991,14 +880,18 @@ function saveNewStockItem() {
             headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
             body: formdata
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
             if (data.message && data.message.file_url) {
                 createStockItemCall(name, rate, stock, data.message.file_url);
             } else {
                 alert("Image upload failed.");
-                if (addBtn) { addBtn.disabled = false; addBtn.innerText = "+ Add to Catalog"; }
+                if (addBtn) { addBtn.disabled = false; addBtn.innerText = "Save to Catalog"; }
             }
+        })
+        .catch(function() {
+            alert("Error uploading image.");
+            if (addBtn) { addBtn.disabled = false; addBtn.innerText = "Save to Catalog"; }
         });
     } else {
         createStockItemCall(name, rate, stock, "");
@@ -1011,84 +904,93 @@ function createStockItemCall(name, rate, stock, imageUrl) {
         args: { item_name: name, rate: parseFloat(rate), current_stock: parseFloat(stock), image_url: imageUrl },
         callback: function(r) {
             if (!r.exc) {
-                alert("Product added successfully!");
                 location.reload();
             } else {
                 var addBtn = document.getElementById('btn_add_product');
-                if (addBtn) { addBtn.disabled = false; addBtn.innerText = "+ Add to Catalog"; }
+                if (addBtn) { addBtn.disabled = false; addBtn.innerText = "Save to Catalog"; }
             }
         }
     });
 }
 
-function editProduct(itemCode, currentRate, currentStock) {
-    var newRate = prompt("Enter new Price (₹):", currentRate);
-    if (newRate === null) return;
+function saveEditedStockItem() {
+    var itemCode = document.getElementById('edit_item_code').value;
+    var newRate = document.getElementById('edit_item_rate').value.trim();
+    var newStock = document.getElementById('edit_item_stock').value.trim();
+    var fileInput = document.getElementById('edit_item_image_file');
 
-    var newStock = prompt("Enter new Stock Available:", currentStock);
-    if (newStock === null) return;
+    if (!itemCode || newRate === "" || newStock === "") {
+        alert("Price and Stock are required.");
+        return;
+    }
 
-    var uploadImage = confirm("Do you want to upload a new image for this product?");
-    if (uploadImage) {
-        var input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = function(e) {
-            var file = e.target.files[0];
-            if (!file) return;
+    var updateBtn = document.getElementById('btn_update_product');
+    if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.innerText = "Updating...";
+    }
 
-            var formdata = new FormData();
-            formdata.append("file", file);
-            formdata.append("is_private", "0");
+    if (fileInput && fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        var formdata = new FormData();
+        formdata.append("file", file);
+        formdata.append("is_private", "0");
 
-            fetch("/api/method/upload_file", {
-                method: "POST",
-                headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
-                body: formdata
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.message && data.message.file_url) {
-                    saveProductUpdate(itemCode, newRate, newStock, data.message.file_url);
-                } else {
-                    alert("Failed to upload image.");
-                }
-            });
-        };
-        input.click();
+        fetch("/api/method/upload_file", {
+            method: "POST",
+            headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
+            body: formdata
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.message && data.message.file_url) {
+                submitItemUpdate(itemCode, newRate, newStock, data.message.file_url);
+            } else {
+                alert("Failed to upload new image.");
+                if (updateBtn) { updateBtn.disabled = false; updateBtn.innerText = "Update Product"; }
+            }
+        })
+        .catch(function() {
+            alert("Error uploading image.");
+            if (updateBtn) { updateBtn.disabled = false; updateBtn.innerText = "Update Product"; }
+        });
     } else {
-        saveProductUpdate(itemCode, newRate, newStock, "");
+        submitItemUpdate(itemCode, newRate, newStock, null);
     }
 }
 
-function saveProductUpdate(itemCode, rate, stock, imageUrl) {
+function submitItemUpdate(itemCode, rate, stock, imageUrl) {
     frappe.call({
         method: "stock_flow.api.update_stock_item",
         args: {
             item_code: itemCode,
-            rate: rate,
-            current_stock: stock,
-            image_url: imageUrl
+            rate: parseFloat(rate),
+            current_stock: parseInt(stock),
+            image_url: imageUrl || ""
         },
         callback: function(r) {
             if (!r.exc) {
-                alert("Product updated successfully!");
                 location.reload();
+            } else {
+                alert("Update failed. Check server logs.");
+                var updateBtn = document.getElementById('btn_update_product');
+                if (updateBtn) { updateBtn.disabled = false; updateBtn.innerText = "Update Product"; }
             }
         }
     });
 }
 
 function deleteProduct(itemCode) {
-    if (!confirm("Are you sure you want to delete '" + itemCode + "' from catalog?")) return;
+    if (!confirm("Are you sure you want to delete '" + itemCode + "'?")) return;
 
     frappe.call({
         method: "stock_flow.api.delete_stock_item",
         args: { item_code: itemCode },
         callback: function(r) {
             if (!r.exc) {
-                alert("Product deleted successfully!");
                 location.reload();
+            } else {
+                alert("Delete failed.");
             }
         }
     });
@@ -1100,21 +1002,21 @@ function triggerOrder(btn) {
     var availableStock = parseInt(btn.getAttribute('data-stock') || 0);
 
     if (availableStock <= 0) {
-        alert(itemName + " is currently out of stock!");
+        alert(itemName + " is currently out of stock.");
         return;
     }
 
-    var qty = prompt("Enter quantity for " + itemName + " (Available: " + availableStock + "):", "1");
-    if (!qty) return;
+    var qty = prompt("Order quantity for " + itemName + " (Available: " + availableStock + "):", "1");
+    if (qty === null) return;
 
     var requestedQty = parseInt(qty);
     if (isNaN(requestedQty) || requestedQty <= 0) {
-        alert("Please enter a valid quantity.");
+        alert("Please enter a valid positive quantity.");
         return;
     }
 
     if (requestedQty > availableStock) {
-        alert("Cannot order " + requestedQty + " units. Only " + availableStock + " available in stock.");
+        alert("Cannot order " + requestedQty + " units. Only " + availableStock + " available.");
         return;
     }
 
@@ -1123,9 +1025,11 @@ function triggerOrder(btn) {
         args: { item_code: itemCode, quantity: requestedQty },
         callback: function(r) {
             if (!r.exc) {
-                alert("Order request placed successfully!");
                 location.reload();
             }
+        },
+        error: function(r) {
+            alert("Order failed: " + (r.message || "Server error"));
         }
     });
 }
@@ -1138,34 +1042,37 @@ function approveOrder(orderId) {
         args: { order_id: orderId },
         callback: function(r) {
             if (!r.exc) {
-                alert("Order approved successfully!");
                 location.reload();
             }
+        },
+        error: function(r) {
+            var errMessage = "Approval failed.";
+            if (r._server_messages) {
+                try {
+                    var msgs = JSON.parse(r._server_messages);
+                    errMessage = JSON.parse(msgs[0]).message;
+                } catch(e) {}
+            } else if (r.message) {
+                errMessage = r.message;
+            }
+            alert(errMessage);
         }
     });
 }
 
 function rejectOrder(orderId) {
-    if (!confirm("Are you sure you want to reject order " + orderId + "?")) return;
+    if (!confirm("Reject order " + orderId + "?")) return;
 
     frappe.call({
         method: "stock_flow.api.reject_stock_order",
         args: { order_id: orderId },
-        freeze: true,
-        freeze_message: "Rejecting order...",
         callback: function(r) {
             if (!r.exc) {
-                frappe.show_alert({
-                    message: __("Order " + orderId + " was rejected."),
-                    indicator: "green"
-                }, 4);
-                setTimeout(function() {
-                    location.reload();
-                }, 800);
+                location.reload();
             }
         },
         error: function(r) {
-            console.error("Rejection failed:", r);
+            alert("Rejection failed.");
         }
     });
 }
