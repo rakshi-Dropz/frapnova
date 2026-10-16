@@ -88,8 +88,8 @@ def create_stock_order(item_code, quantity=1):
         frappe.throw(f"Stock Item '{item_code}' does not exist.")
 
     item_data = frappe.db.get_value("Stock Item", item_code, ["rate", "image", "current_stock"], as_dict=True) or {}
-
     available_stock = float(item_data.get("current_stock") or 0)
+
     if qty > available_stock:
         frappe.throw(f"Cannot request {int(qty)} units. Only {int(available_stock)} units available in stock.")
 
@@ -98,6 +98,7 @@ def create_stock_order(item_code, quantity=1):
     if image_path.startswith("/private/files/"):
         image_path = image_path.replace("/private/files/", "/files/")
 
+    # Creates order in Draft status (docstatus = 0) without touching stock
     doc = frappe.get_doc({
         "doctype": "Stock Order",
         "item": item_code,
@@ -126,12 +127,12 @@ def approve_stock_order(order_id):
     if doc.docstatus == 1:
         frappe.throw("Order is already submitted/approved.")
 
+    # Validate inventory availability prior to submission
     current_stock = frappe.db.get_value("Stock Item", doc.item, "current_stock") or 0
     if current_stock < doc.quantity:
         frappe.throw(f"Insufficient stock for '{doc.item}'. Available: {current_stock}")
 
-    new_stock = current_stock - doc.quantity
-    frappe.db.set_value("Stock Item", doc.item, "current_stock", new_stock)
+    # doc.submit() triggers on_submit in stock_order.py to deduct stock exactly once
     doc.submit()
     frappe.db.commit()
 
@@ -202,8 +203,8 @@ def reject_stock_order(order_id):
     if not frappe.db.exists("Stock Order", order_id):
         frappe.throw(f"Order '{order_id}' does not exist.")
 
-    current_docstatus = frappe.db.get_value("Stock Order", order_id, "docstatus")
-    if current_docstatus == 1:
+    doc = frappe.get_doc("Stock Order", order_id)
+    if doc.docstatus == 1:
         frappe.throw("Cannot reject an order that has already been approved.")
 
     has_status_col = frappe.db.has_column("Stock Order", "status")
@@ -243,7 +244,6 @@ def bulk_process_orders(order_ids):
             doc.flags.ignore_permissions = True
             current_stock = frappe.db.get_value("Stock Item", doc.item, "current_stock") or 0
             if current_stock >= doc.quantity:
-                frappe.db.set_value("Stock Item", doc.item, "current_stock", current_stock - doc.quantity)
                 doc.submit()
                 processed.append(oid)
 

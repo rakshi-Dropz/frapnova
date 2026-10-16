@@ -302,7 +302,9 @@
 
       <div class="d-flex align-items-center gap-3">
         <span class="small text-secondary">User: <strong class="text-dark">{{ user_fullname }}</strong></span>
+        {% if is_admin or is_manager %}
         <button type="button" class="btn btn-kite-secondary btn-sm" onclick="checkLiveStockAlert()">🔔 Low Stock</button>
+        {% endif %}
         <a href="/?cmd=web_logout" class="btn btn-kite-danger btn-sm">Log out</a>
       </div>
 
@@ -311,7 +313,8 @@
 
   <div class="container pb-5">
     
-    <!-- BANNER -->
+    <!-- BANNER (VISIBLE ONLY TO ADMIN AND MANAGER) -->
+    {% if is_admin or is_manager %}
     <div id="liveStockBanner" class="p-3 mb-4 kite-card" style="display: none; border-color: #ffedd5; background: #fff7ed;">
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
@@ -324,6 +327,7 @@
         <button class="btn btn-sm btn-kite-secondary py-1 px-2" onclick="document.getElementById('liveStockBanner').style.display='none'">Dismiss</button>
       </div>
     </div>
+    {% endif %}
 
     <!-- AGENT ANALYTICS (ADMIN & MANAGER) -->
     {% if is_admin or is_manager %}
@@ -640,9 +644,11 @@
 
 <script>
 frappe.ready(function() {
-    frappe.realtime.on('low_stock_alert', function(data) {
-        handleIncomingLowStockAlert(data);
-    });
+    if (document.getElementById('liveStockBanner')) {
+        frappe.realtime.on('low_stock_alert', function(data) {
+            handleIncomingLowStockAlert(data);
+        });
+    }
 
     if (document.getElementById('analytics-report-body')) {
         loadAgentSummaryReport();
