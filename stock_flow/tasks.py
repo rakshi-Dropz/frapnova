@@ -1,7 +1,7 @@
 import frappe
 
 def check_low_stock_and_notify():
-    """Background task to inspect inventory, broadcast SocketIO, and queue emails."""
+    """Background task to inspect inventory, broadcast SocketIO, and send alerts."""
     low_stock_items = frappe.db.get_all(
         "Stock Item",
         filters={"current_stock": ["<=", 5]},
@@ -25,37 +25,57 @@ def check_low_stock_and_notify():
     except Exception:
         pass
 
-    # 2. Queue Email
+    # 2. Dispatch low stock email alert
     send_low_stock_email(low_stock_items)
 
 
 def send_low_stock_email(items):
-    """Queues low stock warning directly in the Frappe Email Queue table."""
-    managers = frappe.get_all(
+    """Sends low stock warning email immediately with rendered HTML."""
+    # Find all users with Stock Manager or System Manager roles
+    manager_names = frappe.get_all(
         "Has Role",
-        filters={"role": "Stock Manager", "parenttype": "User"},
+        filters={"role": ["in", ["Stock Manager", "System Manager"]], "parenttype": "User"},
         pluck="parent"
     )
-    recipients = [m for m in managers if "@" in m]
 
-    if not recipients:
-        admin_email = frappe.db.get_value("User", "Administrator", "email")
-        recipients = [admin_email] if admin_email and "@" in admin_email else ["admin@frapnova.local"]
+    # Fetch valid emails for active manager accounts
+    recipients = []
+    if manager_names:
+        recipients = frappe.get_all(
+            "User",
+            filters={"name": ["in", list(set(manager_names))], "enabled": 1},
+            pluck="email"
+        )
+    
+    # Filter out empty or test domains and fall back to the admin address
+    valid_recipients = [r for r in recipients if r and "@" in r and not r.endswith(".local")]
 
+    if not valid_recipients:
+        valid_recipients = ["rakshitha@dropz.in"]
+
+    # Build clean HTML list
     item_list_html = "".join([
-        f"<li>{i['item_name']}: <b>{i['current_stock']} left</b></li>"
+        f"<li style='margin-bottom: 6px;'>{i['item_name']}: <b style='color: #b91c1c;'>{int(i['current_stock'])} units remaining</b></li>"
         for i in items
     ])
-    html_message = f"<h3>Inventory Warning</h3><p>The following items are running low:</p><ul>{item_list_html}</ul>"
 
-    # Direct Email Queue insertion
-    eq = frappe.new_doc("Email Queue")
-    eq.sender = "system@frapnova.local"
-    eq.message = html_message
-    for recipient in recipients:
-        eq.append("recipients", {
-            "recipient": recipient,
-            "status": "Not Sent"
-        })
-    eq.insert(ignore_permissions=True)
-    frappe.db.commit()
+    html_message = f"""
+    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5;">
+        <h3 style="color: #dc2626; margin-bottom: 8px;">⚠️ Low Stock Inventory Alert</h3>
+        <p>The following items have reached or fallen below the threshold limit (5 units):</p>
+        <ul style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 16px 28px; margin: 15px 0;">
+            {item_list_html}
+        </ul>
+        <p>Please log in to the Frapnora portal to replenish warehouse inventory.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #666;">This is an automated notification from Frapnora Stock Flow.</p>
+    </div>
+    """
+
+    # sendmail with now=True builds valid MIME multipart HTML and dispatches immediately
+    frappe.sendmail(
+        recipients=list(set(valid_recipients)),
+        subject="Low Stock Inventory Warning",
+        message=html_message,
+        now=True
+    )

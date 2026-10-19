@@ -136,9 +136,11 @@ def approve_stock_order(order_id):
     doc.submit()
     frappe.db.commit()
 
-    recipient_email = doc.get("agent") or doc.owner
+    raw_user = doc.get("agent") or doc.owner
+    recipient_email = frappe.db.get_value("User", raw_user, "email") or raw_user
+
     email_message = f"""
-    <p>Dear <b>{recipient_email}</b>,</p>
+    <p>Dear <b>{doc.owner}</b>,</p>
     <p>Your stock order <b>{doc.name}</b> has been officially approved and processed.</p>
     <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
       <thead>
@@ -162,20 +164,21 @@ def approve_stock_order(order_id):
     <p>Best regards,<br><b>Frapnova Operations Team</b></p>
     """
 
+    # now=True sends the email immediately through Gmail SMTP without queuing
     frappe.sendmail(
         recipients=[recipient_email],
         subject=f"Order {doc.name} Approved",
         message=email_message,
         reference_doctype="Stock Order",
         reference_name=doc.name,
-        now=False
+        now=True
     )
 
-    if frappe.db.exists("User", recipient_email):
+    if frappe.db.exists("User", raw_user):
         frappe.get_doc({
             "doctype": "Notification Log",
             "subject": f"Order {doc.name} Approved",
-            "for_user": recipient_email,
+            "for_user": raw_user,
             "type": "Alert",
             "document_type": "Stock Order",
             "document_name": doc.name
@@ -184,7 +187,7 @@ def approve_stock_order(order_id):
     frappe.enqueue(
         "stock_flow.tasks.check_low_stock_and_notify",
         queue="short",
-        now=False
+        now=True
     )
 
     frappe.db.commit()
@@ -253,7 +256,7 @@ def bulk_process_orders(order_ids):
         frappe.enqueue(
             "stock_flow.tasks.check_low_stock_and_notify",
             queue="short",
-            now=False
+            now=True
         )
 
     return {"status": "Success", "approved_orders": processed}
