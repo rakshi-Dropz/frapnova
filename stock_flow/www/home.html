@@ -26,7 +26,7 @@
   .zerodha-header {
     border-bottom: 1px solid var(--border-light);
     background: #ffffff;
-    padding: 18px 0;
+    padding: 16px 0;
   }
 
   .brand-logo-text {
@@ -38,6 +38,13 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+  }
+
+  /* Improved navbar items & spacing */
+  .nav-menu-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
 
   .nav-link-custom {
@@ -52,13 +59,19 @@
     color: var(--kite-blue) !important;
   }
 
+  .nav-divider {
+    color: #d1d5db;
+    font-weight: 300;
+    user-select: none;
+  }
+
   /* Primary Button (Zerodha Blue Pill/Block) */
   .btn-zerodha-blue {
     background-color: var(--kite-blue);
     color: #ffffff !important;
     font-weight: 600;
-    font-size: 0.95rem;
-    padding: 10px 28px;
+    font-size: 0.9rem;
+    padding: 9px 22px;
     border-radius: 4px;
     border: none;
     text-decoration: none !important;
@@ -140,9 +153,12 @@
       <span>FRAPNORA</span>
     </a>
     
-    <div class="d-flex align-items-center gap-4">
+    <!-- Spacious & Organised Navigation Group -->
+    <div class="nav-menu-wrapper">
       <a href="#features" class="nav-link-custom d-none d-md-inline">Workflow</a>
+      <span class="nav-divider d-none d-md-inline">|</span>
       <a href="#about" class="nav-link-custom d-none d-md-inline">About</a>
+      <span class="nav-divider d-none d-md-inline">|</span>
       <a href="/login" class="btn-zerodha-blue">Log In</a>
     </div>
   </div>
@@ -208,7 +224,7 @@
 <!-- FOOTER -->
 <footer class="zerodha-footer">
   <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-    <span class="small text-muted">© 2026 Frapnora Inventory Systems. Designed after the Zerodha Kite fintech interface.</span>
+    <span class="small text-muted">© 2026 Frapnora Inventory Systems.</span>
     <div class="d-flex gap-3 small text-muted">
       <a href="/login" class="nav-link-custom">Login</a>
       <span>•</span>

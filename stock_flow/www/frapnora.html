@@ -19,7 +19,6 @@
     --text-dark: #111827;
   }
 
-  /* Reset Frappe default styles */
   html, body, .web-page, .page-container, .main-section {
     background-color: var(--bg-body) !important;
   }
@@ -39,7 +38,6 @@
     min-height: 100vh;
   }
 
-  /* Zerodha Minimalist Top Navigation */
   .zerodha-nav {
     background: #ffffff;
     border-bottom: 1px solid var(--border-kite);
@@ -72,36 +70,31 @@
     color: var(--kite-blue);
   }
 
-  .live-dot {
-    width: 7px;
-    height: 7px;
-    background-color: var(--kite-green);
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  /* Kite Surface Cards */
   .kite-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-kite);
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .kite-card:hover {
+  .product-clickable-card {
+    cursor: pointer;
+  }
+
+  .product-clickable-card:hover {
+    transform: translateY(-3px);
     border-color: #cbd5e1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
   }
 
-  /* Action Buttons */
   .btn-kite-buy {
     background: var(--kite-blue);
     color: #ffffff !important;
     font-weight: 500;
-    font-size: 0.85rem;
-    padding: 7px 16px;
-    border-radius: 3px;
+    font-size: 0.88rem;
+    padding: 8px 18px;
+    border-radius: 4px;
     border: none;
     transition: background-color 0.15s ease;
     cursor: pointer;
@@ -117,9 +110,9 @@
     color: var(--text-primary) !important;
     border: 1px solid var(--border-kite);
     font-weight: 500;
-    font-size: 0.82rem;
-    padding: 6px 14px;
-    border-radius: 3px;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 4px;
     transition: all 0.15s ease;
     cursor: pointer;
   }
@@ -134,9 +127,9 @@
     color: var(--kite-red) !important;
     border: 1px solid #fee2e2;
     font-weight: 500;
-    font-size: 0.82rem;
-    padding: 6px 14px;
-    border-radius: 3px;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 4px;
     transition: all 0.15s ease;
     cursor: pointer;
   }
@@ -146,7 +139,6 @@
     border-color: #fca5a5;
   }
 
-  /* Badges */
   .badge-status {
     font-size: 0.72rem;
     font-weight: 500;
@@ -156,37 +148,12 @@
     align-items: center;
   }
 
-  .badge-low-stock {
-    background: #fff7ed;
-    color: #ea580c;
-    border: 1px solid #ffedd5;
-  }
+  .badge-low-stock { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+  .badge-out-of-stock { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+  .badge-in-stock { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+  .badge-submitted { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+  .badge-draft { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
 
-  .badge-out-of-stock {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fee2e2;
-  }
-
-  .badge-in-stock {
-    background: #f0fdf4;
-    color: #16a34a;
-    border: 1px solid #dcfce7;
-  }
-
-  .badge-submitted {
-    background: #f0fdf4;
-    color: #16a34a;
-    border: 1px solid #dcfce7;
-  }
-
-  .badge-draft {
-    background: #f3f4f6;
-    color: #4b5563;
-    border: 1px solid #e5e7eb;
-  }
-
-  /* Kite High-Density Tables */
   .kite-table {
     width: 100%;
     color: var(--text-primary);
@@ -211,11 +178,6 @@
     vertical-align: middle;
   }
 
-  .kite-table tbody tr:hover {
-    background: #f9fafb;
-  }
-
-  /* Form Controls */
   .form-control-kite {
     background-color: #ffffff !important;
     border: 1px solid var(--border-kite) !important;
@@ -225,12 +187,6 @@
     font-size: 0.88rem;
   }
 
-  .form-control-kite:focus {
-    border-color: var(--kite-blue) !important;
-    box-shadow: 0 0 0 1px var(--kite-blue) !important;
-  }
-
-  /* Modals */
   .shadcn-modal-overlay {
     position: fixed;
     top: 0;
@@ -248,36 +204,58 @@
   .shadcn-modal-dialog {
     background: #ffffff;
     border: 1px solid var(--border-kite);
-    border-radius: 4px;
+    border-radius: 6px;
     width: 100%;
-    max-width: 820px;
+    max-width: 680px;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   }
 
-  .floating-order-trigger {
+  .floating-triggers-container {
     position: fixed;
     bottom: 24px;
     right: 24px;
     z-index: 999;
+    display: flex;
+    gap: 10px;
+  }
+
+  .floating-trigger-btn {
     background: #ffffff;
     border: 1px solid var(--border-kite);
     color: var(--text-dark);
-    padding: 10px 18px;
+    padding: 10px 16px;
     border-radius: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     font-size: 0.85rem;
     font-weight: 500;
   }
 
-  .floating-order-trigger:hover {
+  .floating-trigger-btn:hover {
     border-color: var(--kite-blue);
+  }
+
+  .popup-preview-img-box {
+    background: #f9fafb;
+    border: 1px solid var(--border-kite);
+    border-radius: 4px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .popup-preview-img-box img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
   }
 </style>
 
@@ -285,7 +263,6 @@
   <!-- NAVIGATION -->
   <header class="zerodha-nav mb-4">
     <div class="container d-flex justify-content-between align-items-center">
-      
       <a href="/frapnora" class="brand-container">
         <div class="brand-mark">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -307,13 +284,11 @@
         {% endif %}
         <a href="/?cmd=web_logout" class="btn btn-kite-danger btn-sm">Log out</a>
       </div>
-
     </div>
   </header>
 
   <div class="container pb-5">
     
-    <!-- BANNER (VISIBLE ONLY TO ADMIN AND MANAGER) -->
     {% if is_admin or is_manager %}
     <div id="liveStockBanner" class="p-3 mb-4 kite-card" style="display: none; border-color: #ffedd5; background: #fff7ed;">
       <div class="d-flex align-items-center justify-content-between">
@@ -329,7 +304,6 @@
     </div>
     {% endif %}
 
-    <!-- AGENT ANALYTICS (ADMIN & MANAGER) -->
     {% if is_admin or is_manager %}
     <section class="mb-5">
       <div class="d-flex justify-content-between align-items-end mb-3">
@@ -361,9 +335,7 @@
               </tr>
             </thead>
             <tbody id="analytics-report-body">
-              <tr>
-                <td colspan="4" class="text-center text-secondary py-4 small">Fetching records...</td>
-              </tr>
+              <tr><td colspan="4" class="text-center text-secondary py-4 small">Fetching records...</td></tr>
             </tbody>
           </table>
         </div>
@@ -371,36 +343,40 @@
     </section>
     {% endif %}
 
-    <!-- CATALOG GRID -->
+    <!-- CATALOG GRID (CARDS CONTAIN ONLY IMAGE, NAME, STOCK, AND RATE) -->
     <section class="mb-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h5 class="fw-semibold text-dark m-0">Stock Inventory</h5>
-          <span class="small text-secondary">Browse catalog products and place purchase orders</span>
+          <span class="small text-secondary">Click on any product to open action options</span>
         </div>
         {% if is_admin %}
-        <button class="btn btn-kite-buy" onclick="openAddItemModal()">
-          <span>+ Add Stock Item</span>
-        </button>
+        <button class="btn btn-kite-buy" onclick="openAddItemModal()"><span>+ Add Stock Item</span></button>
         {% endif %}
       </div>
 
       <div class="row g-3">
         {% for item in stock_items %}
         <div class="col-md-4 catalog-item-wrapper" data-item-name="{{ item.name }}" data-item-title="{{ item.item_name }}">
-          <div class="kite-card h-100 d-flex flex-column justify-content-between overflow-hidden">
+          <div class="kite-card h-100 d-flex flex-column justify-content-between overflow-hidden product-clickable-card"
+               data-item="{{ item.name }}"
+               data-name="{{ item.item_name }}"
+               data-rate="{{ item.rate }}"
+               data-stock="{{ item.current_stock }}"
+               data-image="{{ item.image or '' }}"
+               onclick="openProductQuickView(this)">
             <div>
               {% if item.image %}
-                <img src="{{ item.image }}" class="w-100" style="height: 170px; object-fit: cover; border-bottom: 1px solid var(--border-kite);" onerror="this.onerror=null; this.src='https://placehold.co/240x170/f4f4f5/71717a?text=Product';">
+                <img src="{{ item.image }}" class="w-100" style="height: 180px; object-fit: cover; border-bottom: 1px solid var(--border-kite);" onerror="this.onerror=null; this.src='https://placehold.co/240x180/f4f4f5/71717a?text=Product';">
               {% else %}
-                <div class="d-flex align-items-center justify-content-center text-secondary" style="height: 170px; background: #f9fafb; border-bottom: 1px solid var(--border-kite);">
+                <div class="d-flex align-items-center justify-content-center text-secondary" style="height: 180px; background: #f9fafb; border-bottom: 1px solid var(--border-kite);">
                   <span class="small">No image available</span>
                 </div>
               {% endif %}
               <div class="p-3">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                   <h6 class="fw-semibold text-dark m-0">{{ item.item_name }}</h6>
-                  <span class="stock-badge-container">
+                  <span>
                     {% if item.current_stock <= 5 and item.current_stock > 0 %}
                       <span class="badge-status badge-low-stock">Low: {{ item.current_stock }}</span>
                     {% elif item.current_stock <= 0 %}
@@ -414,35 +390,12 @@
                 <div class="d-none current-stock-number">{{ item.current_stock }}</div>
               </div>
             </div>
-
-            <div class="p-3 pt-0">
-              {% if is_agent %}
-              <button class="btn btn-kite-buy w-100" 
-               data-item="{{ item.name }}" 
-               data-name="{{ item.item_name }}" 
-               data-stock="{{ item.current_stock }}" 
-               onclick="triggerOrder(this)">Buy / Order Item</button>
-              {% endif %}
-
-              {% if is_admin %}
-              <div class="d-flex gap-2">
-                <button class="btn btn-kite-secondary w-50" 
-                  data-item="{{ item.name }}" 
-                  data-rate="{{ item.rate }}" 
-                  data-stock="{{ item.current_stock }}" 
-                  data-image="{{ item.image or '' }}" 
-                  onclick="triggerEditModal(this)">Edit</button>
-                <button class="btn btn-kite-danger w-50" onclick="deleteProduct('{{ item.name }}')">Delete</button>
-              </div>
-              {% endif %}
-            </div>
           </div>
         </div>
         {% endfor %}
       </div>
     </section>
 
-    <!-- PENDING APPROVALS (MANAGER) -->
     {% if is_manager %}
     <section class="mb-5">
       <div class="mb-3">
@@ -478,9 +431,7 @@
                 </td>
               </tr>
               {% else %}
-              <tr>
-                <td colspan="6" class="text-center text-secondary py-4 small">No pending order requests.</td>
-              </tr>
+              <tr><td colspan="6" class="text-center text-secondary py-4 small">No pending order requests.</td></tr>
               {% endfor %}
             </tbody>
           </table>
@@ -492,21 +443,81 @@
   </div>
 </div>
 
+<!-- ITEM DETAIL POPUP MODAL (ACTIONS REVEALED ONLY HERE AFTER CLICKING) -->
+<div id="productQuickViewOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'productQuickViewOverlay')">
+  <div class="shadcn-modal-dialog">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <h6 class="fw-semibold text-dark m-0" id="pv_item_name">Product Overview</h6>
+      <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeProductQuickView()">✕</button>
+    </div>
+    
+    <div class="p-4">
+      <div class="row g-4 align-items-center">
+        <div class="col-md-6">
+          <div class="popup-preview-img-box">
+            <img id="pv_item_image" src="" onerror="this.src='https://placehold.co/300x250/f4f4f5/71717a?text=Product';">
+          </div>
+        </div>
+        <div class="col-md-6 d-flex flex-column justify-content-between">
+          <div>
+            <span class="text-secondary small font-mono" id="pv_item_code">ITEM-CODE</span>
+            <h4 class="fw-bold text-dark mt-1 mb-2" id="pv_item_title">Product Name</h4>
+            <div class="font-mono fs-3 fw-bold mb-3" style="color: var(--kite-blue);" id="pv_item_rate">₹0.00</div>
+            
+            <div class="mb-4">
+              <span class="small text-secondary d-block mb-1">Inventory Status:</span>
+              <span id="pv_item_badge"></span>
+            </div>
+          </div>
+
+          <!-- ACTIONS REVEALED IN POPUP FOR AGENTS -->
+          {% if is_agent %}
+          <div class="d-flex flex-column gap-2">
+            <button class="btn btn-kite-buy w-100 py-2" id="pv_btn_buy">⚡ Order Now</button>
+            <div class="d-flex gap-2">
+              <button class="btn btn-kite-secondary w-50 py-2" id="pv_btn_cart">🛒 Add to Cart</button>
+              <button class="btn btn-kite-secondary w-50 py-2" id="pv_btn_wishlist">❤️ Wishlist</button>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- ACTIONS REVEALED IN POPUP FOR ADMINS -->
+          {% if is_admin %}
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-kite-secondary w-50 py-2" id="pv_btn_edit">✏️ Edit Product</button>
+            <button class="btn btn-kite-danger w-50 py-2" id="pv_btn_delete">🗑️ Delete</button>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% if is_agent %}
-<!-- FLOATING REQUEST TRIGGER -->
-<button type="button" class="floating-order-trigger" onclick="openOrdersModal()">
-  <span>📋 My Orders</span>
-  <span class="badge rounded-pill bg-light text-dark font-mono ms-1 border">{{ my_orders|length }}</span>
-</button>
+<!-- FLOATING AGENT TRIGGERS (WISHLIST, CART, MY ORDERS) -->
+<div class="floating-triggers-container">
+  <button type="button" class="floating-trigger-btn" onclick="openWishlistModal()">
+    <span>❤️ Wishlist</span>
+    <span class="badge rounded-pill bg-light text-dark font-mono ms-1 border" id="wishlist-count">0</span>
+  </button>
+  <button type="button" class="floating-trigger-btn" onclick="openCartModal()">
+    <span>🛒 Cart</span>
+    <span class="badge rounded-pill bg-light text-dark font-mono ms-1 border" id="cart-count">0</span>
+  </button>
+  <button type="button" class="floating-trigger-btn" onclick="openOrdersModal()">
+    <span>📋 My Orders</span>
+    <span class="badge rounded-pill bg-light text-dark font-mono ms-1 border">{{ my_orders|length }}</span>
+  </button>
+</div>
 
 <!-- ORDERS MODAL -->
 <div id="ordersModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'ordersModalOverlay')">
   <div class="shadcn-modal-dialog">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color: var(--border-kite) !important;">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
       <h6 class="fw-semibold text-dark m-0">My Submitted Orders</h6>
       <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeOrdersModal()">✕</button>
     </div>
-    
     <div class="p-0 overflow-auto">
       <table class="kite-table m-0">
         <thead>
@@ -525,25 +536,49 @@
             <td class="text-center font-mono">{{ order.quantity }}</td>
             <td class="font-mono text-dark">₹{{ order.total_amount }}</td>
             <td>
-              {% if order.docstatus == 1 %}
-                <span class="badge-status badge-submitted">Approved</span>
-              {% elif order.docstatus == 2 %}
-                <span class="badge-status badge-out-of-stock">Rejected</span>
-              {% else %}
-                <span class="badge-status badge-draft">Pending</span>
-              {% endif %}
+              {% if order.docstatus == 1 %}<span class="badge-status badge-submitted">Approved</span>
+              {% elif order.docstatus == 2 %}<span class="badge-status badge-out-of-stock">Rejected</span>
+              {% else %}<span class="badge-status badge-draft">Pending</span>{% endif %}
             </td>
             <td class="text-end" style="padding-right: 18px;">
               <button class="btn btn-kite-secondary btn-sm py-1 px-2" onclick="downloadOrderPdf('{{ order.name }}')">PDF Slip</button>
             </td>
           </tr>
           {% else %}
-          <tr>
-            <td colspan="5" class="text-center text-secondary py-4 small">No orders recorded.</td>
-          </tr>
+          <tr><td colspan="5" class="text-center text-secondary py-4 small">No orders recorded.</td></tr>
           {% endfor %}
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div id="cartModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'cartModalOverlay')">
+  <div class="shadcn-modal-dialog">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <h6 class="fw-semibold text-dark m-0">My Shopping Cart</h6>
+      <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeCartModal()">✕</button>
+    </div>
+    <div class="p-3 overflow-auto" id="cart-modal-body">
+      <p class="text-center text-secondary small py-4">Loading cart items...</p>
+    </div>
+    <div class="p-3 border-top d-flex justify-content-between align-items-center bg-light">
+      <span class="fw-semibold text-dark">Total: <span id="cart-modal-total" class="font-mono">₹0.00</span></span>
+      <button class="btn btn-kite-buy" onclick="checkoutCart()">Place Order from Cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- WISHLIST MODAL -->
+<div id="wishlistModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'wishlistModalOverlay')">
+  <div class="shadcn-modal-dialog">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <h6 class="fw-semibold text-dark m-0">My Wishlist</h6>
+      <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeWishlistModal()">✕</button>
+    </div>
+    <div class="p-3 overflow-auto" id="wishlist-modal-body">
+      <p class="text-center text-secondary small py-4">Loading wishlist items...</p>
     </div>
   </div>
 </div>
@@ -553,17 +588,15 @@
 <!-- ADD PRODUCT MODAL -->
 <div id="addItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'addItemModalOverlay')">
   <div class="shadcn-modal-dialog" style="max-width: 500px;">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color: var(--border-kite) !important;">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
       <h6 class="fw-semibold text-dark m-0">Add New Product</h6>
       <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeAddItemModal()">✕</button>
     </div>
-    
     <div class="p-4">
       <div class="mb-3">
         <label class="form-label small text-secondary fw-semibold">Item Name</label>
         <input type="text" id="add_item_name" class="form-control form-control-kite" placeholder="e.g. Mechanical Keyboard RGB">
       </div>
-
       <div class="row g-2 mb-3">
         <div class="col-6">
           <label class="form-label small text-secondary fw-semibold">Price (₹)</label>
@@ -574,12 +607,10 @@
           <input type="number" id="add_item_stock" class="form-control form-control-kite" placeholder="20">
         </div>
       </div>
-
       <div class="mb-4">
         <label class="form-label small text-secondary fw-semibold">Product Photo</label>
         <input type="file" id="add_item_image_file" class="form-control form-control-kite" accept="image/*">
       </div>
-
       <div class="d-flex justify-content-end gap-2">
         <button type="button" class="btn btn-kite-secondary" onclick="closeAddItemModal()">Cancel</button>
         <button type="button" class="btn btn-kite-buy" id="btn_add_product" onclick="saveNewStockItem()">Save to Catalog</button>
@@ -588,42 +619,36 @@
   </div>
 </div>
 
-<!-- EDIT PRODUCT MODAL (IMAGE + RATE + STOCK) -->
+<!-- EDIT PRODUCT MODAL -->
 <div id="editItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'editItemModalOverlay')">
   <div class="shadcn-modal-dialog" style="max-width: 500px;">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="border-color: var(--border-kite) !important;">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
       <h6 class="fw-semibold text-dark m-0">Edit Stock Item</h6>
       <button type="button" class="btn btn-sm text-secondary p-0" onclick="closeEditItemModal()">✕</button>
     </div>
-    
     <div class="p-4">
       <input type="hidden" id="edit_item_code">
-      
       <div class="mb-3">
         <label class="form-label small text-secondary fw-semibold">Item Code</label>
         <input type="text" id="edit_item_name_display" class="form-control form-control-kite text-secondary" disabled>
       </div>
-
       <div class="row g-2 mb-3">
         <div class="col-6">
           <label class="form-label small text-secondary fw-semibold">Price (₹)</label>
-          <input type="number" id="edit_item_rate" class="form-control form-control-kite" placeholder="1500">
+          <input type="number" id="edit_item_rate" class="form-control form-control-kite">
         </div>
         <div class="col-6">
           <label class="form-label small text-secondary fw-semibold">Stock Available</label>
-          <input type="number" id="edit_item_stock" class="form-control form-control-kite" placeholder="20">
+          <input type="number" id="edit_item_stock" class="form-control form-control-kite">
         </div>
       </div>
-
       <div class="mb-4">
         <label class="form-label small text-secondary fw-semibold">Product Photo</label>
         <div id="editImagePreviewContainer" class="mb-2" style="display: none;">
           <img id="editPreviewImageEl" src="" style="height: 75px; width: 75px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-kite);">
         </div>
         <input type="file" id="edit_item_image_file" class="form-control form-control-kite" accept="image/*" onchange="handleEditImagePreview(this)">
-        <small class="text-secondary d-block mt-1" style="font-size: 0.72rem;">Leave empty to retain existing image.</small>
       </div>
-
       <div class="d-flex justify-content-end gap-2">
         <button type="button" class="btn btn-kite-secondary" onclick="closeEditItemModal()">Cancel</button>
         <button type="button" class="btn btn-kite-buy" id="btn_update_product" onclick="saveEditedStockItem()">Update Product</button>
@@ -649,64 +674,350 @@ frappe.ready(function() {
             handleIncomingLowStockAlert(data);
         });
     }
-
     if (document.getElementById('analytics-report-body')) {
         loadAgentSummaryReport();
     }
+    refreshAgentCounters();
 });
 
-function openOrdersModal() {
-    var modal = document.getElementById('ordersModalOverlay');
+// POPUP MODAL LOGIC (OPENED ON CARD CLICK)
+function openProductQuickView(card) {
+    var itemCode = card.getAttribute('data-item');
+    var itemName = card.getAttribute('data-name');
+    var rate = card.getAttribute('data-rate');
+    var stock = parseFloat(card.getAttribute('data-stock') || 0);
+    var image = card.getAttribute('data-image');
+
+    document.getElementById('pv_item_code').innerText = itemCode;
+    document.getElementById('pv_item_title').innerText = itemName;
+    document.getElementById('pv_item_name').innerText = itemName;
+    document.getElementById('pv_item_rate').innerText = "₹" + rate;
+    
+    var imgEl = document.getElementById('pv_item_image');
+    if (image && image.trim() !== '') {
+        imgEl.src = image;
+    } else {
+        imgEl.src = 'https://placehold.co/300x250/f4f4f5/71717a?text=Product';
+    }
+
+    var badgeContainer = document.getElementById('pv_item_badge');
+    if (stock <= 0) {
+        badgeContainer.innerHTML = '<span class="badge-status badge-out-of-stock">Out of Stock</span>';
+    } else if (stock <= 5) {
+        badgeContainer.innerHTML = '<span class="badge-status badge-low-stock">Low: ' + stock + ' units remaining</span>';
+    } else {
+        badgeContainer.innerHTML = '<span class="badge-status badge-in-stock">' + stock + ' units available</span>';
+    }
+
+    // Agent action buttons inside popup
+    var btnBuy = document.getElementById('pv_btn_buy');
+    var btnCart = document.getElementById('pv_btn_cart');
+    var btnWishlist = document.getElementById('pv_btn_wishlist');
+
+    if (btnBuy) {
+        btnBuy.onclick = function() {
+            closeProductQuickView();
+            executeDirectOrder(itemCode, itemName, stock);
+        };
+    }
+    if (btnCart) {
+        btnCart.onclick = function() {
+            closeProductQuickView();
+            executeAddToCart(itemCode, itemName, stock);
+        };
+    }
+    if (btnWishlist) {
+        btnWishlist.onclick = function() {
+            closeProductQuickView();
+            executeAddToWishlist(itemCode);
+        };
+    }
+
+    // Admin action buttons inside popup
+    var btnEdit = document.getElementById('pv_btn_edit');
+    var btnDelete = document.getElementById('pv_btn_delete');
+    if (btnEdit) {
+        btnEdit.onclick = function() {
+            closeProductQuickView();
+            openEditModalDirect(itemCode, rate, stock, image);
+        };
+    }
+    if (btnDelete) {
+        btnDelete.onclick = function() {
+            closeProductQuickView();
+            deleteProduct(itemCode);
+        };
+    }
+
+    var modal = document.getElementById('productQuickViewOverlay');
     if (modal) {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 }
 
-function closeOrdersModal() {
+function closeProductQuickView() {
+    var modal = document.getElementById('productQuickViewOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function refreshAgentCounters() {
+    frappe.call({
+        method: "stock_flow.api.get_agent_cart",
+        callback: function(r) {
+            if (r.message) {
+                var countEl = document.getElementById('cart-count');
+                if (countEl) countEl.innerText = r.message.length;
+            }
+        }
+    });
+    frappe.call({
+        method: "stock_flow.api.get_agent_wishlist",
+        callback: function(r) {
+            if (r.message) {
+                var countEl = document.getElementById('wishlist-count');
+                if (countEl) countEl.innerText = r.message.length;
+            }
+        }
+    });
+}
+
+function openCartModal() {
+    var modal = document.getElementById('cartModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        loadCartItems();
+    }
+}
+function closeCartModal() {
+    var modal = document.getElementById('cartModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function openWishlistModal() {
+    var modal = document.getElementById('wishlistModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        loadWishlistItems();
+    }
+}
+function closeWishlistModal() {
+    var modal = document.getElementById('wishlistModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function loadCartItems() {
+    frappe.call({
+        method: "stock_flow.api.get_agent_cart",
+        callback: function(r) {
+            var body = document.getElementById('cart-modal-body');
+            var totalEl = document.getElementById('cart-modal-total');
+            if (!body) return;
+
+            if (!r.message || r.message.length === 0) {
+                body.innerHTML = '<p class="text-center text-secondary py-4 small">Your cart is empty.</p>';
+                if (totalEl) totalEl.innerText = "₹0.00";
+                return;
+            }
+
+            var html = '<table class="kite-table m-0"><thead><tr><th>Item</th><th class="text-center">Qty</th><th class="text-end">Total</th><th class="text-end">Action</th></tr></thead><tbody>';
+            var grandTotal = 0;
+
+            r.message.forEach(function(item) {
+                var lineTotal = item.quantity * item.rate;
+                grandTotal += lineTotal;
+                html += `<tr>
+                    <td><strong>${item.item_name}</strong></td>
+                    <td class="text-center font-mono">${item.quantity}</td>
+                    <td class="text-end font-mono">₹${lineTotal.toFixed(2)}</td>
+                    <td class="text-end"><button class="btn btn-kite-danger btn-sm py-0 px-2" onclick="removeFromCart('${item.name}')">Remove</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            body.innerHTML = html;
+            if (totalEl) totalEl.innerText = "₹" + grandTotal.toFixed(2);
+        }
+    });
+}
+
+function loadWishlistItems() {
+    frappe.call({
+        method: "stock_flow.api.get_agent_wishlist",
+        callback: function(r) {
+            var body = document.getElementById('wishlist-modal-body');
+            if (!body) return;
+
+            if (!r.message || r.message.length === 0) {
+                body.innerHTML = '<p class="text-center text-secondary py-4 small">Your wishlist is empty.</p>';
+                return;
+            }
+
+            var html = '<table class="kite-table m-0"><thead><tr><th>Item</th><th class="text-end">Rate</th><th class="text-end">Action</th></tr></thead><tbody>';
+            r.message.forEach(function(item) {
+                html += `<tr>
+                    <td><strong>${item.item_name}</strong></td>
+                    <td class="text-end font-mono">₹${item.rate}</td>
+                    <td class="text-end">
+                        <button class="btn btn-kite-buy btn-sm py-0 px-2 me-1" onclick="moveToCartFromWishlist('${item.item_code}', '${item.name}')">Add to Cart</button>
+                        <button class="btn btn-kite-danger btn-sm py-0 px-2" onclick="removeFromWishlist('${item.name}')">Remove</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            body.innerHTML = html;
+        }
+    });
+}
+
+function executeAddToCart(itemCode, itemName, availableStock) {
+    if (availableStock <= 0) {
+        alert(itemName + " is currently out of stock.");
+        return;
+    }
+
+    var qty = prompt("Enter quantity for " + itemName + " (Available: " + availableStock + "):", "1");
+    if (!qty) return;
+    var parsedQty = parseFloat(qty);
+    if (isNaN(parsedQty) || parsedQty <= 0 || parsedQty > availableStock) {
+        alert("Invalid quantity. Enter a valid amount up to " + availableStock + ".");
+        return;
+    }
+
+    frappe.call({
+        method: "stock_flow.api.add_to_agent_cart",
+        args: { item_code: itemCode, quantity: parsedQty },
+        callback: function(r) {
+            if (!r.exc) {
+                refreshAgentCounters();
+                alert("Added to cart successfully.");
+            }
+        }
+    });
+}
+
+function removeFromCart(name) {
+    frappe.call({
+        method: "stock_flow.api.remove_from_agent_cart",
+        args: { name: name },
+        callback: function(r) {
+            if (!r.exc) {
+                loadCartItems();
+                refreshAgentCounters();
+            }
+        }
+    });
+}
+
+function checkoutCart() {
+    if (!confirm("Place stock orders for all items in your cart?")) return;
+    frappe.call({
+        method: "stock_flow.api.checkout_agent_cart",
+        callback: function(r) {
+            if (!r.exc) {
+                alert("Orders placed successfully!");
+                location.reload();
+            }
+        }
+    });
+}
+
+function executeAddToWishlist(itemCode) {
+    frappe.call({
+        method: "stock_flow.api.add_to_agent_wishlist",
+        args: { item_code: itemCode },
+        callback: function(r) {
+            if (!r.exc) {
+                refreshAgentCounters();
+                alert("Added to wishlist.");
+            }
+        }
+    });
+}
+
+function removeFromWishlist(name) {
+    frappe.call({
+        method: "stock_flow.api.remove_from_agent_wishlist",
+        args: { name: name },
+        callback: function(r) {
+            if (!r.exc) {
+                loadWishlistItems();
+                refreshAgentCounters();
+            }
+        }
+    });
+}
+
+function moveToCartFromWishlist(itemCode, wishlistName) {
+    frappe.call({
+        method: "stock_flow.api.add_to_agent_cart",
+        args: { item_code: itemCode, quantity: 1 },
+        callback: function(r) {
+            if (!r.exc) {
+                removeFromWishlist(wishlistName);
+                refreshAgentCounters();
+                alert("Moved to cart!");
+            }
+        }
+    });
+}
+
+function openOrdersModal() { 
+    var modal = document.getElementById('ordersModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+function closeOrdersModal() { 
     var modal = document.getElementById('ordersModalOverlay');
     if (modal) {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 }
-
-function openAddItemModal() {
+function openAddItemModal() { 
     var modal = document.getElementById('addItemModalOverlay');
     if (modal) {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 }
-
-function closeAddItemModal() {
+function closeAddItemModal() { 
     var modal = document.getElementById('addItemModalOverlay');
     if (modal) {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 }
-
-function triggerEditModal(btn) {
-    var itemCode = btn.getAttribute('data-item');
-    var rate = btn.getAttribute('data-rate');
-    var stock = btn.getAttribute('data-stock');
-    var image = btn.getAttribute('data-image') || '';
-
-    openEditModal(itemCode, rate, stock, image);
+function closeEditItemModal() { 
+    var modal = document.getElementById('editItemModalOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
 }
 
-function openEditModal(itemCode, currentRate, currentStock, currentImage) {
+function handleModalOverlayClick(event, overlayId) {
+    if (event.target && event.target.id === overlayId) {
+        document.getElementById(overlayId).style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function openEditModalDirect(itemCode, rate, stock, image) {
     document.getElementById('edit_item_code').value = itemCode;
     document.getElementById('edit_item_name_display').value = itemCode;
-    document.getElementById('edit_item_rate').value = currentRate;
-    document.getElementById('edit_item_stock').value = currentStock;
+    document.getElementById('edit_item_rate').value = rate;
+    document.getElementById('edit_item_stock').value = stock;
     document.getElementById('edit_item_image_file').value = "";
 
     var previewContainer = document.getElementById('editImagePreviewContainer');
     var previewImg = document.getElementById('editPreviewImageEl');
-    if (currentImage && currentImage.trim() !== "") {
-        previewImg.src = currentImage;
+    if (image && image.trim() !== "") {
+        previewImg.src = image;
         previewContainer.style.display = 'block';
     } else {
         previewContainer.style.display = 'none';
@@ -719,14 +1030,6 @@ function openEditModal(itemCode, currentRate, currentStock, currentImage) {
     }
 }
 
-function closeEditItemModal() {
-    var modal = document.getElementById('editItemModalOverlay');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-}
-
 function handleEditImagePreview(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -736,126 +1039,6 @@ function handleEditImagePreview(input) {
         };
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-function handleModalOverlayClick(event, overlayId) {
-    if (event.target && event.target.id === overlayId) {
-        if (overlayId === 'ordersModalOverlay') closeOrdersModal();
-        if (overlayId === 'addItemModalOverlay') closeAddItemModal();
-        if (overlayId === 'editItemModalOverlay') closeEditItemModal();
-    }
-}
-
-function handleIncomingLowStockAlert(data) {
-    var count = data.count || (data.items ? data.items.length : 1);
-    var title = data.title || "Low Stock Notice";
-    var itemsList = Array.isArray(data.items) ? data.items.join(", ") : "";
-
-    showRealtimeToast(title, count + " item(s) running low: " + itemsList);
-
-    var banner = document.getElementById('liveStockBanner');
-    var bannerMsg = document.getElementById('bannerMessage');
-    if (banner && bannerMsg) {
-        bannerMsg.innerText = count + " item(s) below threshold (" + itemsList + ").";
-        banner.style.display = 'block';
-    }
-}
-
-function checkLiveStockAlert() {
-    var lowItems = [];
-    document.querySelectorAll('.catalog-item-wrapper').forEach(function(card) {
-        var stockEl = card.querySelector('.current-stock-number');
-        var title = card.getAttribute('data-item-title') || card.getAttribute('data-item-name');
-        if (stockEl) {
-            var stockVal = parseInt(stockEl.innerText.trim(), 10);
-            if (!isNaN(stockVal) && stockVal <= 5) {
-                lowItems.push(title + " (" + stockVal + ")");
-            }
-        }
-    });
-
-    if (lowItems.length > 0) {
-        handleIncomingLowStockAlert({
-            title: "Low Stock Alert",
-            count: lowItems.length,
-            items: lowItems
-        });
-    } else {
-        showRealtimeToast("Status Normal", "All products have sufficient inventory.");
-    }
-}
-
-function showRealtimeToast(title, message) {
-    var toast = document.getElementById('liveAlertToast');
-    var titleEl = document.getElementById('liveAlertTitle');
-    var bodyEl = document.getElementById('liveAlertBody');
-
-    if (toast && titleEl && bodyEl) {
-        titleEl.innerText = title;
-        bodyEl.innerText = message;
-        toast.style.display = 'block';
-
-        setTimeout(function() {
-            closeRealtimeToast();
-        }, 5000);
-    }
-}
-
-function closeRealtimeToast() {
-    var toast = document.getElementById('liveAlertToast');
-    if (toast) toast.style.display = 'none';
-}
-
-function loadAgentSummaryReport() {
-    frappe.call({
-        method: "stock_flow.api.get_agent_performance_summary",
-        callback: function(r) {
-            var tbody = document.getElementById('analytics-report-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            if (!r.message || r.message.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-secondary py-3 small">No completed order records found.</td></tr>';
-                return;
-            }
-
-            var totalRevSum = 0;
-            var agentCount = r.message.length;
-
-            r.message.forEach(function(row) {
-                var agent = row.agent || 'Unknown';
-                var totalOrders = row.total_orders || 0;
-                var totalQty = row.total_quantity || 0;
-                var totalRev = parseFloat(row.total_revenue || 0);
-                totalRevSum += totalRev;
-
-                var tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="padding-left: 20px;">
-                        <span class="text-dark fw-semibold">${agent}</span>
-                    </td>
-                    <td class="text-center font-mono text-secondary">${totalOrders}</td>
-                    <td class="text-center font-mono text-secondary">${totalQty}</td>
-                    <td class="text-end font-mono text-dark fw-semibold" style="padding-right: 20px;">
-                        ₹${totalRev.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            var elAgents = document.getElementById('statActiveAgents');
-            var elRev = document.getElementById('statTotalRev');
-            if (elAgents) elAgents.innerText = agentCount;
-            if (elRev) elRev.innerText = "₹" + totalRevSum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        }
-    });
-}
-
-function downloadOrderPdf(orderId) {
-    var printUrl = "/printview?doctype=Stock%20Order&name=" 
-        + encodeURIComponent(orderId) 
-        + "&format=Order%20Slip&no_letterhead=1&trigger_print=1";
-    window.open(printUrl, '_blank');
 }
 
 function saveNewStockItem() {
@@ -1002,11 +1185,7 @@ function deleteProduct(itemCode) {
     });
 }
 
-function triggerOrder(btn) {
-    var itemCode = btn.getAttribute('data-item');
-    var itemName = btn.getAttribute('data-name');
-    var availableStock = parseInt(btn.getAttribute('data-stock') || 0);
-
+function executeDirectOrder(itemCode, itemName, availableStock) {
     if (availableStock <= 0) {
         alert(itemName + " is currently out of stock.");
         return;
@@ -1016,13 +1195,8 @@ function triggerOrder(btn) {
     if (qty === null) return;
 
     var requestedQty = parseInt(qty);
-    if (isNaN(requestedQty) || requestedQty <= 0) {
+    if (isNaN(requestedQty) || requestedQty <= 0 || requestedQty > availableStock) {
         alert("Please enter a valid positive quantity.");
-        return;
-    }
-
-    if (requestedQty > availableStock) {
-        alert("Cannot order " + requestedQty + " units. Only " + availableStock + " available.");
         return;
     }
 
@@ -1052,16 +1226,7 @@ function approveOrder(orderId) {
             }
         },
         error: function(r) {
-            var errMessage = "Approval failed.";
-            if (r._server_messages) {
-                try {
-                    var msgs = JSON.parse(r._server_messages);
-                    errMessage = JSON.parse(msgs[0]).message;
-                } catch(e) {}
-            } else if (r.message) {
-                errMessage = r.message;
-            }
-            alert(errMessage);
+            alert("Approval failed.");
         }
     });
 }
@@ -1079,6 +1244,118 @@ function rejectOrder(orderId) {
         },
         error: function(r) {
             alert("Rejection failed.");
+        }
+    });
+}
+
+function downloadOrderPdf(orderId) {
+    var printUrl = "/printview?doctype=Stock%20Order&name=" 
+        + encodeURIComponent(orderId) 
+        + "&format=Order%20Slip&no_letterhead=1&trigger_print=1";
+    window.open(printUrl, '_blank');
+}
+
+function handleIncomingLowStockAlert(data) {
+    var count = data.count || (data.items ? data.items.length : 1);
+    var title = data.title || "Low Stock Notice";
+    var itemsList = Array.isArray(data.items) ? data.items.join(", ") : "";
+
+    showRealtimeToast(title, count + " item(s) running low: " + itemsList);
+
+    var banner = document.getElementById('liveStockBanner');
+    var bannerMsg = document.getElementById('bannerMessage');
+    if (banner && bannerMsg) {
+        bannerMsg.innerText = count + " item(s) below threshold (" + itemsList + ").";
+        banner.style.display = 'block';
+    }
+}
+
+function checkLiveStockAlert() {
+    var lowItems = [];
+    document.querySelectorAll('.catalog-item-wrapper').forEach(function(card) {
+        var stockEl = card.querySelector('.current-stock-number');
+        var title = card.getAttribute('data-item-title') || card.getAttribute('data-item-name');
+        if (stockEl) {
+            var stockVal = parseInt(stockEl.innerText.trim(), 10);
+            if (!isNaN(stockVal) && stockVal <= 5) {
+                lowItems.push(title + " (" + stockVal + ")");
+            }
+        }
+    });
+
+    if (lowItems.length > 0) {
+        handleIncomingLowStockAlert({
+            title: "Low Stock Alert",
+            count: lowItems.length,
+            items: lowItems
+        });
+    } else {
+        showRealtimeToast("Status Normal", "All products have sufficient inventory.");
+    }
+}
+
+function showRealtimeToast(title, message) {
+    var toast = document.getElementById('liveAlertToast');
+    var titleEl = document.getElementById('liveAlertTitle');
+    var bodyEl = document.getElementById('liveAlertBody');
+
+    if (toast && titleEl && bodyEl) {
+        titleEl.innerText = title;
+        bodyEl.innerText = message;
+        toast.style.display = 'block';
+
+        setTimeout(function() {
+            closeRealtimeToast();
+        }, 5000);
+    }
+}
+
+function closeRealtimeToast() {
+    var toast = document.getElementById('liveAlertToast');
+    if (toast) toast.style.display = 'none';
+}
+
+function loadAgentSummaryReport() {
+    frappe.call({
+        method: "stock_flow.api.get_agent_performance_summary",
+        callback: function(r) {
+            var tbody = document.getElementById('analytics-report-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!r.message || r.message.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-secondary py-3 small">No completed order records found.</td></tr>';
+                return;
+            }
+
+            var totalRevSum = 0;
+            var agentCount = r.message.length;
+
+            r.message.forEach(function(row) {
+                var agent = row.agent || 'Unknown';
+                var totalOrders = row.total_orders || 0;
+                var totalQty = row.total_quantity || 0;
+                var totalRev = parseFloat(row.total_revenue || 0);
+                totalRevSum += totalRev;
+
+                var tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="padding-left: 20px;">
+                        <span class="text-dark fw-semibold">${agent}</span>
+                    </td>
+                    <td class="text-center font-mono text-secondary">${totalOrders}</td>
+                    <td class="text-center font-mono text-secondary">${totalQty}</td>
+                    <td class="text-end font-mono text-dark fw-semibold" style="padding-right: 20px;">
+                        ₹${totalRev.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            var elAgents = document.getElementById('statActiveAgents');
+            var elRev = document.getElementById('statTotalRev');
+            if (elAgents) elAgents.innerText = agentCount;
+            if (elRev) elRev.innerText = "₹" + totalRevSum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
     });
 }
