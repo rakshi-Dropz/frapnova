@@ -9,7 +9,7 @@ def redirect_to_portal(login_manager):
             frappe.local.response["home_page"] = "/frapnora"
 
 @frappe.whitelist()
-def create_stock_item(item_name, rate, current_stock, image_url=None):
+def create_stock_item(item_name, rate, current_stock, image_url=None, category=None):
     user_roles = frappe.get_roles()
     if "System Manager" not in user_roles and frappe.session.user != "Administrator":
         frappe.throw("Permission denied: Only Administrators can add products.")
@@ -20,24 +20,37 @@ def create_stock_item(item_name, rate, current_stock, image_url=None):
     item_code = item_name.strip()
     rate_val = float(rate or 0)
     stock_val = float(current_stock or 0)
+    category_val = (category or "").strip()
 
     image_path = (image_url or "").strip()
     if image_path.startswith("/private/files/"):
         image_path = image_path.replace("/private/files/", "/files/")
 
-    frappe.db.sql("""
-        INSERT INTO `tabStock Item` (name, item_name, rate, current_stock, image, creation, modified, owner, docstatus)
-        VALUES (%s, %s, %s, %s, %s, NOW(), NOW(), %s, 0)
-        ON DUPLICATE KEY UPDATE 
-            item_name=%s, rate=%s, current_stock=%s, image=%s, modified=NOW()
-    """, (item_code, item_name, rate_val, stock_val, image_path, frappe.session.user, item_name, rate_val, stock_val, image_path))
+    has_category = frappe.db.has_column("Stock Item", "category")
+
+    if has_category:
+        frappe.db.sql("""
+            INSERT INTO `tabStock Item` (name, item_name, rate, current_stock, image, category, creation, modified, owner, docstatus)
+            VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW(), %s, 0)
+            ON DUPLICATE KEY UPDATE 
+                item_name=%s, rate=%s, current_stock=%s, image=%s, category=%s, modified=NOW()
+        """, (item_code, item_name, rate_val, stock_val, image_path, category_val, frappe.session.user, 
+              item_name, rate_val, stock_val, image_path, category_val))
+    else:
+        frappe.db.sql("""
+            INSERT INTO `tabStock Item` (name, item_name, rate, current_stock, image, creation, modified, owner, docstatus)
+            VALUES (%s, %s, %s, %s, %s, NOW(), NOW(), %s, 0)
+            ON DUPLICATE KEY UPDATE 
+                item_name=%s, rate=%s, current_stock=%s, image=%s, modified=NOW()
+        """, (item_code, item_name, rate_val, stock_val, image_path, frappe.session.user, 
+              item_name, rate_val, stock_val, image_path))
 
     frappe.db.commit()
     return item_code
 
 
 @frappe.whitelist()
-def update_stock_item(item_code, rate=None, current_stock=None, image_url=None):
+def update_stock_item(item_code, rate=None, current_stock=None, image_url=None, category=None):
     user_roles = frappe.get_roles()
     if "System Manager" not in user_roles and frappe.session.user != "Administrator":
         frappe.throw("Permission denied: Only Administrators can edit products.")
@@ -56,6 +69,8 @@ def update_stock_item(item_code, rate=None, current_stock=None, image_url=None):
         updates["current_stock"] = float(current_stock)
     if image_path:
         updates["image"] = image_path
+    if category is not None and frappe.db.has_column("Stock Item", "category"):
+        updates["category"] = str(category).strip()
 
     if updates:
         frappe.db.set_value("Stock Item", item_code, updates)
@@ -76,7 +91,7 @@ def delete_stock_item(item_code):
 
 
 @frappe.whitelist()
-def create_stock_order(item_code, quantity=1):
+def create_stock_order(item_code, quantity=1, shipping_address=None, dispatch_notes=None):
     if frappe.session.user == "Guest":
         frappe.throw("Please log in to place orders.")
 
@@ -98,14 +113,21 @@ def create_stock_order(item_code, quantity=1):
     if image_path.startswith("/private/files/"):
         image_path = image_path.replace("/private/files/", "/files/")
 
-    doc = frappe.get_doc({
+    order_payload = {
         "doctype": "Stock Order",
         "item": item_code,
         "quantity": qty,
         "rate": rate,
         "total_amount": rate * qty,
         "item_image": image_path
-    })
+    }
+
+    if frappe.db.has_column("Stock Order", "shipping_address") and shipping_address:
+        order_payload["shipping_address"] = shipping_address
+    if frappe.db.has_column("Stock Order", "dispatch_notes") and dispatch_notes:
+        order_payload["dispatch_notes"] = dispatch_notes
+
+    doc = frappe.get_doc(order_payload)
     doc.insert(ignore_permissions=True)
     frappe.db.commit()
     return doc.name
@@ -172,7 +194,7 @@ def remove_from_agent_cart(name):
 
 
 @frappe.whitelist()
-def checkout_agent_cart():
+def checkout_agent_cart(shipping_address=None, dispatch_notes=None):
     if frappe.session.user == "Guest":
         frappe.throw("Please log in.")
 
@@ -185,16 +207,25 @@ def checkout_agent_cart():
     if not cart_items:
         frappe.throw("Your cart is empty.")
 
+    has_shipping = frappe.db.has_column("Stock Order", "shipping_address")
+    has_notes = frappe.db.has_column("Stock Order", "dispatch_notes")
+
     created_orders = []
     for ci in cart_items:
-        doc = frappe.get_doc({
+        order_dict = {
             "doctype": "Stock Order",
             "item": ci.item_code,
             "quantity": ci.quantity,
             "rate": ci.rate,
             "total_amount": ci.rate * ci.quantity,
             "item_image": ci.image or ""
-        })
+        }
+        if has_shipping and shipping_address:
+            order_dict["shipping_address"] = shipping_address
+        if has_notes and dispatch_notes:
+            order_dict["dispatch_notes"] = dispatch_notes
+
+        doc = frappe.get_doc(order_dict)
         doc.insert(ignore_permissions=True)
         created_orders.append(doc.name)
 
