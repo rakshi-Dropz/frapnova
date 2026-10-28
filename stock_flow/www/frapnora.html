@@ -5,35 +5,34 @@
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
   :root {
-    --bg-app: #f5f6f8;
-    --bg-sidebar: #eaebee;
+    --bg-app: #f8f9fa;
+    --bg-sidebar: #ffffff;
     --bg-surface: #ffffff;
-    --bg-surface-elevated: #f0f2f5;
-    --border-subtle: #e2e4e9;
-    --border-strong: #cbd0d8;
-    --text-primary: #111827;
-    --text-secondary: #525866;
-    --text-muted: #868c98;
+    --bg-surface-elevated: #f1f3f5;
+    --border-subtle: #e9ecef;
+    --border-strong: #ced4da;
+    --text-primary: #1a1e24;
+    --text-secondary: #5c6370;
+    --text-muted: #8c93a0;
     --accent-red: #e11d48;
     --accent-red-hover: #cc123b;
     --accent-blue: #2563eb;
     --accent-blue-hover: #1d4ed8;
     --accent-green: #10b981;
-    --sidebar-width: 205px;
+    --sidebar-width: 210px;
 
-    /* Alpha Drop Reminder Theme */
-    --reminder-bg: #fbf8f2;
-    --reminder-border: #eee7db;
-    --reminder-badge-bg: #ede6d7;
-    --reminder-badge-text: #595345;
+    --reminder-bg: #fdfaf6;
+    --reminder-border: #faebd7;
+    --reminder-badge-bg: #f3dfc8;
+    --reminder-badge-text: #6b4e2e;
   }
 
   [data-theme="dark"] {
     --bg-app: #0c0f17;
-    --bg-sidebar: #121622;
+    --bg-sidebar: #131722;
     --bg-surface: #171d2b;
-    --bg-surface-elevated: #202738;
-    --border-subtle: #242c3d;
+    --bg-surface-elevated: #1e2638;
+    --border-subtle: #242d3e;
     --border-strong: #333e54;
     --text-primary: #f8fafc;
     --text-secondary: #9aa2b1;
@@ -45,7 +44,6 @@
     --reminder-badge-text: #cbd5e1;
   }
 
-  /* SUPPRESS DEFAULT FRAPPE WRAPPERS TO PUSH SIDEBAR TO VERY LEFT EDGE */
   .web-footer, .page-header, header.navbar, .navbar-light, .navbar-default {
     display: none !important;
   }
@@ -85,16 +83,13 @@
     font-family: 'JetBrains Mono', monospace !important;
   }
 
-  /* WORKSPACE APP SHELL — FLUSH TO SCREEN EDGES */
   .frap-app-shell {
     display: flex;
     min-height: 100vh;
     width: 100vw;
-    margin: 0;
-    padding: 0;
   }
 
-  /* COMPACT FLUSH SIDEBAR */
+  /* SIDEBAR */
   .frap-sidebar {
     width: var(--sidebar-width);
     background-color: var(--bg-sidebar);
@@ -102,7 +97,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 16px 12px;
+    padding: 20px 14px;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -112,9 +107,9 @@
   .sidebar-brand-box {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    margin-bottom: 18px;
+    gap: 10px;
+    padding: 4px 10px;
+    margin-bottom: 24px;
     text-decoration: none !important;
   }
 
@@ -126,7 +121,7 @@
   }
 
   .sidebar-brand-title {
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--text-primary);
@@ -138,21 +133,21 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
   }
 
   .sidebar-nav-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 10px;
-    border-radius: 7px;
+    padding: 9px 12px;
+    border-radius: 8px;
     color: var(--text-secondary);
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none !important;
-    transition: all 0.12s ease;
+    transition: all 0.15s ease;
   }
 
   .sidebar-nav-item:hover {
@@ -161,46 +156,45 @@
   }
 
   .sidebar-nav-item.active {
-    background-color: var(--bg-surface);
+    background-color: var(--bg-surface-elevated);
     color: var(--text-primary);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
 
   .sidebar-nav-item-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
 
   .sidebar-user-card {
-    background: var(--bg-surface);
+    background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 8px 10px;
+    border-radius: 10px;
+    padding: 10px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
   .user-avatar-initials {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: var(--bg-surface-elevated);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
-  /* EXPANDED MAIN CANVAS */
+  /* CANVAS */
   .frap-main-canvas {
     flex: 1;
-    padding: 32px 48px;
+    padding: 36px 48px;
     overflow-y: auto;
     width: calc(100vw - var(--sidebar-width));
   }
@@ -209,9 +203,9 @@
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -224,340 +218,463 @@
     background-color: var(--accent-red);
   }
 
-  /* HERO TITLES */
   .canvas-hero-title {
-    font-size: 3.6rem;
+    font-size: 3.2rem;
     color: var(--text-primary);
     margin: 0;
     line-height: 1.05;
   }
 
   .canvas-sub-title {
-    font-size: 1.45rem;
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-secondary);
     margin-top: 4px;
-    margin-bottom: 0;
+    margin-bottom: 2px;
   }
 
   .canvas-greeting-sub {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    margin-top: 6px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
   }
 
-  /* ALPHA DROP STYLE REMINDER CARD */
+  /* REMINDER CARD */
   .alpha-reminder-card {
     background: var(--reminder-bg);
     border: 1px solid var(--reminder-border);
     border-radius: 12px;
-    padding: 14px 20px;
+    padding: 12px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    margin-bottom: 24px;
   }
 
   .reminder-badge {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     padding: 4px 10px;
     border-radius: 6px;
     background: var(--reminder-badge-bg);
     color: var(--reminder-badge-text);
-    display: inline-block;
   }
 
   .reminder-text {
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     color: var(--text-primary);
     font-weight: 500;
     margin: 0;
   }
 
-  .btn-alpha-pill {
-    background: var(--accent-red);
-    color: #ffffff !important;
-    border: none;
-    font-size: 0.84rem;
-    font-weight: 600;
-    padding: 8px 20px;
-    border-radius: 9999px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: opacity 0.15s ease, transform 0.15s ease;
-    text-decoration: none !important;
-    white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.2);
-  }
-
-  .btn-alpha-pill:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-  }
-
-  .btn-close-notice {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 4px;
-    line-height: 1;
-    transition: color 0.15s ease;
-  }
-
-  .btn-close-notice:hover {
-    color: var(--text-primary);
-  }
-
-  /* CATEGORY & SEARCH CONTAINER LINE */
-  .category-search-card {
+  /* UNIFIED TOOLBAR */
+  .unified-control-bar {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    padding: 12px 20px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   }
 
-  .toolbar-left-group {
+  .bar-left-group {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
   }
 
-  .search-input-group {
+  .bar-right-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .search-wrapper-input {
     position: relative;
-    min-width: 280px;
+    min-width: 240px;
   }
 
-  .search-icon-inside {
+  .search-icon-svg {
     position: absolute;
-    left: 11px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
     pointer-events: none;
   }
 
-  .search-input-field {
-    padding-left: 34px !important;
-  }
-
-  .frap-select-custom {
+  .form-control-frap {
     background-color: var(--bg-surface-elevated) !important;
     border: 1px solid var(--border-subtle) !important;
     color: var(--text-primary) !important;
     border-radius: 8px !important;
-    padding: 7px 12px !important;
+    padding: 8px 14px;
     font-size: 0.86rem;
-    cursor: pointer;
-    font-weight: 500;
+    font-family: inherit;
+    transition: border-color 0.15s ease;
   }
 
-  .form-control-kite {
-    background-color: var(--bg-surface-elevated) !important;
-    border: 1px solid var(--border-subtle) !important;
-    color: var(--text-primary) !important;
-    border-radius: 8px !important;
-    padding: 7px 12px;
-    font-size: 0.86rem;
-  }
-
-  .form-control-kite:focus, .frap-select-custom:focus {
+  .form-control-frap:focus {
     border-color: var(--accent-blue) !important;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
     outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
   }
 
-  /* NEXT LINE: SEPARATED ACTION ROW */
-  .add-action-standalone-row {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 24px;
-  }
-
-  .btn-frap-primary {
-    background: var(--accent-blue);
+  /* BUTTONS */
+  .btn-pill-crimson {
+    background: var(--accent-red);
     color: #ffffff !important;
     border: none;
-    font-weight: 500;
-    font-size: 0.85rem;
-    padding: 8px 16px;
-    border-radius: 6px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
+    text-decoration: none !important;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
   }
 
-  .btn-frap-primary:hover {
-    background: var(--accent-blue-hover);
+  .btn-pill-crimson:hover {
+    opacity: 0.92;
   }
 
-  .btn-kite-secondary {
-    background: var(--bg-surface);
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-subtle);
-    font-weight: 500;
-    font-size: 0.84rem;
-    padding: 7px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-
-  .btn-kite-secondary:hover {
+  .btn-base-secondary {
     background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary) !important;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none !important;
+    transition: border-color 0.15s ease;
+  }
+
+  .btn-base-secondary:hover {
     border-color: var(--border-strong);
   }
 
-  .btn-kite-danger {
+  .btn-base-primary {
+    background: var(--accent-blue);
+    border: none;
+    color: #ffffff !important;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none !important;
+  }
+
+  .btn-base-primary:hover {
+    background: var(--accent-blue-hover);
+  }
+
+  .btn-base-danger {
     background: transparent;
+    border: 1px solid rgba(225, 29, 72, 0.3);
     color: var(--accent-red) !important;
-    border: 1px solid rgba(225, 29, 72, 0.2);
-    font-weight: 500;
+    border-radius: 8px;
+    padding: 7px 12px;
     font-size: 0.82rem;
-    padding: 6px 12px;
-    border-radius: 6px;
+    font-weight: 500;
     cursor: pointer;
   }
 
-  .btn-kite-danger:hover {
-    background: #fef2f2;
+  .btn-base-danger:hover {
+    background: rgba(225, 29, 72, 0.05);
     border-color: var(--accent-red);
   }
 
   /* PRODUCT CARDS */
-  .kite-card {
+  .product-modern-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  }
-
-  .product-clickable-card {
+    border-radius: 12px;
+    overflow: hidden;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    height: 100%;
   }
 
-  .product-clickable-card:hover {
-    transform: translateY(-3px);
+  .product-modern-card:hover {
+    transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
   }
 
-  .badge-status {
+  .card-img-holder {
+    height: 190px;
+    background: var(--bg-app);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-img-holder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-body-content {
+    padding: 16px;
+  }
+
+  .card-title-text {
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 10px 0;
+    line-height: 1.35;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.6em;
+  }
+
+  .card-footer-metrics {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 12px;
+  }
+
+  /* BADGES */
+  .badge-tag {
     font-size: 0.72rem;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 4px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
     display: inline-flex;
     align-items: center;
-    white-space: nowrap;
   }
 
-  .badge-low-stock { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
-  .badge-out-of-stock { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
-  .badge-in-stock { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
-  .badge-submitted { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
-  .badge-draft { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+  .badge-instock { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+  .badge-lowstock { background: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+  .badge-outofstock { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+  .badge-category { background: var(--bg-surface-elevated); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
 
-  [data-theme="dark"] .badge-low-stock { background: rgba(234, 88, 12, 0.15); border-color: rgba(234, 88, 12, 0.3); }
-  [data-theme="dark"] .badge-out-of-stock { background: rgba(220, 38, 38, 0.15); border-color: rgba(220, 38, 38, 0.3); }
-  [data-theme="dark"] .badge-in-stock { background: rgba(22, 163, 74, 0.15); border-color: rgba(22, 163, 74, 0.3); }
+  /* ADMIN APPROVALS SECTION */
+  .admin-section-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
 
-  /* SHADCN MODALS */
+  .admin-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-surface-elevated);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table-frap {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  .table-frap th {
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .table-frap td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.86rem;
+    vertical-align: middle;
+  }
+
+  /* MODALS */
   .shadcn-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(4px);
     z-index: 99999;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 16px;
-    backdrop-filter: blur(4px);
+    padding: 20px;
   }
 
   .shadcn-modal-dialog {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: 14px;
     width: 100%;
-    max-width: 640px;
-    max-height: 85vh;
+    max-width: 620px;
+    max-height: 88vh;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.14);
+    overflow: hidden;
   }
 
-  .popup-preview-img-box {
+  .modal-head {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-surface);
+  }
+
+  .modal-body-scroll {
+    padding: 22px;
+    overflow-y: auto;
+  }
+
+  .modal-product-img-box {
     background: var(--bg-app);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    height: 220px;
+    border-radius: 10px;
+    height: 190px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
   }
 
-  .popup-preview-img-box img {
+  .modal-product-img-box img {
     max-height: 100%;
     max-width: 100%;
     object-fit: contain;
   }
 
-  .kite-table {
-    width: 100%;
-    color: var(--text-primary);
-    border-collapse: collapse;
-  }
-
-  .kite-table thead th {
+  .qr-code-clean-card {
     background: var(--bg-surface-elevated);
-    color: var(--text-secondary);
-    font-size: 0.75rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 14px;
+  }
+
+  .qr-frame {
+    background: #ffffff;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* STEPPER */
+  .stepper-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin: 16px 0 24px 0;
+  }
+
+  .stepper-row::before {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: var(--border-subtle);
+    z-index: 1;
+  }
+
+  .stepper-node {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stepper-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-surface-elevated);
+    border: 2px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  .stepper-node.completed .stepper-dot {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #fff;
+  }
+
+  .stepper-node.current .stepper-dot {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  }
+
+  .stepper-node span {
+    font-size: 0.7rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    margin-top: 5px;
   }
 
-  .kite-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-subtle);
-    font-size: 0.86rem;
-    vertical-align: middle;
-  }
-
-  .cart-checkout-box {
-    background-color: var(--bg-surface-elevated);
-    border-top: 1px solid var(--border-subtle);
+  .stepper-node.completed span, .stepper-node.current span {
+    color: var(--text-primary);
   }
 </style>
 
 <div class="frap-app-shell">
   
-  <!-- COMPACT FLUSH LEFT SIDEBAR -->
+  <!-- UNIFIED SIDEBAR -->
   <aside class="frap-sidebar">
     <div>
       <a href="/frapnora" class="sidebar-brand-box">
@@ -576,7 +693,6 @@
             </a>
           </li>
 
-          <!-- REVENUE CLICKABLE OPTION IN SIDEBAR -->
           <li>
             <a href="javascript:void(0)" class="sidebar-nav-item" onclick="openRevenueModal()">
               <span class="sidebar-nav-item-left">
@@ -586,14 +702,13 @@
             </a>
           </li>
 
-          {% if is_agent %}
           <li>
             <a href="javascript:void(0)" class="sidebar-nav-item" onclick="openCartModal()">
               <span class="sidebar-nav-item-left">
                 <span>🛒</span>
                 <span>Cart</span>
               </span>
-              <span class="badge rounded-pill bg-light text-dark font-mono border" id="sidebar-cart-count">0</span>
+              <span class="badge-tag badge-category font-mono" id="sidebar-cart-count">0</span>
             </a>
           </li>
 
@@ -603,7 +718,7 @@
                 <span>📋</span>
                 <span>Orders</span>
               </span>
-              <span class="badge rounded-pill bg-light text-dark font-mono border">{{ my_orders|length }}</span>
+              <span class="badge-tag badge-category font-mono">{{ my_orders|length }}</span>
             </a>
           </li>
 
@@ -613,12 +728,10 @@
                 <span>❤️</span>
                 <span>Wishlist</span>
               </span>
-              <span class="badge rounded-pill bg-light text-dark font-mono border" id="sidebar-wishlist-count">0</span>
+              <span class="badge-tag badge-category font-mono" id="sidebar-wishlist-count">0</span>
             </a>
           </li>
-          {% endif %}
 
-          {% if is_admin or is_manager %}
           <li>
             <a href="javascript:void(0)" class="sidebar-nav-item" onclick="checkLiveStockAlert()">
               <span class="sidebar-nav-item-left">
@@ -627,10 +740,9 @@
               </span>
             </a>
           </li>
-          {% endif %}
 
           <li>
-            <a href="javascript:void(0)" class="sidebar-nav-item" id="themeToggleBtn" onclick="toggleTheme()">
+            <a href="javascript:void(0)" class="sidebar-nav-item" onclick="toggleSharedTheme()">
               <span class="sidebar-nav-item-left">
                 <span>🌙</span>
                 <span id="themeBtnText">Dark</span>
@@ -641,87 +753,84 @@
       </nav>
     </div>
 
-    <!-- User Profile Footer -->
     <div class="sidebar-user-card">
       <div class="d-flex align-items-center gap-2">
-        <div class="user-avatar-initials">
-          {{ user_fullname[:2]|upper }}
-        </div>
+        <div class="user-avatar-initials">{{ user_fullname[:2]|upper }}</div>
         <div style="line-height: 1.2;">
-          <div class="fw-bold small text-truncate" style="max-width: 100px;">{{ user_fullname }}</div>
+          <div class="fw-bold small text-truncate" style="max-width: 95px;">{{ user_fullname }}</div>
           <span class="text-muted" style="font-size: 0.7rem;">
             {% if is_admin %}Admin{% elif is_manager %}Manager{% else %}Agent{% endif %}
           </span>
         </div>
       </div>
-      <a href="/?cmd=web_logout" class="text-secondary small text-decoration-none" title="Log out">🚪</a>
+      <a href="/?cmd=web_logout" class="text-muted small text-decoration-none" title="Log out">🚪</a>
     </div>
   </aside>
 
-  <!-- EXPANDED MAIN CANVAS -->
+  <!-- MAIN CANVAS -->
   <main class="frap-main-canvas">
     
-    <!-- Top Micro Breadcrumb -->
     <div class="canvas-top-overtitle">
       <span class="red-dot"></span>
-      <span>FRANORA — OPERATIONS</span>
+      <span>Operations & Stock</span>
     </div>
 
-    <!-- Large Hero Title: FRAPNORA -->
     <h1 class="canvas-hero-title font-serif-heading">FRAPNORA</h1>
-    
-    <!-- Subtitle: Stock Inventory -->
     <h2 class="canvas-sub-title">Stock Inventory</h2>
     
-    <!-- Clean Greeting Subtitle -->
     <div class="canvas-greeting-sub" id="dynamicGreeting">
       Good evening, {{ user_fullname }}. Operational stock overview & inventory dispatch.
     </div>
 
-    <!-- ALPHA DROP STYLE REMINDER CARD -->
+    <!-- REMINDER CARD -->
     <div class="alpha-reminder-card" id="liveStockBanner">
       <div class="d-flex align-items-center gap-3">
         <span class="reminder-badge" id="bannerBadge">REMINDER</span>
         <p class="reminder-text" id="bannerMessage">System active. Verify warehouse levels before daily order dispatch cut-off.</p>
       </div>
-      <div class="d-flex align-items-center gap-3">
-        <button type="button" class="btn-alpha-pill" onclick="checkLiveStockAlert()">Check Stock</button>
-        <button type="button" class="btn-close-notice" onclick="document.getElementById('liveStockBanner').style.display='none'" title="Dismiss">✕</button>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn-pill-crimson" onclick="checkLiveStockAlert()" style="padding: 6px 14px; font-size: 0.78rem;">Check Stock</button>
+        <button type="button" class="btn-base-secondary" onclick="document.getElementById('liveStockBanner').style.display='none'" style="padding: 5px 10px; font-size: 0.75rem;">✕</button>
       </div>
     </div>
 
-    <!-- LINE 1: CATEGORY & SEARCH CONTAINER -->
-    <div class="category-search-card">
-      <div class="toolbar-left-group">
-        <span class="small text-muted fw-semibold">Category:</span>
-        <select id="categoryFilterDropdown" class="frap-select-custom" onchange="handleCategorySelect(this.value)">
+    <!-- UNIFIED TOP CONTROL BAR -->
+    <div class="unified-control-bar">
+      <div class="bar-left-group">
+        <span class="small text-muted fw-semibold">Filter:</span>
+        <select id="categoryFilterDropdown" class="form-control-frap" onchange="handleCategorySelect(this.value)">
           <option value="ALL">All Categories</option>
           {% for cat in categories %}
           <option value="{{ cat }}">{{ cat }}</option>
           {% endfor %}
         </select>
-        <span class="badge rounded-pill bg-light text-secondary border small">{{ stock_items|length }} items</span>
+        
+        <div class="search-wrapper-input">
+          <svg class="search-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="catalogSearchInput" class="form-control-frap w-100" style="padding-left: 32px;" placeholder="Search SKU or product..." onkeyup="filterCatalogProducts()">
+        </div>
+
+        <span class="badge-tag badge-category font-mono">{{ stock_items|length }} SKUs</span>
       </div>
 
-      <div class="search-input-group">
-        <svg class="search-icon-inside" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="catalogSearchInput" class="form-control-kite search-input-field w-100" placeholder="Search product name or SKU..." onkeyup="filterCatalogProducts()">
+      <div class="bar-right-group">
+        <button type="button" class="btn-base-secondary" onclick="openQrScannerModal()" title="Scan dispatch slip QR">
+          <span>📷</span>
+          <span>Scan QR</span>
+        </button>
+
+        {% if is_admin %}
+        <button type="button" class="btn-pill-crimson" onclick="openAddItemModal()">
+          <span>+ Add Product</span>
+        </button>
+        {% endif %}
       </div>
     </div>
 
-    <!-- LINE 2: DEDICATED SEPARATED + ADD PRODUCT BUTTON (ON ITS OWN LINE BELOW) -->
-    {% if is_admin %}
-    <div class="add-action-standalone-row">
-      <button type="button" class="btn-alpha-pill" onclick="openAddItemModal()">
-        <span>+ Add Product</span>
-      </button>
-    </div>
-    {% endif %}
-
-    <!-- PRODUCT CATALOG CARDS GRID -->
+    <!-- PRODUCT CATALOG CARDS -->
     <div class="row g-3" id="catalogGridContainer">
       {% for item in stock_items %}
       <div class="col-12 col-md-6 col-lg-4 catalog-item-wrapper" 
@@ -729,7 +838,7 @@
            data-item-title="{{ item.item_name }}"
            data-category="{{ item.category or 'Uncategorized' }}"
            data-stock="{{ item.current_stock }}">
-        <div class="kite-card h-100 d-flex flex-column justify-content-between overflow-hidden product-clickable-card"
+        <div class="product-modern-card"
              data-item="{{ item.name }}"
              data-name="{{ item.item_name }}"
              data-rate="{{ item.rate }}"
@@ -737,80 +846,85 @@
              data-category="{{ item.category or '' }}"
              data-image="{{ item.image or '' }}"
              onclick="openProductQuickView(this)">
-          <div>
+          
+          <div class="card-img-holder">
             {% if item.image %}
-              <img src="{{ item.image }}" class="w-100" style="height: 180px; object-fit: cover; border-bottom: 1px solid var(--border-subtle);" onerror="this.onerror=null; this.src='https://placehold.co/240x180/f4f4f5/71717a?text=Product';">
+              <img src="{{ item.image }}" onerror="this.src='https://placehold.co/280x200/f1f3f5/8c93a0?text=Product';">
             {% else %}
-              <div class="d-flex align-items-center justify-content-center text-muted" style="height: 180px; background: var(--bg-app); border-bottom: 1px solid var(--border-subtle);">
-                <span class="small">No image available</span>
-              </div>
+              <span class="text-muted small">No Image</span>
             {% endif %}
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h6 class="fw-semibold m-0 product-title-text" style="color: var(--text-primary);">{{ item.item_name }}</h6>
-                <span>
-                  {% if item.current_stock <= 5 and item.current_stock > 0 %}
-                    <span class="badge-status badge-low-stock">Low: {{ item.current_stock }}</span>
-                  {% elif item.current_stock <= 0 %}
-                    <span class="badge-status badge-out-of-stock">Out of Stock</span>
-                  {% else %}
-                    <span class="badge-status badge-in-stock">{{ item.current_stock }} available</span>
-                  {% endif %}
-                </span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="font-mono fs-5 fw-bold" style="color: var(--accent-blue);">₹{{ item.rate }}</div>
-                <span class="badge rounded-pill bg-light text-secondary border small">{{ item.category or 'Uncategorized' }}</span>
-              </div>
-              <div class="d-none current-stock-number">{{ item.current_stock }}</div>
+            
+            <div style="position: absolute; top: 10px; right: 10px;">
+              {% if item.current_stock <= 0 %}
+                <span class="badge-tag badge-outofstock">Out of Stock</span>
+              {% elif item.current_stock <= 5 %}
+                <span class="badge-tag badge-lowstock">Low: {{ item.current_stock }} left</span>
+              {% else %}
+                <span class="badge-tag badge-instock">{{ item.current_stock }} in stock</span>
+              {% endif %}
             </div>
           </div>
+
+          <div class="card-body-content">
+            <h3 class="card-title-text">{{ item.item_name }}</h3>
+            <div class="card-footer-metrics">
+              <span class="font-mono fw-bold fs-5" style="color: var(--accent-blue);">₹{{ "%.2f"|format(item.rate) }}</span>
+              <span class="badge-tag badge-category">{{ item.category or 'General' }}</span>
+            </div>
+          </div>
+
         </div>
       </div>
       {% endfor %}
     </div>
 
-    <!-- PENDING APPROVALS SECTION (MANAGERS) -->
+    <!-- ADMIN & MANAGER APPROVALS TABLE -->
     {% if is_manager %}
-    <section class="mt-5">
-      <div class="mb-3">
-        <h6 class="fw-bold m-0" style="color: var(--text-primary); font-size: 0.95rem;">Order Approvals</h6>
-        <span class="small text-muted">Review agent submissions and update warehouse ledger</span>
-      </div>
-      <div class="kite-card overflow-hidden">
-        <div class="table-responsive">
-          <table class="kite-table m-0">
-            <thead>
-              <tr>
-                <th style="padding-left: 20px;">Order ID</th>
-                <th>Requested By</th>
-                <th>Item</th>
-                <th class="text-center">Qty</th>
-                <th>Total</th>
-                <th class="text-end" style="padding-right: 20px;">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for order in pending_orders %}
-              <tr>
-                <td style="padding-left: 20px;"><strong class="font-mono" style="color: var(--text-primary);">{{ order.name }}</strong></td>
-                <td class="text-muted small">{{ order.owner }}</td>
-                <td style="color: var(--text-primary);">{{ order.item }}</td>
-                <td class="text-center font-mono">{{ order.quantity }}</td>
-                <td class="font-mono fw-semibold" style="color: var(--text-primary);">₹{{ order.total_amount }}</td>
-                <td class="text-end" style="padding-right: 20px;">
-                  <div class="d-inline-flex gap-2">
-                    <button type="button" class="btn-frap-primary btn-sm py-1 px-3" onclick="approveOrder('{{ order.name }}')">Approve</button>
-                    <button type="button" class="btn btn-kite-danger btn-sm py-1 px-3" onclick="rejectOrder('{{ order.name }}')">Reject</button>
-                  </div>
-                </td>
-              </tr>
-              {% else %}
-              <tr><td colspan="6" class="text-center text-muted py-4 small">No pending order requests.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
+    <section class="admin-section-card">
+      <div class="admin-card-header">
+        <div>
+          <h4 class="fw-bold m-0" style="font-size: 0.95rem; color: var(--text-primary);">Order Approvals & Dispatch Queue</h4>
+          <span class="text-muted small">Review agent order requests and commit warehouse inventory</span>
         </div>
+        <span class="badge-tag badge-category font-mono">{{ pending_orders|length }} Pending</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table-frap">
+          <thead>
+            <tr>
+              <th>Order Ref</th>
+              <th>Requested By</th>
+              <th>Item / SKU</th>
+              <th class="text-center">Quantity</th>
+              <th>Total Amount</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in pending_orders %}
+            <tr>
+              <td><span class="font-mono fw-semibold">{{ order.name }}</span></td>
+              <td class="text-muted small">{{ order.owner }}</td>
+              <td class="fw-medium">{{ order.item }}</td>
+              <td class="text-center font-mono">{{ order.quantity }}</td>
+              <td class="font-mono fw-bold" style="color: var(--accent-blue);">₹{{ "%.2f"|format(order.total_amount) }}</td>
+              <td class="text-end">
+                <div class="d-inline-flex gap-2">
+                  <button type="button" class="btn-base-primary" style="padding: 5px 12px; font-size: 0.78rem;" onclick="approveOrder('{{ order.name }}')">Approve</button>
+                  <button type="button" class="btn-base-danger" style="padding: 5px 10px; font-size: 0.78rem;" onclick="rejectOrder('{{ order.name }}')">Reject</button>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4 small">
+                No pending orders in the queue.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </section>
     {% endif %}
@@ -818,90 +932,58 @@
   </main>
 </div>
 
-<!-- REVENUE BREAKDOWN MODAL -->
-<div id="revenueModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'revenueModalOverlay')">
-  <div class="shadcn-modal-dialog" style="max-width: 540px;">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);">Revenue & Sales Overview</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeRevenueModal()">✕</button>
-    </div>
-    
-    <div class="p-4">
-      <div class="p-3 rounded-3 mb-3 text-center" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle);">
-        <span class="text-muted small fw-semibold text-uppercase d-block mb-1" style="letter-spacing: 0.05em;">Total Cleared Revenue</span>
-        <div class="font-mono fs-2 fw-bold" style="color: var(--accent-green);">₹{{ "%.2f"|format(revenue or 0.0) }}</div>
-        <span class="small text-secondary mt-1 d-block">
-          {% if is_manager or is_admin %}
-            Total sales volume across all approved orders
-          {% else %}
-            Total revenue generated by your approved orders
-          {% endif %}
-        </span>
-      </div>
-
-      {% if is_manager or is_admin %}
-      <div class="mt-3">
-        <h6 class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.05em;">Agent Performance Breakdown</h6>
-        <div id="revenueAgentBreakdown" class="overflow-auto" style="max-height: 220px;">
-          <p class="text-muted small text-center py-2">Loading agent statistics...</p>
-        </div>
-      </div>
-      {% endif %}
-
-      <div class="d-flex justify-content-end mt-4">
-        <button type="button" class="btn btn-kite-secondary" onclick="closeRevenueModal()">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ITEM DETAIL POPUP MODAL (WITH ORDER REDIRECT TO CART) -->
+<!-- PRODUCT QUICK VIEW POPUP -->
 <div id="productQuickViewOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'productQuickViewOverlay')">
   <div class="shadcn-modal-dialog">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);" id="pv_item_name">Product Overview</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeProductQuickView()">✕</button>
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;" id="pv_modal_heading">Product Details</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeProductQuickView()">✕</button>
     </div>
     
-    <div class="p-4">
+    <div class="modal-body-scroll">
       <div class="row g-4 align-items-center">
-        <div class="col-md-6">
-          <div class="popup-preview-img-box">
-            <img id="pv_item_image" src="" onerror="this.src='https://placehold.co/300x250/f4f4f5/71717a?text=Product';">
+        <div class="col-md-5">
+          <div class="modal-product-img-box">
+            <img id="pv_item_image" src="" onerror="this.src='https://placehold.co/280x200/f1f3f5/8c93a0?text=Product';">
+          </div>
+          
+          <div class="qr-code-clean-card">
+            <div id="pv_item_qr" class="qr-frame"></div>
+            <span class="text-muted font-mono mt-2" style="font-size: 0.68rem;" id="pv_item_qr_label">SCAN SKU</span>
           </div>
         </div>
-        <div class="col-md-6 d-flex flex-column justify-content-between">
-          <div>
-            <span class="text-muted small font-mono" id="pv_item_code">ITEM-CODE</span>
-            <h4 class="fw-bold mt-1 mb-2" style="color: var(--text-primary);" id="pv_item_title">Product Name</h4>
-            <div class="font-mono fs-3 fw-bold mb-2" style="color: var(--accent-blue);" id="pv_item_rate">₹0.00</div>
-            
-            <div class="mb-2">
-              <span class="small text-muted">Category: </span>
-              <span class="badge rounded-pill bg-light text-dark border small" id="pv_item_category_badge">General</span>
-            </div>
 
+        <div class="col-md-7 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge-tag badge-category font-mono" id="pv_item_code_badge">SKU</span>
+              <span class="badge-tag badge-category" id="pv_item_category_badge">Category</span>
+            </div>
+            
+            <h3 class="fw-bold mb-2" style="color: var(--text-primary); font-size: 1.35rem; line-height: 1.25;" id="pv_item_title">Product Title</h3>
+            <div class="font-mono fs-3 fw-bold mb-3" style="color: var(--accent-blue);" id="pv_item_rate">₹0.00</div>
+            
             <div class="mb-4">
-              <span class="small text-muted d-block mb-1">Inventory Status:</span>
+              <span class="small text-muted d-block mb-1">Availability:</span>
               <span id="pv_item_badge"></span>
             </div>
           </div>
 
-          {% if is_agent %}
+          <!-- UNIFIED ACTION BUTTON GROUP -->
           <div class="d-flex flex-column gap-2">
-            <!-- Order Now Adds to Cart and Pops open the Checkout Details Modal directly -->
-            <button type="button" class="btn-frap-primary w-100 py-2 justify-content-center" id="pv_btn_buy">⚡ Order Now (via Cart)</button>
+            <button type="button" class="btn-base-primary w-100 justify-content-center py-2" id="pv_btn_buy">
+              ⚡ Order Now (via Cart)
+            </button>
             <div class="d-flex gap-2">
-              <button type="button" class="btn btn-kite-secondary w-50 py-2" id="pv_btn_cart">🛒 Add to Cart</button>
-              <button type="button" class="btn btn-kite-secondary w-50 py-2" id="pv_btn_wishlist">❤️ Wishlist</button>
+              <button type="button" class="btn-base-secondary w-50 justify-content-center py-2" id="pv_btn_cart">🛒 Add to Cart</button>
+              <button type="button" class="btn-base-secondary w-50 justify-content-center py-2" id="pv_btn_wishlist">❤️ Wishlist</button>
             </div>
           </div>
-          {% endif %}
 
           {% if is_admin %}
-          <div class="d-flex gap-2 mt-3">
-            <button type="button" class="btn btn-kite-secondary w-50 py-2" id="pv_btn_edit">✏️ Edit Product</button>
-            <button type="button" class="btn btn-kite-danger w-50 py-2" id="pv_btn_delete">🗑️ Delete</button>
+          <div class="d-flex gap-2 mt-3 pt-3 border-top">
+            <button type="button" class="btn-base-secondary w-50 justify-content-center" id="pv_btn_edit">✏️ Edit Product</button>
+            <button type="button" class="btn-base-danger w-50 justify-content-center" id="pv_btn_delete">🗑️ Delete</button>
           </div>
           {% endif %}
         </div>
@@ -910,51 +992,51 @@
   </div>
 </div>
 
-{% if is_agent %}
-<!-- ORDERS MODAL -->
+<!-- ORDERS POPUP -->
 <div id="ordersModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'ordersModalOverlay')">
   <div class="shadcn-modal-dialog">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);">My Submitted Orders</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeOrdersModal()">✕</button>
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">My Order History</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeOrdersModal()">✕</button>
     </div>
     <div class="p-0 overflow-auto">
-      <table class="kite-table m-0">
+      <table class="table-frap">
         <thead>
           <tr>
-            <th style="padding-left: 18px;">Order ID</th>
+            <th>Order Ref</th>
             <th class="text-center">Qty</th>
             <th>Total</th>
-            <th>Status</th>
-            <th class="text-end" style="padding-right: 18px;">Action</th>
+            <th>Fulfillment</th>
+            <th class="text-end">Slip</th>
           </tr>
         </thead>
         <tbody>
           {% for order in my_orders %}
-          <tr class="clickable-order-row" 
-              data-id="{{ order.name }}" 
-              data-item="{{ order.item }}" 
-              data-qty="{{ order.quantity }}" 
-              data-rate="{{ order.rate }}" 
-              data-total="{{ order.total_amount }}" 
-              data-status="{{ order.docstatus }}" 
-              data-creation="{{ order.creation }}" 
-              onclick="openOrderDetailModal(this)"
-              style="cursor: pointer;">
-            <td style="padding-left: 18px;"><strong class="font-mono">{{ order.name }}</strong></td>
+          <tr class="clickable-order-row" onclick="openOrderDetailModal('{{ order.name }}')" style="cursor: pointer;">
+            <td><strong class="font-mono">{{ order.name }}</strong></td>
             <td class="text-center font-mono">{{ order.quantity }}</td>
-            <td class="font-mono">₹{{ order.total_amount }}</td>
+            <td class="font-mono">₹{{ "%.2f"|format(order.total_amount) }}</td>
             <td>
-              {% if order.docstatus == 1 %}<span class="badge-status badge-submitted">Approved</span>
-              {% elif order.docstatus == 2 %}<span class="badge-status badge-out-of-stock">Rejected</span>
-              {% else %}<span class="badge-status badge-draft">Pending</span>{% endif %}
+              {% if order.tracking_status == "Delivered" %}
+                <span class="badge-tag badge-instock">Delivered</span>
+              {% elif order.tracking_status == "Dispatched" %}
+                <span class="badge-tag badge-lowstock">Dispatched</span>
+              {% elif order.tracking_status == "Packed" %}
+                <span class="badge-tag badge-lowstock">Packed</span>
+              {% elif order.docstatus == 1 %}
+                <span class="badge-tag badge-instock">Approved</span>
+              {% elif order.docstatus == 2 %}
+                <span class="badge-tag badge-outofstock">Rejected</span>
+              {% else %}
+                <span class="badge-tag badge-category">Pending</span>
+              {% endif %}
             </td>
-            <td class="text-end" style="padding-right: 18px;" onclick="event.stopPropagation()">
-              <button type="button" class="btn btn-kite-secondary btn-sm py-1 px-2" onclick="downloadOrderPdf('{{ order.name }}')">PDF Slip</button>
+            <td class="text-end" onclick="event.stopPropagation()">
+              <button type="button" class="btn-base-secondary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="downloadOrderPdf('{{ order.name }}')">PDF Slip</button>
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="5" class="text-center text-muted py-4 small">No orders recorded.</td></tr>
+          <tr><td colspan="5" class="text-center text-muted py-4 small">No submitted orders found.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -962,171 +1044,221 @@
   </div>
 </div>
 
-<!-- DETAILED ORDER VIEW MODAL -->
+<!-- TRACKING & ORDER DETAIL POPUP -->
 <div id="orderDetailModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'orderDetailModalOverlay')">
-  <div class="shadcn-modal-dialog" style="max-width: 500px;">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);" id="od_title">Order Details</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeOrderDetailModal()">✕</button>
+  <div class="shadcn-modal-dialog" style="max-width: 580px;">
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Order & Shipment Tracking</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeOrderDetailModal()">✕</button>
     </div>
-    <div class="p-4">
-      <div class="mb-3 d-flex justify-content-between">
-        <span class="text-muted small">Order ID:</span>
-        <span class="font-mono fw-semibold" style="color: var(--text-primary);" id="od_id"></span>
+    
+    <div class="modal-body-scroll">
+      <div class="stepper-row">
+        <div class="stepper-node" id="step_placed"><div class="stepper-dot">1</div><span>Placed</span></div>
+        <div class="stepper-node" id="step_approved"><div class="stepper-dot">2</div><span>Approved</span></div>
+        <div class="stepper-node" id="step_packed"><div class="stepper-dot">3</div><span>Packed</span></div>
+        <div class="stepper-node" id="step_dispatched"><div class="stepper-dot">4</div><span>Dispatched</span></div>
+        <div class="stepper-node" id="step_delivered"><div class="stepper-dot">5</div><span>Delivered</span></div>
       </div>
-      <div class="mb-3 d-flex justify-content-between">
-        <span class="text-muted small">Date / Time:</span>
-        <span class="font-mono text-muted small" id="od_date"></span>
+
+      <div class="row align-items-center g-3 p-3 rounded-3 mb-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle);">
+        <div class="col-8">
+          <div class="small text-muted">AWB / Tracking Number:</div>
+          <div class="font-mono fw-bold" id="od_tracking_ref" style="color: var(--text-primary);">—</div>
+          <div class="small text-muted mt-2">Courier: <span class="fw-semibold" style="color: var(--text-primary);" id="od_courier_name">—</span></div>
+          <div class="small text-muted">Item: <span class="fw-semibold" style="color: var(--text-primary);" id="od_item"></span> (<span id="od_qty"></span> units)</div>
+          <div class="small text-muted">Total: <span class="font-mono fw-bold" style="color: var(--accent-blue);" id="od_total"></span></div>
+        </div>
+        <div class="col-4 text-center">
+          <div class="qr-frame d-inline-block" id="od_qrcode"></div>
+          <div class="small text-muted font-mono mt-1" style="font-size: 0.65rem;" id="od_id"></div>
+        </div>
       </div>
-      <div class="mb-3 d-flex justify-content-between">
-        <span class="text-muted small">Item Code:</span>
-        <span class="font-mono fw-semibold" style="color: var(--text-primary);" id="od_item"></span>
+
+      {% if is_manager or is_admin %}
+      <div class="p-3 mb-3 rounded-2 border" style="background: var(--bg-surface);">
+        <span class="small fw-bold text-muted text-uppercase d-block mb-2" style="font-size: 0.68rem; letter-spacing: 0.06em;">Warehouse Milestone Update</span>
+        <div class="d-flex flex-wrap gap-2">
+          <button type="button" class="btn-base-secondary btn-sm" onclick="advanceOrderStatus('Packed')">Mark Packed</button>
+          <button type="button" class="btn-base-secondary btn-sm" onclick="promptDispatchDetails()">Mark Dispatched</button>
+          <button type="button" class="btn-base-primary btn-sm" onclick="advanceOrderStatus('Delivered')">Mark Delivered</button>
+        </div>
       </div>
-      <div class="mb-3 d-flex justify-content-between">
-        <span class="text-muted small">Quantity:</span>
-        <span class="font-mono" id="od_qty"></span>
-      </div>
-      <div class="mb-3 d-flex justify-content-between">
-        <span class="text-muted small">Unit Rate:</span>
-        <span class="font-mono" id="od_rate"></span>
-      </div>
-      <hr class="my-3" style="border-color: var(--border-subtle);">
-      <div class="mb-4 d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">Total Amount:</span>
-        <span class="font-mono fs-5 fw-bold" style="color: var(--accent-blue);" id="od_total"></span>
-      </div>
+      {% endif %}
+
       <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-kite-secondary" onclick="closeOrderDetailModal()">Close</button>
-        <button type="button" class="btn-frap-primary" id="od_btn_reorder">🔁 Reorder</button>
-        <button type="button" class="btn btn-kite-secondary" id="od_btn_pdf">Download PDF</button>
+        <button type="button" class="btn-base-secondary" onclick="closeOrderDetailModal()">Close</button>
+        <button type="button" class="btn-base-primary" id="od_btn_reorder">🔁 Reorder</button>
+        <button type="button" class="btn-base-secondary" id="od_btn_pdf">Download PDF Slip</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- CART MODAL (ADDRESS & DISPATCH DETAILS) -->
+<!-- QR SCANNER POPUP -->
+<div id="qrScannerModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'qrScannerModalOverlay')">
+  <div class="shadcn-modal-dialog" style="max-width: 440px;">
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Scan QR Slip</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeQrScannerModal()">✕</button>
+    </div>
+    <div class="p-3 text-center">
+      <div id="qr-camera-stream" style="width: 100%; border-radius: 8px; overflow: hidden; background: #000; min-height: 240px;"></div>
+      <p class="small text-muted mt-2 mb-0">Point your camera at an item or order slip QR code.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CART POPUP -->
 <div id="cartModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'cartModalOverlay')">
   <div class="shadcn-modal-dialog">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);">My Shopping Cart</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeCartModal()">✕</button>
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Shopping Cart</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeCartModal()">✕</button>
     </div>
     
     <div class="p-3 overflow-auto" id="cart-modal-body" style="max-height: 38vh;">
       <p class="text-center text-muted small py-4">Loading cart items...</p>
     </div>
 
-    <!-- SHIPPING ADDRESS & DISPATCH NOTES -->
-    <div class="p-3 cart-checkout-box">
+    <div class="p-3" style="background-color: var(--bg-surface-elevated); border-top: 1px solid var(--border-subtle);">
       <div class="row g-2">
         <div class="col-12 col-md-6">
-          <label class="form-label small text-muted fw-semibold mb-1">📍 Delivery / Shipping Address</label>
-          <textarea id="cart_shipping_address" class="form-control-kite w-100" rows="2" placeholder="Enter delivery / client address..."></textarea>
+          <label class="form-label small text-muted fw-semibold mb-1">📍 Delivery Address</label>
+          <textarea id="cart_shipping_address" class="form-control-frap w-100" rows="2" placeholder="Enter shipping destination..."></textarea>
         </div>
         <div class="col-12 col-md-6">
-          <label class="form-label small text-muted fw-semibold mb-1">📝 Dispatch Notes / PO Ref</label>
-          <textarea id="cart_dispatch_notes" class="form-control-kite w-100" rows="2" placeholder="e.g. Urgent dispatch, PO-9921..."></textarea>
+          <label class="form-label small text-muted fw-semibold mb-1">📝 Dispatch Notes / PO</label>
+          <textarea id="cart_dispatch_notes" class="form-control-frap w-100" rows="2" placeholder="e.g. Urgent client delivery..."></textarea>
         </div>
       </div>
     </div>
 
-    <div class="p-3 border-top d-flex justify-content-between align-items-center" style="background: var(--bg-surface);">
+    <div class="p-3 border-top d-flex justify-content-between align-items-center">
       <span class="fw-semibold" style="color: var(--text-primary);">Total: <span id="cart-modal-total" class="font-mono">₹0.00</span></span>
-      <button type="button" class="btn-frap-primary" onclick="checkoutCart()">Confirm & Place Order</button>
+      <button type="button" class="btn-base-primary" onclick="checkoutCart()">Confirm & Place Order</button>
     </div>
   </div>
 </div>
 
-<!-- WISHLIST MODAL -->
+<!-- WISHLIST POPUP -->
 <div id="wishlistModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'wishlistModalOverlay')">
   <div class="shadcn-modal-dialog">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);">My Wishlist</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeWishlistModal()">✕</button>
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Saved Wishlist</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeWishlistModal()">✕</button>
     </div>
     <div class="p-3 overflow-auto" id="wishlist-modal-body">
       <p class="text-center text-muted small py-4">Loading wishlist items...</p>
     </div>
   </div>
 </div>
-{% endif %}
 
-{% if is_admin %}
-<!-- ADD PRODUCT MODAL -->
-<div id="addItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'addItemModalOverlay')">
-  <div class="shadcn-modal-dialog" style="max-width: 500px;">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);">Add New Product</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeAddItemModal()">✕</button>
+<!-- REVENUE POPUP -->
+<div id="revenueModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'revenueModalOverlay')">
+  <div class="shadcn-modal-dialog" style="max-width: 520px;">
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Revenue & Performance</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeRevenueModal()">✕</button>
     </div>
     <div class="p-4">
-      <div class="mb-3">
-        <label class="form-label small text-muted fw-semibold">Item Name</label>
-        <input type="text" id="add_item_name" class="form-control-kite w-100" placeholder="e.g. Mechanical Keyboard RGB">
+      <div class="p-3 rounded-3 mb-3 text-center" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle);">
+        <span class="text-muted small fw-semibold text-uppercase d-block mb-1">Total Cleared Sales</span>
+        <div class="font-mono fs-2 fw-bold" style="color: var(--accent-green);">₹{{ "%.2f"|format(revenue or 0.0) }}</div>
       </div>
-      <div class="mb-3">
-        <label class="form-label small text-muted fw-semibold">Category</label>
-        <input type="text" id="add_item_category" class="form-control-kite w-100" placeholder="e.g. Books, Electronics, Accessories">
-      </div>
-      <div class="row g-2 mb-3">
-        <div class="col-6">
-          <label class="form-label small text-muted fw-semibold">Price (₹)</label>
-          <input type="number" id="add_item_rate" class="form-control-kite w-100" placeholder="1500">
-        </div>
-        <div class="col-6">
-          <label class="form-label small text-muted fw-semibold">Initial Stock</label>
-          <input type="number" id="add_item_stock" class="form-control-kite w-100" placeholder="20">
+
+      {% if is_manager or is_admin %}
+      <div>
+        <h6 class="small fw-bold text-muted text-uppercase mb-2">Agent Breakdown</h6>
+        <div id="revenueAgentBreakdown" class="overflow-auto" style="max-height: 200px;">
+          <p class="text-muted small text-center py-2">Loading...</p>
         </div>
       </div>
-      <div class="mb-4">
-        <label class="form-label small text-muted fw-semibold">Product Photo</label>
-        <input type="file" id="add_item_image_file" class="form-control-kite w-100" accept="image/*">
-      </div>
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-kite-secondary" onclick="closeAddItemModal()">Cancel</button>
-        <button type="button" class="btn-frap-primary" id="btn_add_product" onclick="saveNewStockItem()">Save to Catalog</button>
+      {% endif %}
+
+      <div class="d-flex justify-content-end mt-4">
+        <button type="button" class="btn-base-secondary" onclick="closeRevenueModal()">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- EDIT PRODUCT MODAL -->
-<div id="editItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'editItemModalOverlay')">
-  <div class="shadcn-modal-dialog" style="max-width: 500px;">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-      <h6 class="fw-semibold m-0" style="color: var(--text-primary);">Edit Stock Item</h6>
-      <button type="button" class="btn btn-sm text-muted p-0" onclick="closeEditItemModal()">✕</button>
+<!-- ADD PRODUCT POPUP -->
+{% if is_admin %}
+<div id="addItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'addItemModalOverlay')">
+  <div class="shadcn-modal-dialog" style="max-width: 480px;">
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Add New Product</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeAddItemModal()">✕</button>
     </div>
     <div class="p-4">
-      <input type="hidden" id="edit_item_code">
       <div class="mb-3">
-        <label class="form-label small text-muted fw-semibold">Item Code</label>
-        <input type="text" id="edit_item_name_display" class="form-control-kite text-muted w-100" disabled>
+        <label class="form-label small text-muted fw-semibold">Product Name</label>
+        <input type="text" id="add_item_name" class="form-control-frap w-100" placeholder="e.g. Mechanical Keyboard">
       </div>
       <div class="mb-3">
         <label class="form-label small text-muted fw-semibold">Category</label>
-        <input type="text" id="edit_item_category" class="form-control-kite w-100" placeholder="e.g. Books, Accessories, Electronics">
+        <input type="text" id="add_item_category" class="form-control-frap w-100" placeholder="e.g. Books, Electronics">
       </div>
       <div class="row g-2 mb-3">
         <div class="col-6">
           <label class="form-label small text-muted fw-semibold">Price (₹)</label>
-          <input type="number" id="edit_item_rate" class="form-control-kite w-100">
+          <input type="number" id="add_item_rate" class="form-control-frap w-100" placeholder="1500">
+        </div>
+        <div class="col-6">
+          <label class="form-label small text-muted fw-semibold">Stock</label>
+          <input type="number" id="add_item_stock" class="form-control-frap w-100" placeholder="20">
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label small text-muted fw-semibold">Product Photo</label>
+        <input type="file" id="add_item_image_file" class="form-control-frap w-100" accept="image/*">
+      </div>
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn-base-secondary" onclick="closeAddItemModal()">Cancel</button>
+        <button type="button" class="btn-base-primary" id="btn_add_product" onclick="saveNewStockItem()">Save to Catalog</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT POPUP -->
+<div id="editItemModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'editItemModalOverlay')">
+  <div class="shadcn-modal-dialog" style="max-width: 480px;">
+    <div class="modal-head">
+      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 1rem;">Edit Product</h5>
+      <button type="button" class="btn-base-secondary p-1" style="line-height: 1;" onclick="closeEditItemModal()">✕</button>
+    </div>
+    <div class="p-4">
+      <input type="hidden" id="edit_item_code">
+      <div class="mb-3">
+        <label class="form-label small text-muted fw-semibold">Product Code / SKU</label>
+        <input type="text" id="edit_item_name_display" class="form-control-frap text-muted w-100" disabled>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small text-muted fw-semibold">Category</label>
+        <input type="text" id="edit_item_category" class="form-control-frap w-100">
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label small text-muted fw-semibold">Price (₹)</label>
+          <input type="number" id="edit_item_rate" class="form-control-frap w-100">
         </div>
         <div class="col-6">
           <label class="form-label small text-muted fw-semibold">Stock Available</label>
-          <input type="number" id="edit_item_stock" class="form-control-kite w-100">
+          <input type="number" id="edit_item_stock" class="form-control-frap w-100">
         </div>
       </div>
       <div class="mb-4">
         <label class="form-label small text-muted fw-semibold">Product Photo</label>
         <div id="editImagePreviewContainer" class="mb-2" style="display: none;">
-          <img id="editPreviewImageEl" src="" style="height: 75px; width: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-subtle);">
+          <img id="editPreviewImageEl" src="" style="height: 70px; width: 70px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-subtle);">
         </div>
-        <input type="file" id="edit_item_image_file" class="form-control-kite w-100" accept="image/*" onchange="handleEditImagePreview(this)">
+        <input type="file" id="edit_item_image_file" class="form-control-frap w-100" accept="image/*" onchange="handleEditImagePreview(this)">
       </div>
       <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-kite-secondary" onclick="closeEditItemModal()">Cancel</button>
-        <button type="button" class="btn-frap-primary" id="btn_update_product" onclick="saveEditedStockItem()">Update Product</button>
+        <button type="button" class="btn-base-secondary" onclick="closeEditItemModal()">Cancel</button>
+        <button type="button" class="btn-base-primary" id="btn_update_product" onclick="saveEditedStockItem()">Update Product</button>
       </div>
     </div>
   </div>
@@ -1134,16 +1266,33 @@
 {% endif %}
 
 <script>
+(function loadQrScripts() {
+    if (!document.getElementById('qrcode-script')) {
+        var s1 = document.createElement('script');
+        s1.id = 'qrcode-script';
+        s1.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+        document.head.appendChild(s1);
+    }
+    if (!document.getElementById('html5-qrcode-script')) {
+        var s2 = document.createElement('script');
+        s2.id = 'html5-qrcode-script';
+        s2.src = "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js";
+        document.head.appendChild(s2);
+    }
+})();
+
 var currentSelectedCategory = 'ALL';
+var html5QrCodeScanner = null;
+var currentActiveOrderId = null;
 
 frappe.ready(function() {
-    initTheme();
+    initSharedTheme();
     initGreeting();
     refreshAgentCounters();
     syncCategoryDropdownFromItems();
+    checkUrlParamsForDirectModal();
 });
 
-// HERO GREETING
 function initGreeting() {
     var now = new Date();
     var hours = now.getHours();
@@ -1157,18 +1306,18 @@ function initGreeting() {
     }
 }
 
-// THEME TOGGLE
-function initTheme() {
+function initSharedTheme() {
     var savedTheme = localStorage.getItem('frapnora_theme') || 'light';
-    setTheme(savedTheme);
+    applyTheme(savedTheme);
 }
 
-function toggleTheme() {
+function toggleSharedTheme() {
     var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    setTheme(current === 'dark' ? 'light' : 'dark');
+    var next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
 }
 
-function setTheme(theme) {
+function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('frapnora_theme', theme);
     var textEl = document.getElementById('themeBtnText');
@@ -1177,7 +1326,19 @@ function setTheme(theme) {
     }
 }
 
-// DYNAMIC CATEGORY DROPDOWN
+function checkUrlParamsForDirectModal() {
+    var params = new URLSearchParams(window.location.search);
+    var productParam = params.get('product');
+    var orderParam = params.get('order');
+
+    if (productParam) {
+        var card = document.querySelector('.catalog-item-wrapper[data-item-name="' + CSS.escape(productParam) + '"] .product-modern-card');
+        if (card) setTimeout(function() { openProductQuickView(card); }, 300);
+    } else if (orderParam) {
+        setTimeout(function() { openOrderDetailModal(orderParam); }, 300);
+    }
+}
+
 function syncCategoryDropdownFromItems() {
     var selectEl = document.getElementById('categoryFilterDropdown');
     if (!selectEl) return;
@@ -1229,7 +1390,6 @@ function applyCatalogFilters() {
     });
 }
 
-// LOW STOCK ALERT SCANNER
 function checkLiveStockAlert() {
     var banner = document.getElementById('liveStockBanner');
     var badge = document.getElementById('bannerBadge');
@@ -1249,93 +1409,52 @@ function checkLiveStockAlert() {
     if (lowStockItems.length > 0) {
         badge.innerText = "WARNING";
         badge.style.color = "var(--accent-red)";
-        message.innerText = "Low stock items detected: " + lowStockItems.join(", ");
+        message.innerText = "Low stock detected: " + lowStockItems.join(", ");
     } else {
         badge.innerText = "HEALTHY";
         badge.style.color = "var(--accent-green)";
-        message.innerText = "All items meet safe operational inventory levels (5+ units available).";
-    }
-    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-// MANAGER APPROVAL & REJECTION HANDLERS
-function approveOrder(orderId) {
-    if (!confirm("Approve and commit order " + orderId + "?")) return;
-    frappe.call({
-        method: "stock_flow.api.approve_stock_order",
-        args: { order_id: orderId },
-        callback: function(r) {
-            if (!r.exc) {
-                alert("Order " + orderId + " approved successfully.");
-                location.reload();
-            }
-        },
-        error: function(r) {
-            alert("Approval failed: " + (r.message || "Error processing request"));
-        }
-    });
-}
-
-function rejectOrder(orderId) {
-    if (!confirm("Reject and cancel order " + orderId + "?")) return;
-    frappe.call({
-        method: "stock_flow.api.reject_stock_order",
-        args: { order_id: orderId },
-        callback: function(r) {
-            if (!r.exc) {
-                alert("Order " + orderId + " rejected.");
-                location.reload();
-            }
-        },
-        error: function(r) {
-            alert("Rejection failed: " + (r.message || "Error processing request"));
-        }
-    });
-}
-
-// REVENUE MODAL LOGIC
-function openRevenueModal() {
-    var modal = document.getElementById('revenueModalOverlay');
-    if (modal) {
-        modal.style.display = 'flex';
-        loadRevenueDetails();
+        message.innerText = "All items meet safe operational levels (5+ units).";
     }
 }
 
-function closeRevenueModal() {
-    var modal = document.getElementById('revenueModalOverlay');
-    if (modal) modal.style.display = 'none';
-}
+function updateTrackingStepperUI(status) {
+    var steps = ['placed', 'approved', 'packed', 'dispatched', 'delivered'];
+    var currentIdx = 0;
 
-function loadRevenueDetails() {
-    var breakdownContainer = document.getElementById('revenueAgentBreakdown');
-    if (!breakdownContainer) return;
+    if (status === 'Approved') currentIdx = 1;
+    else if (status === 'Packed') currentIdx = 2;
+    else if (status === 'Dispatched') currentIdx = 3;
+    else if (status === 'Delivered') currentIdx = 4;
 
-    frappe.call({
-        method: "stock_flow.api.get_agent_performance_summary",
-        callback: function(r) {
-            if (r.message && r.message.length > 0) {
-                var html = '<table class="kite-table m-0"><thead><tr><th>Agent</th><th class="text-center">Orders</th><th class="text-end">Revenue</th></tr></thead><tbody>';
-                r.message.forEach(function(row) {
-                    html += `<tr>
-                        <td><strong>${row.agent}</strong></td>
-                        <td class="text-center font-mono">${row.total_orders}</td>
-                        <td class="text-end font-mono fw-semibold" style="color: var(--accent-green);">₹${parseFloat(row.total_revenue || 0).toFixed(2)}</td>
-                    </tr>`;
-                });
-                html += '</tbody></table>';
-                breakdownContainer.innerHTML = html;
-            } else {
-                breakdownContainer.innerHTML = '<p class="text-muted small text-center py-3">No cleared sales recorded yet.</p>';
-            }
-        },
-        error: function() {
-            breakdownContainer.innerHTML = '<p class="text-muted small text-center py-3">Summary only available for manager roles.</p>';
+    steps.forEach(function(s, idx) {
+        var el = document.getElementById('step_' + s);
+        if (!el) return;
+        el.className = 'stepper-node';
+        if (idx < currentIdx) {
+            el.classList.add('completed');
+        } else if (idx === currentIdx) {
+            el.classList.add('current');
         }
     });
 }
 
-// PRODUCT QUICK VIEW MODAL & ORDER VIA CART REDIRECT
+function generateOrderQrCode(targetElementId, codeText, size) {
+    var container = document.getElementById(targetElementId);
+    if (!container) return;
+    container.innerHTML = "";
+    if (typeof QRCode !== "undefined") {
+        new QRCode(container, {
+            text: codeText,
+            width: size || 80,
+            height: size || 80,
+            colorDark: "#1a1e24",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }
+}
+
+// QUICK VIEW MODAL (NO DUPLICATE HEADINGS)
 function openProductQuickView(card) {
     var itemCode = card.getAttribute('data-item');
     var itemName = card.getAttribute('data-name');
@@ -1344,39 +1463,39 @@ function openProductQuickView(card) {
     var category = card.getAttribute('data-category') || 'Uncategorized';
     var image = card.getAttribute('data-image');
 
-    document.getElementById('pv_item_code').innerText = itemCode;
+    document.getElementById('pv_item_code_badge').innerText = itemCode;
     document.getElementById('pv_item_title').innerText = itemName;
-    document.getElementById('pv_item_name').innerText = itemName;
-    document.getElementById('pv_item_rate').innerText = "₹" + rate;
-    
-    var catBadge = document.getElementById('pv_item_category_badge');
-    if (catBadge) catBadge.innerText = category;
+    document.getElementById('pv_item_rate').innerText = "₹" + parseFloat(rate).toFixed(2);
+    document.getElementById('pv_item_category_badge').innerText = category;
 
     var imgEl = document.getElementById('pv_item_image');
     if (image && image.trim() !== '') {
         imgEl.src = image;
     } else {
-        imgEl.src = 'https://placehold.co/300x250/f4f4f5/71717a?text=Product';
+        imgEl.src = 'https://placehold.co/280x200/f1f3f5/8c93a0?text=Product';
     }
+
+    var productDirectUrl = window.location.origin + "/frapnora?product=" + encodeURIComponent(itemCode);
+    generateOrderQrCode('pv_item_qr', productDirectUrl, 75);
+    document.getElementById('pv_item_qr_label').innerText = "SCAN SKU";
 
     var badgeContainer = document.getElementById('pv_item_badge');
     if (stock <= 0) {
-        badgeContainer.innerHTML = '<span class="badge-status badge-out-of-stock">Out of Stock</span>';
+        badgeContainer.innerHTML = '<span class="badge-tag badge-outofstock">Out of Stock</span>';
     } else if (stock <= 5) {
-        badgeContainer.innerHTML = '<span class="badge-status badge-low-stock">Low: ' + stock + ' units remaining</span>';
+        badgeContainer.innerHTML = '<span class="badge-tag badge-lowstock">Low: ' + stock + ' remaining</span>';
     } else {
-        badgeContainer.innerHTML = '<span class="badge-status badge-in-stock">' + stock + ' units available</span>';
+        badgeContainer.innerHTML = '<span class="badge-tag badge-instock">' + stock + ' units available</span>';
     }
 
     var btnBuy = document.getElementById('pv_btn_buy');
     var btnCart = document.getElementById('pv_btn_cart');
     var btnWishlist = document.getElementById('pv_btn_wishlist');
 
-    // ORDER NOW FLOW: Prompts for quantity, adds item to cart, and immediately opens Cart Modal for address entry
     if (btnBuy) {
         btnBuy.onclick = function() {
             closeProductQuickView();
-            executeOrderViaCart(itemCode, itemName, stock);
+            executeAddToCart(itemCode, itemName, stock, true);
         };
     }
     if (btnCart) {
@@ -1422,7 +1541,173 @@ function closeProductQuickView() {
     }
 }
 
-// COUNTERS FOR CART & WISHLIST
+function openOrderDetailModal(orderId) {
+    currentActiveOrderId = orderId;
+    frappe.call({
+        method: "stock_flow.api.get_order_tracking",
+        args: { order_id: orderId },
+        callback: function(r) {
+            if (r.message) {
+                var o = r.message;
+                document.getElementById('od_id').innerText = o.name;
+                document.getElementById('od_item').innerText = o.item;
+                document.getElementById('od_qty').innerText = o.quantity;
+                document.getElementById('od_total').innerText = "₹" + parseFloat(o.total_amount).toFixed(2);
+                document.getElementById('od_courier_name').innerText = o.courier_name || "—";
+                document.getElementById('od_tracking_ref').innerText = o.tracking_number || (o.name + "-TRACK");
+
+                updateTrackingStepperUI(o.tracking_status || (o.docstatus == 1 ? "Approved" : "Pending"));
+                
+                var orderDirectUrl = window.location.origin + "/frapnora?order=" + encodeURIComponent(o.name);
+                generateOrderQrCode('od_qrcode', orderDirectUrl, 80);
+
+                var btnReorder = document.getElementById('od_btn_reorder');
+                if (btnReorder) {
+                    btnReorder.onclick = function() { reorderPreviousItem(o.item, o.quantity); };
+                }
+                var btnPdf = document.getElementById('od_btn_pdf');
+                if (btnPdf) {
+                    btnPdf.onclick = function() { downloadOrderPdf(o.name); };
+                }
+
+                document.getElementById('orderDetailModalOverlay').style.display = 'flex';
+            }
+        }
+    });
+}
+
+function closeOrderDetailModal() {
+    var modal = document.getElementById('orderDetailModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function advanceOrderStatus(nextStatus, courier, awb) {
+    if (!currentActiveOrderId) return;
+    frappe.call({
+        method: "stock_flow.api.update_order_tracking",
+        args: {
+            order_id: currentActiveOrderId,
+            status: nextStatus,
+            courier_name: courier || "",
+            tracking_number: awb || ""
+        },
+        callback: function(r) {
+            if (!r.exc) openOrderDetailModal(currentActiveOrderId);
+        }
+    });
+}
+
+function promptDispatchDetails() {
+    var courier = prompt("Courier Name (e.g., Blue Dart, Delhivery):", "Blue Dart");
+    if (!courier) return;
+    var awb = prompt("AWB / Tracking Number:", "AWB-" + Math.floor(100000 + Math.random() * 900000));
+    if (!awb) return;
+    advanceOrderStatus("Dispatched", courier, awb);
+}
+
+function openQrScannerModal() {
+    var modal = document.getElementById('qrScannerModalOverlay');
+    modal.style.display = 'flex';
+
+    if (typeof Html5Qrcode !== "undefined") {
+        html5QrCodeScanner = new Html5Qrcode("qr-camera-stream");
+        html5QrCodeScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 220 },
+            function(decodedText) {
+                closeQrScannerModal();
+                var text = decodedText.trim();
+                if (text.includes("?order=")) {
+                    var u = new URL(text);
+                    var ord = u.searchParams.get("order");
+                    if (ord) openOrderDetailModal(ord);
+                } else if (text.includes("?product=")) {
+                    var u = new URL(text);
+                    var p = u.searchParams.get("product");
+                    if (p) {
+                        var card = document.querySelector('.catalog-item-wrapper[data-item-name="' + CSS.escape(p) + '"] .product-modern-card');
+                        if (card) openProductQuickView(card);
+                    }
+                } else if (text.startsWith("ORD-") || text.includes("Order")) {
+                    openOrderDetailModal(text);
+                } else {
+                    document.getElementById('catalogSearchInput').value = text;
+                    filterCatalogProducts();
+                }
+            },
+            function() {}
+        ).catch(function(err) {
+            console.error("Camera access error:", err);
+        });
+    }
+}
+
+function closeQrScannerModal() {
+    var modal = document.getElementById('qrScannerModalOverlay');
+    modal.style.display = 'none';
+    if (html5QrCodeScanner) {
+        html5QrCodeScanner.stop().then(function() {
+            html5QrCodeScanner.clear();
+        }).catch(function() {});
+    }
+}
+
+function approveOrder(orderId) {
+    if (!confirm("Approve and commit order " + orderId + "?")) return;
+    frappe.call({
+        method: "stock_flow.api.approve_stock_order",
+        args: { order_id: orderId },
+        callback: function(r) {
+            if (!r.exc) { alert("Order " + orderId + " approved."); location.reload(); }
+        }
+    });
+}
+
+function rejectOrder(orderId) {
+    if (!confirm("Reject and cancel order " + orderId + "?")) return;
+    frappe.call({
+        method: "stock_flow.api.reject_stock_order",
+        args: { order_id: orderId },
+        callback: function(r) {
+            if (!r.exc) { alert("Order " + orderId + " rejected."); location.reload(); }
+        }
+    });
+}
+
+function openRevenueModal() {
+    var modal = document.getElementById('revenueModalOverlay');
+    if (modal) { modal.style.display = 'flex'; loadRevenueDetails(); }
+}
+function closeRevenueModal() {
+    var modal = document.getElementById('revenueModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function loadRevenueDetails() {
+    var breakdownContainer = document.getElementById('revenueAgentBreakdown');
+    if (!breakdownContainer) return;
+
+    frappe.call({
+        method: "stock_flow.api.get_agent_performance_summary",
+        callback: function(r) {
+            if (r.message && r.message.length > 0) {
+                var html = '<table class="table-frap m-0"><thead><tr><th>Agent</th><th class="text-center">Orders</th><th class="text-end">Revenue</th></tr></thead><tbody>';
+                r.message.forEach(function(row) {
+                    html += `<tr>
+                        <td><strong>${row.agent}</strong></td>
+                        <td class="text-center font-mono">${row.total_orders}</td>
+                        <td class="text-end font-mono fw-semibold" style="color: var(--accent-green);">₹${parseFloat(row.total_revenue || 0).toFixed(2)}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                breakdownContainer.innerHTML = html;
+            } else {
+                breakdownContainer.innerHTML = '<p class="text-muted small text-center py-3">No cleared sales recorded yet.</p>';
+            }
+        }
+    });
+}
+
 function refreshAgentCounters() {
     frappe.call({
         method: "stock_flow.api.get_agent_cart",
@@ -1444,7 +1729,6 @@ function refreshAgentCounters() {
     });
 }
 
-// MODAL CONTROLS
 function openCartModal() {
     var modal = document.getElementById('cartModalOverlay');
     if (modal) { modal.style.display = 'flex'; loadCartItems(); }
@@ -1493,55 +1777,6 @@ function handleModalOverlayClick(event, overlayId) {
     }
 }
 
-// ORDER DETAIL & 1-CLICK REORDER
-function openOrderDetailModal(row) {
-    var orderId = row.getAttribute('data-id');
-    var itemCode = row.getAttribute('data-item');
-    var quantity = parseFloat(row.getAttribute('data-qty') || 1);
-    var rate = row.getAttribute('data-rate');
-    var totalAmount = row.getAttribute('data-total');
-    var creation = row.getAttribute('data-creation');
-
-    document.getElementById('od_id').innerText = orderId;
-    document.getElementById('od_item').innerText = itemCode;
-    document.getElementById('od_qty').innerText = quantity;
-    document.getElementById('od_rate').innerText = "₹" + rate;
-    document.getElementById('od_total').innerText = "₹" + totalAmount;
-    document.getElementById('od_date').innerText = creation;
-
-    var btnPdf = document.getElementById('od_btn_pdf');
-    if (btnPdf) btnPdf.onclick = function() { downloadOrderPdf(orderId); };
-
-    var btnReorder = document.getElementById('od_btn_reorder');
-    if (btnReorder) {
-        btnReorder.onclick = function() { reorderPreviousItem(itemCode, quantity); };
-    }
-
-    var modal = document.getElementById('orderDetailModalOverlay');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeOrderDetailModal() {
-    var modal = document.getElementById('orderDetailModalOverlay');
-    if (modal) modal.style.display = 'none';
-}
-
-function reorderPreviousItem(itemCode, quantity) {
-    frappe.call({
-        method: "stock_flow.api.add_to_agent_cart",
-        args: { item_code: itemCode, quantity: quantity },
-        callback: function(r) {
-            if (!r.exc) {
-                refreshAgentCounters();
-                closeOrderDetailModal();
-                alert(quantity + "x " + itemCode + " added to your cart!");
-                openCartModal();
-            }
-        }
-    });
-}
-
-// CART OPERATIONS
 function loadCartItems() {
     frappe.call({
         method: "stock_flow.api.get_agent_cart",
@@ -1556,7 +1791,7 @@ function loadCartItems() {
                 return;
             }
 
-            var html = '<table class="kite-table m-0"><thead><tr><th>Item</th><th class="text-center">Qty</th><th class="text-end">Total</th><th class="text-end">Action</th></tr></thead><tbody>';
+            var html = '<table class="table-frap m-0"><thead><tr><th>Item</th><th class="text-center">Qty</th><th class="text-end">Total</th><th class="text-end">Action</th></tr></thead><tbody>';
             var grandTotal = 0;
 
             r.message.forEach(function(item) {
@@ -1566,7 +1801,7 @@ function loadCartItems() {
                     <td><strong>${item.item_name}</strong></td>
                     <td class="text-center font-mono">${item.quantity}</td>
                     <td class="text-end font-mono">₹${lineTotal.toFixed(2)}</td>
-                    <td class="text-end"><button type="button" class="btn btn-kite-danger btn-sm py-0 px-2" onclick="removeFromCart('${item.name}')">Remove</button></td>
+                    <td class="text-end"><button type="button" class="btn-base-danger" style="padding: 2px 8px; font-size: 0.75rem;" onclick="removeFromCart('${item.name}')">Remove</button></td>
                 </tr>`;
             });
             html += '</tbody></table>';
@@ -1576,18 +1811,13 @@ function loadCartItems() {
     });
 }
 
-// ORDER NOW VIA CART FLOW: Adds to cart & pops open cart modal for address
-function executeOrderViaCart(itemCode, itemName, availableStock) {
-    executeAddToCart(itemCode, itemName, availableStock, true);
-}
-
 function executeAddToCart(itemCode, itemName, availableStock, openCartAfterwards) {
     if (availableStock <= 0) { alert(itemName + " is currently out of stock."); return; }
     var qty = prompt("Enter quantity for " + itemName + " (Available: " + availableStock + "):", "1");
     if (!qty) return;
     var parsedQty = parseFloat(qty);
     if (isNaN(parsedQty) || parsedQty <= 0 || parsedQty > availableStock) {
-        alert("Invalid quantity. Enter a valid amount up to " + availableStock + ".");
+        alert("Invalid quantity. Maximum available: " + availableStock);
         return;
     }
 
@@ -1600,7 +1830,7 @@ function executeAddToCart(itemCode, itemName, availableStock, openCartAfterwards
                 if (openCartAfterwards) {
                     openCartModal();
                 } else {
-                    alert("Added " + parsedQty + "x " + itemName + " to cart.");
+                    alert("Added to cart.");
                 }
             }
         }
@@ -1627,12 +1857,11 @@ function checkoutCart() {
         method: "stock_flow.api.checkout_agent_cart",
         args: { shipping_address: shippingAddress, dispatch_notes: dispatchNotes },
         callback: function(r) {
-            if (!r.exc) { alert("Orders placed successfully!"); location.reload(); }
+            if (!r.exc) { alert("Order placed successfully!"); location.reload(); }
         }
     });
 }
 
-// WISHLIST OPERATIONS
 function loadWishlistItems() {
     frappe.call({
         method: "stock_flow.api.get_agent_wishlist",
@@ -1645,14 +1874,14 @@ function loadWishlistItems() {
                 return;
             }
 
-            var html = '<table class="kite-table m-0"><thead><tr><th>Item</th><th class="text-end">Rate</th><th class="text-end">Action</th></tr></thead><tbody>';
+            var html = '<table class="table-frap m-0"><thead><tr><th>Item</th><th class="text-end">Rate</th><th class="text-end">Action</th></tr></thead><tbody>';
             r.message.forEach(function(item) {
                 html += `<tr>
                     <td><strong>${item.item_name}</strong></td>
                     <td class="text-end font-mono">₹${item.rate}</td>
                     <td class="text-end">
-                        <button type="button" class="btn btn-frap-primary btn-sm py-0 px-2 me-1" onclick="moveToCartFromWishlist('${item.item_code}', '${item.name}')">Add to Cart</button>
-                        <button type="button" class="btn btn-kite-danger btn-sm py-0 px-2" onclick="removeFromWishlist('${item.name}')">Remove</button>
+                        <button type="button" class="btn-base-primary me-1" style="padding: 2px 8px; font-size: 0.75rem;" onclick="moveToCartFromWishlist('${item.item_code}', '${item.name}')">Add to Cart</button>
+                        <button type="button" class="btn-base-danger" style="padding: 2px 8px; font-size: 0.75rem;" onclick="removeFromWishlist('${item.name}')">Remove</button>
                     </td>
                 </tr>`;
             });
@@ -1692,7 +1921,21 @@ function moveToCartFromWishlist(itemCode, wishlistName) {
     });
 }
 
-// PRODUCT CRUD & MODALS
+function reorderPreviousItem(itemCode, quantity) {
+    frappe.call({
+        method: "stock_flow.api.add_to_agent_cart",
+        args: { item_code: itemCode, quantity: quantity },
+        callback: function(r) {
+            if (!r.exc) {
+                refreshAgentCounters();
+                closeOrderDetailModal();
+                alert(quantity + "x " + itemCode + " added to your cart!");
+                openCartModal();
+            }
+        }
+    });
+}
+
 function openEditModalDirect(itemCode, rate, stock, image, category) {
     document.getElementById('edit_item_code').value = itemCode;
     document.getElementById('edit_item_name_display').value = itemCode;

@@ -2,7 +2,7 @@
 
 {% block page_content %}
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
   :root {
     --bg-app: #f5f6f8;
@@ -14,8 +14,15 @@
     --text-secondary: #525866;
     --text-muted: #868c98;
     --accent-red: #e11d48;
+    --accent-red-hover: #cc123b;
     --accent-blue: #2563eb;
     --accent-blue-hover: #1d4ed8;
+    --accent-green: #10b981;
+
+    --reminder-bg: #fbf8f2;
+    --reminder-border: #eee7db;
+    --reminder-badge-bg: #ede6d7;
+    --reminder-badge-text: #595345;
   }
 
   [data-theme="dark"] {
@@ -27,18 +34,34 @@
     --text-primary: #f8fafc;
     --text-secondary: #9aa2b1;
     --text-muted: #626b7d;
+
+    --reminder-bg: #1c212d;
+    --reminder-border: #2b3345;
+    --reminder-badge-bg: #272f40;
+    --reminder-badge-text: #cbd5e1;
   }
 
-  /* HARD SUPPRESS DEFAULT FRAPPE NAVBAR CRUFT */
   .web-footer, .page-header, header.navbar, .navbar-light, .navbar-default {
     display: none !important;
   }
 
-  html, body, .web-page, .page-container, .main-section {
+  .web-page-content,
+  .page-container,
+  .page-content-wrapper,
+  .main-section,
+  .container,
+  .container-fluid {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html, body, .web-page {
     background-color: var(--bg-app) !important;
     margin: 0 !important;
     padding: 0 !important;
-    min-height: 100vh;
+    overflow-x: hidden;
   }
 
   body {
@@ -57,14 +80,14 @@
     font-family: 'JetBrains Mono', monospace !important;
   }
 
-  /* TOP HEADER BAR */
-  .home-nav {
-    background: var(--bg-surface);
+  /* TOP HEADER NAV */
+  .brand-nav-header {
     border-bottom: 1px solid var(--border-subtle);
-    padding: 14px 32px;
+    background-color: var(--bg-surface);
+    padding: 16px 40px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
   }
 
   .brand-logo-wrap {
@@ -75,108 +98,112 @@
   }
 
   .brand-dot {
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     background-color: var(--accent-red);
   }
 
-  .brand-text {
-    font-size: 0.92rem;
-    font-weight: 800;
+  .brand-name {
+    font-size: 0.95rem;
+    font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--text-primary);
   }
 
-  .nav-pill-btn {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 0.82rem;
-    font-weight: 500;
-    padding: 7px 14px;
+  .nav-action-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-brand-pill {
+    background: var(--accent-red);
+    color: #ffffff !important;
+    border: none;
+    font-size: 0.84rem;
+    font-weight: 600;
+    padding: 8px 22px;
     border-radius: 9999px;
+    cursor: pointer;
+    text-decoration: none !important;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    cursor: pointer;
-    text-decoration: none !important;
-    transition: all 0.15s ease;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.2);
   }
 
-  .nav-pill-btn:hover {
+  .btn-brand-pill:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .btn-theme-toggle {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-theme-toggle:hover {
     color: var(--text-primary);
     border-color: var(--border-strong);
   }
 
-  .btn-enter-portal {
-    background: var(--accent-blue);
-    color: #ffffff !important;
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 9999px;
-    text-decoration: none !important;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.15s ease;
-  }
-
-  .btn-enter-portal:hover {
-    background: var(--accent-blue-hover);
-  }
-
-  /* HERO CONTAINER */
-  .home-hero-wrap {
+  /* HERO BANNER SECTION */
+  .landing-hero-container {
     max-width: 980px;
-    margin: 0 auto;
-    padding: 80px 24px 60px 24px;
+    margin: 80px auto 40px auto;
+    padding: 0 24px;
     text-align: center;
   }
 
-  .overtitle-chip {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    margin-bottom: 16px;
+  .hero-tagline-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    padding: 5px 14px;
+    border-radius: 9999px;
+    margin-bottom: 24px;
   }
 
-  .overtitle-chip .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--accent-red);
-  }
-
-  .home-hero-title {
+  .hero-heading-main {
     font-size: 4.5rem;
     color: var(--text-primary);
-    margin: 0;
-    line-height: 1;
+    line-height: 1.02;
+    margin: 0 0 16px 0;
   }
 
-  .home-hero-sub {
-    font-size: 1.15rem;
+  .hero-sub-text {
+    font-size: 1.25rem;
     color: var(--text-secondary);
-    max-width: 580px;
-    margin: 18px auto 36px auto;
+    max-width: 680px;
+    margin: 0 auto 36px auto;
     line-height: 1.5;
   }
 
-  /* WORKSPACE HIGHLIGHT CARDS */
+  /* FEATURE PILLARS */
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-    max-width: 980px;
-    margin: 20px auto 80px auto;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 60px auto 100px auto;
     padding: 0 24px;
   }
 
@@ -184,135 +211,122 @@
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    padding: 24px;
-    text-align: left;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-    transition: border-color 0.15s ease, transform 0.15s ease;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform 0.18s ease, border-color 0.18s ease;
   }
 
   .feature-card:hover {
-    border-color: var(--border-strong);
     transform: translateY(-2px);
+    border-color: var(--border-strong);
   }
 
-  .feature-icon-box {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
+  .feature-icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    margin-bottom: 14px;
+    font-size: 1.25rem;
+    margin-bottom: 18px;
   }
 
-  .feature-card h3 {
-    font-size: 1.05rem;
-    font-weight: 700;
+  .feature-title {
+    font-size: 1.15rem;
+    font-weight: 600;
     color: var(--text-primary);
-    margin: 0 0 6px 0;
+    margin: 0 0 8px 0;
   }
 
-  .feature-card p {
-    font-size: 0.85rem;
+  .feature-desc {
+    font-size: 0.9rem;
     color: var(--text-secondary);
+    line-height: 1.55;
     margin: 0;
-    line-height: 1.5;
   }
 </style>
 
-<div class="frap-home-wrapper">
-  
-  <!-- NAV -->
-  <header class="home-nav">
-    <a href="/home" class="brand-logo-wrap">
-      <span class="brand-dot"></span>
-      <span class="brand-text">FRANORA</span>
-    </a>
+<div class="brand-nav-header">
+  <a href="/home" class="brand-logo-wrap">
+    <span class="brand-dot"></span>
+    <span class="brand-name">FRANORA</span>
+  </a>
 
-    <div class="d-flex align-items-center gap-2">
-      <!-- Dark Theme Switcher -->
-      <button type="button" class="nav-pill-btn" id="themeToggleBtn" onclick="toggleTheme()">
-        <span>🌙</span>
-        <span id="themeBtnText">Dark</span>
-      </button>
+  <div class="nav-action-group">
+    <button type="button" class="btn-theme-toggle" onclick="toggleSharedTheme()">
+      <span>🌙</span>
+      <span id="homeThemeText">Dark</span>
+    </button>
+    <a href="/frapnora" class="btn-brand-pill">Enter Portal →</a>
+  </div>
+</div>
 
-      {% if frappe.session.user != "Guest" %}
-      <a href="/frapnora" class="btn-enter-portal">Launch Workspace →</a>
-      {% else %}
-      <a href="/login" class="btn-enter-portal">Sign In →</a>
-      {% endif %}
-    </div>
-  </header>
-
-  <!-- HERO SECTION -->
-  <section class="home-hero-wrap">
-    <div class="overtitle-chip">
-      <span class="dot"></span>
-      <span>INVENTORY & DISPATCH OPERATIONS</span>
+<main>
+  <div class="landing-hero-container">
+    <div class="hero-tagline-badge">
+      <span class="brand-dot" style="width: 6px; height: 6px;"></span>
+      <span>Enterprise Inventory Operations</span>
     </div>
 
-    <h1 class="home-hero-title font-serif-heading">FRAPNORA</h1>
-    <p class="home-hero-sub">
-      A unified, real-time stock management and agent requisition engine built for precision inventory control.
+    <h1 class="hero-heading-main font-serif-heading">Precision Logistics & Real-Time Stock Flow</h1>
+    
+    <p class="hero-sub-text">
+      Seamless catalog management, instant order dispatch, and live warehouse milestone tracking built on Frappe Framework.
     </p>
 
     <div class="d-flex justify-content-center gap-3">
-      {% if frappe.session.user != "Guest" %}
-      <a href="/frapnora" class="btn-enter-portal py-2 px-4 fs-6">Go to Dashboard</a>
-      {% else %}
-      <a href="/login" class="btn-enter-portal py-2 px-4 fs-6">Access Portal</a>
-      {% endif %}
+      <a href="/frapnora" class="btn-brand-pill" style="font-size: 0.95rem; padding: 12px 30px;">
+        Open Workspace
+      </a>
+      <a href="/login" class="btn-theme-toggle" style="padding: 12px 24px; font-size: 0.95rem; text-decoration: none;">
+        Sign In
+      </a>
     </div>
-  </section>
+  </div>
 
-  <!-- SYSTEM PILLARS -->
-  <section class="features-grid">
+  <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon-box">📦</div>
-      <h3>Real-Time Catalog</h3>
-      <p>Instant SKU level availability tracking, dynamic category filtering, and critical stock depletion alerts.</p>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon-box">⚡</div>
-      <h3>Rapid Reordering</h3>
-      <p>1-click duplication of past orders, itemized shopping carts, and delivery dispatch note attachments.</p>
+      <div class="feature-icon-circle">📦</div>
+      <h3 class="feature-title">Stock Catalog</h3>
+      <p class="feature-desc">Live inventory visibility, instant category filtering, and item-level reorder warnings to prevent stockouts.</p>
     </div>
 
     <div class="feature-card">
-      <div class="feature-icon-box">📊</div>
-      <h3>Sales Intelligence</h3>
-      <p>Instant revenue metrics, order audit slips, and itemized agent performance breakdowns.</p>
+      <div class="feature-icon-circle">⚡</div>
+      <h3 class="feature-title">Fulfillment Pipeline</h3>
+      <p class="feature-desc">Agent-to-manager order submissions with structured shipping address collection, notes, and approval handshakes.</p>
     </div>
-  </section>
 
-</div>
+    <div class="feature-card">
+      <div class="feature-icon-circle">📷</div>
+      <h3 class="feature-title">QR Dispatch Tracking</h3>
+      <p class="feature-desc">Barcode and QR code integration for physical shelf scanning, camera tracking, and milestone verification.</p>
+    </div>
+  </div>
+</main>
 
 <script>
-frappe.ready(function() {
-    initTheme();
-});
-
-function initTheme() {
-    var savedTheme = localStorage.getItem('frapnora_theme') || 'light';
-    setTheme(savedTheme);
+function initSharedTheme() {
+  var saved = localStorage.getItem('frapnora_theme') || 'light';
+  applyTheme(saved);
 }
 
-function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    setTheme(current === 'dark' ? 'light' : 'dark');
+function toggleSharedTheme() {
+  var current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
 }
 
-function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('frapnora_theme', theme);
-    var textEl = document.getElementById('themeBtnText');
-    if (textEl) {
-        textEl.innerText = (theme === 'dark') ? 'Light' : 'Dark';
-    }
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('frapnora_theme', theme);
+  var txt = document.getElementById('homeThemeText');
+  if (txt) txt.innerText = (theme === 'dark') ? 'Light' : 'Dark';
 }
+
+initSharedTheme();
 </script>
 {% endblock %}

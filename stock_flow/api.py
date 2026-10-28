@@ -1,444 +1,279 @@
 import frappe
-import json
-
-def redirect_to_portal(login_manager):
-    """Post-login hook to redirect users directly to /frapnora instead of the Desk."""
-    roles = frappe.get_roles(login_manager.user)
-    if "Agent" in roles or "Stock Manager" in roles or "System Manager" in roles or login_manager.user == "Administrator":
-        if not frappe.local.request.path.startswith("/api"):
-            frappe.local.response["home_page"] = "/frapnora"
+from frappe.utils import flt, cint, now_datetime
 
 @frappe.whitelist()
-def create_stock_item(item_name, rate, current_stock, image_url=None, category=None):
-    user_roles = frappe.get_roles()
-    if "System Manager" not in user_roles and frappe.session.user != "Administrator":
-        frappe.throw("Permission denied: Only Administrators can add products.")
+def create_stock_item(item_name, rate, current_stock, category=None, image_url=None):
+    roles = frappe.get_roles(frappe.session.user)
+    if "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized", frappe.PermissionError)
 
-    if not item_name or not item_name.strip():
-        frappe.throw("Item Name is required.")
-
-    item_code = item_name.strip()
-    rate_val = float(rate or 0)
-    stock_val = float(current_stock or 0)
-    category_val = (category or "").strip()
-
-    image_path = (image_url or "").strip()
-    if image_path.startswith("/private/files/"):
-        image_path = image_path.replace("/private/files/", "/files/")
-
-    has_category = frappe.db.has_column("Stock Item", "category")
-
-    if has_category:
-        frappe.db.sql("""
-            INSERT INTO `tabStock Item` (name, item_name, rate, current_stock, image, category, creation, modified, owner, docstatus)
-            VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW(), %s, 0)
-            ON DUPLICATE KEY UPDATE 
-                item_name=%s, rate=%s, current_stock=%s, image=%s, category=%s, modified=NOW()
-        """, (item_code, item_name, rate_val, stock_val, image_path, category_val, frappe.session.user, 
-              item_name, rate_val, stock_val, image_path, category_val))
-    else:
-        frappe.db.sql("""
-            INSERT INTO `tabStock Item` (name, item_name, rate, current_stock, image, creation, modified, owner, docstatus)
-            VALUES (%s, %s, %s, %s, %s, NOW(), NOW(), %s, 0)
-            ON DUPLICATE KEY UPDATE 
-                item_name=%s, rate=%s, current_stock=%s, image=%s, modified=NOW()
-        """, (item_code, item_name, rate_val, stock_val, image_path, frappe.session.user, 
-              item_name, rate_val, stock_val, image_path))
-
-    frappe.db.commit()
-    return item_code
-
-
-@frappe.whitelist()
-def update_stock_item(item_code, rate=None, current_stock=None, image_url=None, category=None):
-    user_roles = frappe.get_roles()
-    if "System Manager" not in user_roles and frappe.session.user != "Administrator":
-        frappe.throw("Permission denied: Only Administrators can edit products.")
-
-    if not frappe.db.exists("Stock Item", item_code):
-        frappe.throw(f"Stock Item '{item_code}' does not exist.")
-
-    image_path = (image_url or "").strip()
-    if image_path.startswith("/private/files/"):
-        image_path = image_path.replace("/private/files/", "/files/")
-
-    updates = {}
-    if rate is not None and str(rate).strip() != "":
-        updates["rate"] = float(rate)
-    if current_stock is not None and str(current_stock).strip() != "":
-        updates["current_stock"] = float(current_stock)
-    if image_path:
-        updates["image"] = image_path
-    if category is not None and frappe.db.has_column("Stock Item", "category"):
-        updates["category"] = str(category).strip()
-
-    if updates:
-        frappe.db.set_value("Stock Item", item_code, updates)
-        frappe.db.commit()
-
-    return "Success"
-
-
-@frappe.whitelist()
-def delete_stock_item(item_code):
-    user_roles = frappe.get_roles()
-    if "System Manager" not in user_roles and frappe.session.user != "Administrator":
-        frappe.throw("Permission denied: Only Administrators can delete products.")
-
-    frappe.delete_doc("Stock Item", item_code, ignore_permissions=True)
-    frappe.db.commit()
-    return "Success"
-
-
-@frappe.whitelist()
-def create_stock_order(item_code, quantity=1, shipping_address=None, dispatch_notes=None):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in to place orders.")
-
-    qty = float(quantity)
-    if qty <= 0:
-        frappe.throw("Quantity must be greater than zero.")
-
-    if not frappe.db.exists("Stock Item", item_code):
-        frappe.throw(f"Stock Item '{item_code}' does not exist.")
-
-    item_data = frappe.db.get_value("Stock Item", item_code, ["rate", "image", "current_stock"], as_dict=True) or {}
-    available_stock = float(item_data.get("current_stock") or 0)
-
-    if qty > available_stock:
-        frappe.throw(f"Cannot request {int(qty)} units. Only {int(available_stock)} units available in stock.")
-
-    rate = float(item_data.get("rate") or 0)
-    image_path = item_data.get("image") or ""
-    if image_path.startswith("/private/files/"):
-        image_path = image_path.replace("/private/files/", "/files/")
-
-    order_payload = {
-        "doctype": "Stock Order",
-        "item": item_code,
-        "quantity": qty,
-        "rate": rate,
-        "total_amount": rate * qty,
-        "item_image": image_path
-    }
-
-    if frappe.db.has_column("Stock Order", "shipping_address") and shipping_address:
-        order_payload["shipping_address"] = shipping_address
-    if frappe.db.has_column("Stock Order", "dispatch_notes") and dispatch_notes:
-        order_payload["dispatch_notes"] = dispatch_notes
-
-    doc = frappe.get_doc(order_payload)
+    doc = frappe.get_doc({
+        "doctype": "Stock Item",
+        "item_name": item_name,
+        "rate": flt(rate),
+        "current_stock": cint(current_stock),
+        "category": category or "Uncategorized",
+        "image": image_url or ""
+    })
     doc.insert(ignore_permissions=True)
     frappe.db.commit()
     return doc.name
 
-
 @frappe.whitelist()
-def get_agent_cart():
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
-    return frappe.db.get_all(
-        "Stock Cart Item",
-        filters={"owner": frappe.session.user},
-        fields=["name", "item_code", "item_name", "quantity", "rate", "image"]
-    )
-
-
-@frappe.whitelist()
-def add_to_agent_cart(item_code, quantity=1):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
-    
+def update_stock_item(item_code, rate, current_stock, image_url=None, category=None):
     roles = frappe.get_roles(frappe.session.user)
-    if "Agent" not in roles and "System Manager" not in roles and frappe.session.user != "Administrator":
-        frappe.throw("Only agents can maintain a cart.")
+    if "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized", frappe.PermissionError)
 
-    item_data = frappe.db.get_value("Stock Item", item_code, ["item_name", "rate", "image", "current_stock"], as_dict=True)
-    if not item_data:
-        frappe.throw(f"Item {item_code} not found.")
-
-    qty = float(quantity)
-    if qty > float(item_data.get("current_stock") or 0):
-        frappe.throw("Requested quantity exceeds available stock.")
-
-    existing = frappe.db.exists("Stock Cart Item", {"owner": frappe.session.user, "item_code": item_code})
-    if existing:
-        doc = frappe.get_doc("Stock Cart Item", existing)
-        doc.quantity += qty
-        doc.save(ignore_permissions=True)
-    else:
-        doc = frappe.get_doc({
-            "doctype": "Stock Cart Item",
-            "item_code": item_code,
-            "item_name": item_data.item_name,
-            "quantity": qty,
-            "rate": item_data.rate,
-            "image": item_data.image
-        })
-        doc.insert(ignore_permissions=True)
-    
+    doc = frappe.get_doc("Stock Item", item_code)
+    doc.rate = flt(rate)
+    doc.current_stock = cint(current_stock)
+    if category is not None:
+        doc.category = category
+    if image_url:
+        doc.image = image_url
+    doc.save(ignore_permissions=True)
     frappe.db.commit()
-    return "Success"
-
-
-@frappe.whitelist()
-def remove_from_agent_cart(name):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
-    if frappe.db.exists("Stock Cart Item", name):
-        doc = frappe.get_doc("Stock Cart Item", name)
-        if doc.owner == frappe.session.user:
-            doc.delete(ignore_permissions=True)
-            frappe.db.commit()
-    return "Success"
-
+    return doc.name
 
 @frappe.whitelist()
-def checkout_agent_cart(shipping_address=None, dispatch_notes=None):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
+def delete_stock_item(item_code):
+    roles = frappe.get_roles(frappe.session.user)
+    if "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized", frappe.PermissionError)
 
-    cart_items = frappe.get_all(
-        "Stock Cart Item",
-        filters={"owner": frappe.session.user},
-        fields=["item_code", "quantity", "rate", "image"]
-    )
-
-    if not cart_items:
-        frappe.throw("Your cart is empty.")
-
-    has_shipping = frappe.db.has_column("Stock Order", "shipping_address")
-    has_notes = frappe.db.has_column("Stock Order", "dispatch_notes")
-
-    created_orders = []
-    for ci in cart_items:
-        order_dict = {
-            "doctype": "Stock Order",
-            "item": ci.item_code,
-            "quantity": ci.quantity,
-            "rate": ci.rate,
-            "total_amount": ci.rate * ci.quantity,
-            "item_image": ci.image or ""
-        }
-        if has_shipping and shipping_address:
-            order_dict["shipping_address"] = shipping_address
-        if has_notes and dispatch_notes:
-            order_dict["dispatch_notes"] = dispatch_notes
-
-        doc = frappe.get_doc(order_dict)
-        doc.insert(ignore_permissions=True)
-        created_orders.append(doc.name)
-
-    frappe.db.delete("Stock Cart Item", {"owner": frappe.session.user})
+    frappe.delete_doc("Stock Item", item_code, ignore_permissions=True)
     frappe.db.commit()
-    return {"status": "Success", "orders": created_orders}
-
-
-@frappe.whitelist()
-def get_agent_wishlist():
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
-    return frappe.db.get_all(
-        "Stock Wishlist Item",
-        filters={"owner": frappe.session.user},
-        fields=["name", "item_code", "item_name", "rate", "image"]
-    )
-
+    return {"message": "deleted"}
 
 @frappe.whitelist()
-def add_to_agent_wishlist(item_code):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
-    
-    item_data = frappe.db.get_value("Stock Item", item_code, ["item_name", "rate", "image"], as_dict=True)
-    if not item_data:
-        frappe.throw("Item not found.")
+def create_stock_order(item_code, quantity):
+    qty = cint(quantity)
+    if qty <= 0:
+        frappe.throw("Quantity must be greater than zero.")
 
-    if not frappe.db.exists("Stock Wishlist Item", {"owner": frappe.session.user, "item_code": item_code}):
-        doc = frappe.get_doc({
-            "doctype": "Stock Wishlist Item",
-            "item_code": item_code,
-            "item_name": item_data.item_name,
-            "rate": item_data.rate,
-            "image": item_data.image
-        })
-        doc.insert(ignore_permissions=True)
-        frappe.db.commit()
-    return "Success"
+    stock_item = frappe.get_doc("Stock Item", item_code)
+    if stock_item.current_stock < qty:
+        frappe.throw(f"Insufficient stock. Available: {stock_item.current_stock}")
 
-
-@frappe.whitelist()
-def remove_from_agent_wishlist(name):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
-    if frappe.db.exists("Stock Wishlist Item", name):
-        doc = frappe.get_doc("Stock Wishlist Item", name)
-        if doc.owner == frappe.session.user:
-            doc.delete(ignore_permissions=True)
-            frappe.db.commit()
-    return "Success"
-
+    order = frappe.get_doc({
+        "doctype": "Stock Order",
+        "item": item_code,
+        "quantity": qty,
+        "rate": stock_item.rate,
+        "total_amount": flt(stock_item.rate) * qty,
+        "docstatus": 0,
+        "tracking_status": "Pending"
+    })
+    order.insert(ignore_permissions=True)
+    frappe.db.commit()
+    return order.name
 
 @frappe.whitelist()
 def approve_stock_order(order_id):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in to approve orders.")
+    roles = frappe.get_roles(frappe.session.user)
+    if "Stock Manager" not in roles and "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized: Manager role required to approve.", frappe.PermissionError)
 
-    user_roles = frappe.get_roles()
-    if "Stock Manager" not in user_roles and "System Manager" not in user_roles and frappe.session.user != "Administrator":
-        frappe.throw("Permission denied: Only Stock Managers and Administrators can approve orders.")
+    order = frappe.get_doc("Stock Order", order_id)
+    if order.docstatus == 1:
+        return {"message": "Already approved"}
 
-    doc = frappe.get_doc("Stock Order", order_id)
-    doc.flags.ignore_permissions = True
+    item = frappe.get_doc("Stock Item", order.item)
+    if item.current_stock < order.quantity:
+        frappe.throw(f"Cannot approve: Insufficient stock. Available: {item.current_stock}")
 
-    if doc.docstatus == 1:
-        frappe.throw("Order is already submitted/approved.")
+    item.current_stock = item.current_stock - order.quantity
+    item.save(ignore_permissions=True)
 
-    current_stock = frappe.db.get_value("Stock Item", doc.item, "current_stock") or 0
-    if current_stock < doc.quantity:
-        frappe.throw(f"Insufficient stock for '{doc.item}'. Available: {current_stock}")
-
-    doc.submit()
+    order.docstatus = 1
+    order.tracking_status = "Approved"
+    order.save(ignore_permissions=True)
     frappe.db.commit()
-
-    raw_user = doc.get("agent") or doc.owner
-    recipient_email = frappe.db.get_value("User", raw_user, "email") or raw_user
-
-    email_message = f"""
-    <p>Dear <b>{doc.owner}</b>,</p>
-    <p>Your stock order <b>{doc.name}</b> has been officially approved and processed.</p>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
-      <thead>
-        <tr style="background-color: #f3f4f6; text-align: left;">
-          <th style="padding: 8px; border: 1px solid #e5e7eb;">Item</th>
-          <th style="padding: 8px; border: 1px solid #e5e7eb;">Quantity</th>
-          <th style="padding: 8px; border: 1px solid #e5e7eb;">Rate</th>
-          <th style="padding: 8px; border: 1px solid #e5e7eb;">Total Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="padding: 8px; border: 1px solid #e5e7eb;">{doc.item}</td>
-          <td style="padding: 8px; border: 1px solid #e5e7eb;">{doc.quantity}</td>
-          <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{doc.rate}</td>
-          <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{doc.total_amount}</td>
-        </tr>
-      </tbody>
-    </table>
-    <p>Warehouse inventory has been updated accordingly.</p>
-    <p>Best regards,<br><b>Frapnova Operations Team</b></p>
-    """
-
-    frappe.sendmail(
-        recipients=[recipient_email],
-        subject=f"Order {doc.name} Approved",
-        message=email_message,
-        reference_doctype="Stock Order",
-        reference_name=doc.name,
-        now=True
-    )
-
-    if frappe.db.exists("User", raw_user):
-        frappe.get_doc({
-            "doctype": "Notification Log",
-            "subject": f"Order {doc.name} Approved",
-            "for_user": raw_user,
-            "type": "Alert",
-            "document_type": "Stock Order",
-            "document_name": doc.name
-        }).insert(ignore_permissions=True)
-
-    frappe.enqueue(
-        "stock_flow.tasks.check_low_stock_and_notify",
-        queue="short",
-        now=True
-    )
-
-    frappe.db.commit()
-    return "Success"
-
+    return {"message": "Order approved"}
 
 @frappe.whitelist()
 def reject_stock_order(order_id):
-    if frappe.session.user == "Guest":
-        frappe.throw("Please log in.")
+    roles = frappe.get_roles(frappe.session.user)
+    if "Stock Manager" not in roles and "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized: Manager role required to reject.", frappe.PermissionError)
 
-    user_roles = frappe.get_roles()
-    if "Stock Manager" not in user_roles and "System Manager" not in user_roles and frappe.session.user != "Administrator":
-        frappe.throw("Permission denied: Only Stock Managers and Administrators can reject orders.")
-
-    if not frappe.db.exists("Stock Order", order_id):
-        frappe.throw(f"Order '{order_id}' does not exist.")
-
-    doc = frappe.get_doc("Stock Order", order_id)
-    if doc.docstatus == 1:
-        frappe.throw("Cannot reject an order that has already been approved.")
-
-    has_status_col = frappe.db.has_column("Stock Order", "status")
-    if has_status_col:
-        frappe.db.sql("""
-            UPDATE `tabStock Order` 
-            SET docstatus = 2, status = 'Rejected', modified = NOW(), modified_by = %s
-            WHERE name = %s
-        """, (frappe.session.user, order_id))
-    else:
-        frappe.db.sql("""
-            UPDATE `tabStock Order` 
-            SET docstatus = 2, modified = NOW(), modified_by = %s
-            WHERE name = %s
-        """, (frappe.session.user, order_id))
-
+    order = frappe.get_doc("Stock Order", order_id)
+    order.docstatus = 2
+    order.tracking_status = "Rejected"
+    order.save(ignore_permissions=True)
     frappe.db.commit()
-    return "Success"
+    return {"message": "Order rejected"}
 
+@frappe.whitelist()
+def update_order_tracking(order_id, status, courier_name=None, tracking_number=None):
+    roles = frappe.get_roles(frappe.session.user)
+    if "Stock Manager" not in roles and "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized. Manager role required.", frappe.PermissionError)
 
-@frappe.whitelist(allow_guest=False)
-def bulk_process_orders(order_ids):
-    user_roles = frappe.get_roles()
-    if "Stock Manager" not in user_roles and "System Manager" not in user_roles and frappe.session.user != "Administrator":
-        frappe.throw("Access denied: Stock Manager privileges required.")
+    order = frappe.get_doc("Stock Order", order_id)
+    order.tracking_status = status
 
-    if isinstance(order_ids, str):
-        order_ids = json.loads(order_ids)
+    if courier_name:
+        order.courier_name = courier_name
+    if tracking_number:
+        order.tracking_number = tracking_number
 
-    processed = []
-    for oid in order_ids:
-        if not frappe.db.exists("Stock Order", oid):
-            continue
+    if status == "Dispatched":
+        order.dispatched_on = now_datetime()
+    elif status == "Delivered":
+        order.delivered_on = now_datetime()
 
-        doc = frappe.get_doc("Stock Order", oid)
-        if doc.docstatus == 0:
-            doc.flags.ignore_permissions = True
-            current_stock = frappe.db.get_value("Stock Item", doc.item, "current_stock") or 0
-            if current_stock >= doc.quantity:
-                doc.submit()
-                processed.append(oid)
-
+    order.save(ignore_permissions=True)
     frappe.db.commit()
+    return {"message": "success", "status": order.tracking_status}
 
-    if processed:
-        frappe.enqueue(
-            "stock_flow.tasks.check_low_stock_and_notify",
-            queue="short",
-            now=True
-        )
-
-    return {"status": "Success", "approved_orders": processed}
-
+@frappe.whitelist()
+def get_order_tracking(order_id):
+    order = frappe.db.get_value(
+        "Stock Order",
+        order_id,
+        [
+            "name", "item", "quantity", "rate", "total_amount",
+            "tracking_status", "courier_name", "tracking_number",
+            "shipping_address", "dispatch_notes", "creation", "docstatus"
+        ],
+        as_dict=True
+    )
+    if not order:
+        frappe.throw(f"Order {order_id} not found.", frappe.DoesNotExistError)
+    return order
 
 @frappe.whitelist()
 def get_agent_performance_summary():
-    user_roles = frappe.get_roles()
-    if not (frappe.has_permission("Stock Order", "read") or "Stock Manager" in user_roles or "System Manager" in user_roles or frappe.session.user == "Administrator"):
-        frappe.throw("Not permitted", frappe.PermissionError)
+    roles = frappe.get_roles(frappe.session.user)
+    if "Stock Manager" not in roles and "System Manager" not in roles and frappe.session.user != "Administrator":
+        frappe.throw("Unauthorized", frappe.PermissionError)
 
     return frappe.db.sql("""
         SELECT 
-            owner AS agent,
-            COUNT(name) as total_orders,
-            SUM(quantity) as total_quantity,
-            SUM(total_amount) as total_revenue
+            owner AS agent, 
+            COUNT(name) AS total_orders, 
+            SUM(total_amount) AS total_revenue
         FROM `tabStock Order`
         WHERE docstatus = 1
         GROUP BY owner
+        ORDER BY total_revenue DESC
     """, as_dict=True)
+
+@frappe.whitelist()
+def get_agent_cart():
+    user = frappe.session.user
+    if user == "Guest":
+        return []
+    return frappe.get_all(
+        "Stock Cart",
+        filters={"owner": user},
+        fields=["name", "item_code", "item_name", "quantity", "rate", "total_amount"]
+    )
+
+@frappe.whitelist()
+def add_to_agent_cart(item_code, quantity=1):
+    user = frappe.session.user
+    if user == "Guest":
+        frappe.throw("Login required", frappe.PermissionError)
+
+    qty = cint(quantity)
+    if qty <= 0:
+        frappe.throw("Invalid quantity")
+
+    stock_item = frappe.get_doc("Stock Item", item_code)
+    existing = frappe.db.get_value("Stock Cart", {"owner": user, "item_code": item_code}, "name")
+
+    if existing:
+        cart_item = frappe.get_doc("Stock Cart", existing)
+        cart_item.quantity += qty
+        cart_item.total_amount = cart_item.quantity * stock_item.rate
+        cart_item.save(ignore_permissions=True)
+    else:
+        cart_item = frappe.get_doc({
+            "doctype": "Stock Cart",
+            "item_code": item_code,
+            "item_name": stock_item.item_name,
+            "quantity": qty,
+            "rate": stock_item.rate,
+            "total_amount": qty * stock_item.rate
+        })
+        cart_item.insert(ignore_permissions=True)
+
+    frappe.db.commit()
+    return {"message": "Item added to cart"}
+
+@frappe.whitelist()
+def remove_from_agent_cart(name):
+    frappe.delete_doc("Stock Cart", name, ignore_permissions=True)
+    frappe.db.commit()
+    return {"message": "Item removed"}
+
+@frappe.whitelist()
+def checkout_agent_cart(shipping_address="", dispatch_notes=""):
+    user = frappe.session.user
+    items = frappe.get_all("Stock Cart", filters={"owner": user}, fields=["*"])
+    if not items:
+        frappe.throw("Cart is empty")
+
+    created_orders = []
+    for itm in items:
+        stock_item = frappe.get_doc("Stock Item", itm.item_code)
+        if stock_item.current_stock < itm.quantity:
+            frappe.throw(f"Insufficient stock for {itm.item_name}. Available: {stock_item.current_stock}")
+
+        order = frappe.get_doc({
+            "doctype": "Stock Order",
+            "item": itm.item_code,
+            "quantity": itm.quantity,
+            "rate": itm.rate,
+            "total_amount": itm.total_amount,
+            "docstatus": 0,
+            "tracking_status": "Pending",
+            "shipping_address": shipping_address,
+            "dispatch_notes": dispatch_notes
+        })
+        order.insert(ignore_permissions=True)
+        created_orders.append(order.name)
+
+    frappe.db.delete("Stock Cart", {"owner": user})
+    frappe.db.commit()
+    return {"message": "Success", "orders": created_orders}
+
+@frappe.whitelist()
+def get_agent_wishlist():
+    user = frappe.session.user
+    if user == "Guest":
+        return []
+    return frappe.get_all(
+        "Stock Wishlist",
+        filters={"owner": user},
+        fields=["name", "item_code", "item_name", "rate"]
+    )
+
+@frappe.whitelist()
+def add_to_agent_wishlist(item_code):
+    user = frappe.session.user
+    if user == "Guest":
+        frappe.throw("Login required", frappe.PermissionError)
+
+    if frappe.db.exists("Stock Wishlist", {"owner": user, "item_code": item_code}):
+        return {"message": "Already in wishlist"}
+
+    stock_item = frappe.get_doc("Stock Item", item_code)
+    wish = frappe.get_doc({
+        "doctype": "Stock Wishlist",
+        "item_code": item_code,
+        "item_name": stock_item.item_name,
+        "rate": stock_item.rate
+    })
+    wish.insert(ignore_permissions=True)
+    frappe.db.commit()
+    return {"message": "Added to wishlist"}
+
+@frappe.whitelist()
+def remove_from_agent_wishlist(name):
+    frappe.delete_doc("Stock Wishlist", name, ignore_permissions=True)
+    frappe.db.commit()
+    return {"message": "Removed from wishlist"}
