@@ -2,43 +2,32 @@
 
 {% block page_content %}
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg-app: #f5f6f8;
+    --bg-app: #f8f9fa;
     --bg-surface: #ffffff;
-    --bg-surface-elevated: #f0f2f5;
-    --border-subtle: #e2e4e9;
-    --border-strong: #cbd0d8;
+    --bg-surface-elevated: #f1f3f5;
+    --border-subtle: #e5e7eb;
+    --border-strong: #d1d5db;
     --text-primary: #111827;
-    --text-secondary: #525866;
-    --text-muted: #868c98;
-    --accent-red: #e11d48;
-    --accent-red-hover: #cc123b;
-    --accent-blue: #2563eb;
-    --accent-blue-hover: #1d4ed8;
-    --accent-green: #10b981;
-
-    --reminder-bg: #fbf8f2;
-    --reminder-border: #eee7db;
-    --reminder-badge-bg: #ede6d7;
-    --reminder-badge-text: #595345;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+    --accent-brand: #e11d48;
+    --accent-brand-hover: #be123c;
+    color-scheme: light;
   }
 
   [data-theme="dark"] {
-    --bg-app: #0c0f17;
-    --bg-surface: #171d2b;
-    --bg-surface-elevated: #202738;
-    --border-subtle: #242c3d;
-    --border-strong: #333e54;
-    --text-primary: #f8fafc;
-    --text-secondary: #9aa2b1;
-    --text-muted: #626b7d;
-
-    --reminder-bg: #1c212d;
-    --reminder-border: #2b3345;
-    --reminder-badge-bg: #272f40;
-    --reminder-badge-text: #cbd5e1;
+    --bg-app: #0b0f19;
+    --bg-surface: #111827;
+    --bg-surface-elevated: #1f2937;
+    --border-subtle: #2d3748;
+    --border-strong: #4a5568;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    color-scheme: dark;
   }
 
   .web-footer, .page-header, header.navbar, .navbar-light, .navbar-default {
@@ -66,25 +55,28 @@
 
   body {
     color: var(--text-primary) !important;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     -webkit-font-smoothing: antialiased;
   }
 
-  .font-serif-heading {
+  .font-brand-logo {
     font-family: 'Instrument Serif', Georgia, serif;
     font-weight: 400;
     letter-spacing: -0.02em;
   }
 
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace !important;
-  }
+  /* CUSTOM FLEX SPACING UTILITIES (REPLACES BOOTSTRAP GAP) */
+  .flex-row-gap-sm { display: flex; align-items: center; }
+  .flex-row-gap-sm > * + * { margin-left: 8px; }
 
-  /* TOP HEADER NAV */
+  .flex-row-gap-md { display: flex; align-items: center; }
+  .flex-row-gap-md > * + * { margin-left: 14px; }
+
+  /* HEADER */
   .brand-nav-header {
     border-bottom: 1px solid var(--border-subtle);
     background-color: var(--bg-surface);
-    padding: 16px 40px;
+    padding: 14px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -98,153 +90,145 @@
   }
 
   .brand-dot {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background-color: var(--accent-red);
+    background-color: var(--accent-brand);
+    display: inline-block;
   }
 
   .brand-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: 1.35rem;
     color: var(--text-primary);
   }
 
-  .nav-action-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .btn-brand-pill {
-    background: var(--accent-red);
+  .btn-primary-action {
+    background: var(--accent-brand);
     color: #ffffff !important;
     border: none;
-    font-size: 0.84rem;
+    font-size: 0.88rem;
     font-weight: 600;
-    padding: 8px 22px;
-    border-radius: 9999px;
+    padding: 10px 22px;
+    border-radius: 8px;
     cursor: pointer;
     text-decoration: none !important;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    transition: opacity 0.15s ease, transform 0.15s ease;
-    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.2);
+    transition: opacity 0.15s ease;
   }
 
-  .btn-brand-pill:hover {
+  .btn-primary-action:hover {
     opacity: 0.92;
-    transform: translateY(-1px);
   }
 
-  .btn-theme-toggle {
+  .btn-secondary-action {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary) !important;
+    font-size: 0.86rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    transition: border-color 0.15s ease;
+  }
+
+  .btn-secondary-action:hover {
+    border-color: var(--border-strong);
+  }
+
+  .btn-icon-square {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
     border-radius: 8px;
-    padding: 7px 12px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    cursor: pointer;
   }
 
-  .btn-theme-toggle:hover {
+  .btn-icon-square:hover {
     color: var(--text-primary);
     border-color: var(--border-strong);
   }
 
-  /* HERO BANNER SECTION */
+  /* HERO */
   .landing-hero-container {
-    max-width: 980px;
-    margin: 80px auto 40px auto;
+    max-width: 840px;
+    margin: 80px auto 48px auto;
     padding: 0 24px;
     text-align: center;
   }
 
-  .hero-tagline-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.74rem;
+  .hero-heading {
+    font-size: 3.2rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    padding: 5px 14px;
-    border-radius: 9999px;
-    margin-bottom: 24px;
-  }
-
-  .hero-heading-main {
-    font-size: 4.5rem;
     color: var(--text-primary);
-    line-height: 1.02;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
     margin: 0 0 16px 0;
   }
 
-  .hero-sub-text {
-    font-size: 1.25rem;
+  .hero-description {
+    font-size: 1.1rem;
     color: var(--text-secondary);
-    max-width: 680px;
+    max-width: 620px;
     margin: 0 auto 36px auto;
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
-  /* FEATURE PILLARS */
+  /* 3-COLUMN FEATURE GRID */
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 1100px;
-    margin: 60px auto 100px auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1040px;
+    margin: 40px auto 100px auto;
     padding: 0 24px;
+  }
+
+  @media (max-width: 850px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .hero-heading { font-size: 2.3rem; }
   }
 
   .feature-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    padding: 28px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: transform 0.18s ease, border-color 0.18s ease;
+    padding: 26px;
   }
 
-  .feature-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-strong);
-  }
-
-  .feature-icon-circle {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
+  .feature-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
-    margin-bottom: 18px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
   }
 
   .feature-title {
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0 0 8px 0;
   }
 
   .feature-desc {
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     color: var(--text-secondary);
-    line-height: 1.55;
+    line-height: 1.5;
     margin: 0;
   }
 </style>
@@ -252,58 +236,81 @@
 <div class="brand-nav-header">
   <a href="/home" class="brand-logo-wrap">
     <span class="brand-dot"></span>
-    <span class="brand-name">FRANORA</span>
+    <span class="brand-name font-brand-logo">FRAPNORA</span>
   </a>
 
-  <div class="nav-action-group">
-    <button type="button" class="btn-theme-toggle" onclick="toggleSharedTheme()">
-      <span>🌙</span>
-      <span id="homeThemeText">Dark</span>
+  <div class="flex-row-gap-md">
+    <button type="button" class="btn-icon-square" onclick="toggleSharedTheme()" title="Toggle appearance">
+      <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
     </button>
-    <a href="/frapnora" class="btn-brand-pill">Enter Portal →</a>
+    <a href="/login" class="btn-secondary-action">Sign In</a>
   </div>
 </div>
 
 <main>
   <div class="landing-hero-container">
-    <div class="hero-tagline-badge">
-      <span class="brand-dot" style="width: 6px; height: 6px;"></span>
-      <span>Enterprise Inventory Operations</span>
-    </div>
-
-    <h1 class="hero-heading-main font-serif-heading">Precision Logistics & Real-Time Stock Flow</h1>
+    <h1 class="hero-heading">Track stock, approve orders, and follow dispatch in one place.</h1>
     
-    <p class="hero-sub-text">
-      Seamless catalog management, instant order dispatch, and live warehouse milestone tracking built on Frappe Framework.
+    <p class="hero-description">
+      Manage operational catalog levels, process agent requests seamlessly, and verify warehouse fulfillment milestones.
     </p>
 
-    <div class="d-flex justify-content-center gap-3">
-      <a href="/frapnora" class="btn-brand-pill" style="font-size: 0.95rem; padding: 12px 30px;">
-        Open Workspace
-      </a>
-      <a href="/login" class="btn-theme-toggle" style="padding: 12px 24px; font-size: 0.95rem; text-decoration: none;">
-        Sign In
+    <div style="display: flex; justify-content: center;">
+      <a href="/frapnora" class="btn-primary-action">
+        <span style="margin-right: 8px;">Open Workspace</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </a>
     </div>
   </div>
 
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon-circle">📦</div>
+      <div class="feature-icon-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
       <h3 class="feature-title">Stock Catalog</h3>
-      <p class="feature-desc">Live inventory visibility, instant category filtering, and item-level reorder warnings to prevent stockouts.</p>
+      <p class="feature-desc">Real-time inventory levels, instant category filtering, and configurable threshold alerts.</p>
     </div>
 
     <div class="feature-card">
-      <div class="feature-icon-circle">⚡</div>
+      <div class="feature-icon-box">
+        <!-- TRUCK DISPATCH SVG INSTEAD OF BRIEFCASE -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13"></rect>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
+      </div>
       <h3 class="feature-title">Fulfillment Pipeline</h3>
-      <p class="feature-desc">Agent-to-manager order submissions with structured shipping address collection, notes, and approval handshakes.</p>
+      <p class="feature-desc">Structured checkout with shipping destinations, dispatch notes, and manager approval queues.</p>
     </div>
 
     <div class="feature-card">
-      <div class="feature-icon-circle">📷</div>
+      <div class="feature-icon-box">
+        <!-- SCAN FRAME / VIEWFINDER SVG INSTEAD OF 2x2 GRID -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+          <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+          <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+          <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+          <line x1="7" y1="12" x2="17" y2="12"></line>
+        </svg>
+      </div>
       <h3 class="feature-title">QR Dispatch Tracking</h3>
-      <p class="feature-desc">Barcode and QR code integration for physical shelf scanning, camera tracking, and milestone verification.</p>
+      <p class="feature-desc">Scan-to-order item lookup and milestone progression on printed order slips using integrated camera scanning.</p>
     </div>
   </div>
 </main>
@@ -323,8 +330,15 @@ function toggleSharedTheme() {
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('frapnora_theme', theme);
-  var txt = document.getElementById('homeThemeText');
-  if (txt) txt.innerText = (theme === 'dark') ? 'Light' : 'Dark';
+  var sun = document.getElementById('themeIconSun');
+  var moon = document.getElementById('themeIconMoon');
+  if (theme === 'dark') {
+    if (sun) sun.style.display = 'block';
+    if (moon) moon.style.display = 'none';
+  } else {
+    if (sun) sun.style.display = 'none';
+    if (moon) moon.style.display = 'block';
+  }
 }
 
 initSharedTheme();

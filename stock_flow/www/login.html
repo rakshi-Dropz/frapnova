@@ -2,33 +2,32 @@
 
 {% block page_content %}
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap');
 
   :root {
-    --bg-app: #f5f6f8;
+    --bg-app: #f8f9fa;
     --bg-surface: #ffffff;
-    --bg-surface-elevated: #f0f2f5;
-    --border-subtle: #e2e4e9;
-    --border-strong: #cbd0d8;
+    --bg-surface-elevated: #f1f3f5;
+    --border-subtle: #d1d5db;
+    --border-strong: #9ca3af;
     --text-primary: #111827;
-    --text-secondary: #525866;
-    --text-muted: #868c98;
-    --accent-red: #e11d48;
-    --accent-red-hover: #cc123b;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+    --accent-brand: #e11d48;
     --accent-blue: #2563eb;
-    --accent-blue-hover: #1d4ed8;
-    --accent-green: #10b981;
+    color-scheme: light;
   }
 
   [data-theme="dark"] {
-    --bg-app: #0c0f17;
-    --bg-surface: #171d2b;
-    --bg-surface-elevated: #202738;
-    --border-subtle: #242c3d;
-    --border-strong: #333e54;
-    --text-primary: #f8fafc;
-    --text-secondary: #9aa2b1;
-    --text-muted: #626b7d;
+    --bg-app: #0b0f19;
+    --bg-surface: #111827;
+    --bg-surface-elevated: #1f2937;
+    --border-subtle: #374151;
+    --border-strong: #4b5563;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    color-scheme: dark;
   }
 
   .web-footer, .page-header, header.navbar, .navbar-light, .navbar-default {
@@ -57,33 +56,29 @@
 
   body {
     color: var(--text-primary) !important;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     -webkit-font-smoothing: antialiased;
   }
 
-  .font-serif-heading {
+  .font-brand-logo {
     font-family: 'Instrument Serif', Georgia, serif;
     font-weight: 400;
     letter-spacing: -0.02em;
   }
 
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace !important;
-  }
-
-  /* LOGIN LAYOUT WRAPPER */
-  .login-page-wrapper {
+  .login-page-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 32px 16px;
+    padding: 24px 20px;
+    box-sizing: border-box;
   }
 
   .login-top-bar {
     width: 100%;
-    max-width: 1100px;
+    max-width: 960px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -100,134 +95,187 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: var(--accent-red);
+    background-color: var(--accent-brand);
+    display: inline-block;
   }
 
   .brand-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: 1.35rem;
     color: var(--text-primary);
   }
 
-  .btn-theme-toggle {
+  .btn-icon-square {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
     border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    cursor: pointer;
   }
 
-  .login-card-container {
+  .btn-icon-square:hover {
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+
+  /* STRENGTHENED BORDER & SHADOW */
+  .login-card {
     width: 100%;
-    max-width: 420px;
+    max-width: 390px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    padding: 36px 32px;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.04);
-    margin: 40px auto;
+    border-radius: 12px;
+    padding: 32px 28px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    margin: 20px auto;
   }
 
   .login-card-header {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 22px;
   }
 
-  .login-title-hero {
-    font-size: 2.8rem;
-    line-height: 1.05;
+  .login-title-text {
+    font-size: 1.3rem;
+    font-weight: 700;
     color: var(--text-primary);
     margin: 0 0 6px 0;
   }
 
-  .login-subtitle {
-    font-size: 0.88rem;
-    color: var(--text-secondary);
+  .login-sub-text {
+    font-size: 0.84rem;
+    color: var(--text-muted);
     margin: 0;
   }
 
   .form-group-item {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .form-label-custom {
     font-size: 0.82rem;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-secondary);
     margin-bottom: 6px;
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .password-input-wrap {
+    position: relative;
   }
 
   .input-control-custom {
-    background: var(--bg-surface-elevated) !important;
+    background-color: var(--bg-surface-elevated) !important;
     border: 1px solid var(--border-subtle) !important;
     color: var(--text-primary) !important;
     border-radius: 8px !important;
     padding: 10px 14px !important;
-    font-size: 0.9rem !important;
+    font-size: 0.88rem !important;
+    font-family: inherit !important;
     width: 100%;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
   }
 
   .input-control-custom:focus {
     border-color: var(--accent-blue) !important;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12) !important;
     outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12) !important;
   }
 
-  .btn-login-submit {
-    background: var(--accent-red);
+  /* STRICT AUTOFILL COLOR OVERRIDES */
+  .input-control-custom:-webkit-autofill,
+  .input-control-custom:-webkit-autofill:hover, 
+  .input-control-custom:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg-surface-elevated) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  .btn-toggle-pwd {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-toggle-pwd:hover {
+    color: var(--text-primary);
+  }
+
+  .btn-submit-login {
+    background: var(--accent-brand);
     color: #ffffff !important;
     border: none;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
     width: 100%;
     padding: 11px;
     border-radius: 8px;
     cursor: pointer;
-    transition: opacity 0.15s ease, transform 0.15s ease;
-    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.2);
-    margin-top: 8px;
+    transition: opacity 0.15s ease;
+    margin-top: 6px;
   }
 
-  .btn-login-submit:hover {
+  .btn-submit-login:hover {
     opacity: 0.92;
-    transform: translateY(-1px);
   }
 
-  .login-footer-text {
-    font-size: 0.78rem;
+  .login-alert-box {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(225, 29, 72, 0.1);
+    border: 1px solid rgba(225, 29, 72, 0.25);
+    color: var(--accent-brand);
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 14px;
+    display: none;
+  }
+
+  .login-footer-strip {
+    font-size: 0.76rem;
     color: var(--text-muted);
     text-align: center;
-    margin-top: 24px;
+    padding: 12px 0 6px 0;
   }
 </style>
 
-<div class="login-page-wrapper">
+<div class="login-page-container">
   
   <div class="login-top-bar">
     <a href="/home" class="brand-logo-wrap">
       <span class="brand-dot"></span>
-      <span class="brand-name">FRANORA</span>
+      <span class="brand-name font-brand-logo">FRAPNORA</span>
     </a>
 
-    <button type="button" class="btn-theme-toggle" onclick="toggleSharedTheme()">
-      <span>🌙</span>
-      <span id="loginThemeText">Dark</span>
+    <button type="button" class="btn-icon-square" onclick="toggleSharedTheme()" title="Toggle appearance">
+      <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
     </button>
   </div>
 
-  <div class="login-card-container">
+  <div class="login-card">
     <div class="login-card-header">
-      <h1 class="login-title-hero font-serif-heading">FRAPNORA</h1>
-      <p class="login-subtitle">Sign in to access your inventory portal</p>
+      <h1 class="login-title-text">Sign In</h1>
+      <p class="login-sub-text">Enter credentials to access inventory</p>
     </div>
 
     <form id="loginForm" onsubmit="handleFrappeLogin(event)">
@@ -237,23 +285,30 @@
       </div>
 
       <div class="form-group-item">
-        <label class="form-label-custom" for="login_password">Password</label>
-        <input type="password" id="login_password" class="input-control-custom" placeholder="••••••••" required autocomplete="current-password">
+        <div class="form-label-custom">
+          <span>Password</span>
+          <a href="javascript:alert('Please reach out to your administrator to reset access credentials.');" style="color: var(--text-muted); font-size: 0.76rem; text-decoration: none;">Forgot password?</a>
+        </div>
+        <div class="password-input-wrap">
+          <input type="password" id="login_password" class="input-control-custom" placeholder="••••••••" required autocomplete="current-password">
+          <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()" title="Show/Hide Password">
+            <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <button type="submit" class="btn-login-submit" id="btnLoginSubmit">
+      <button type="submit" class="btn-submit-login" id="btnLoginSubmit">
         Sign In
       </button>
 
-      <div id="loginAlertBox" class="small text-danger text-center mt-3" style="display: none;"></div>
+      <div id="loginAlertBox" class="login-alert-box"></div>
     </form>
-
-    <div class="login-footer-text">
-      FRANORA Inventory & Dispatch System &copy; 2026
-    </div>
   </div>
 
-  <div class="text-muted small text-center" style="font-size: 0.72rem;">
+  <div class="login-footer-strip">
     Authorized Personnel Only
   </div>
 
@@ -274,8 +329,20 @@ function toggleSharedTheme() {
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('frapnora_theme', theme);
-  var txt = document.getElementById('loginThemeText');
-  if (txt) txt.innerText = (theme === 'dark') ? 'Light' : 'Dark';
+  var sun = document.getElementById('themeIconSun');
+  var moon = document.getElementById('themeIconMoon');
+  if (theme === 'dark') {
+    if (sun) sun.style.display = 'block';
+    if (moon) moon.style.display = 'none';
+  } else {
+    if (sun) sun.style.display = 'none';
+    if (moon) moon.style.display = 'block';
+  }
+}
+
+function togglePasswordVisibility() {
+  var field = document.getElementById('login_password');
+  field.type = (field.type === "password") ? "text" : "password";
 }
 
 function handleFrappeLogin(e) {
@@ -298,7 +365,7 @@ function handleFrappeLogin(e) {
       } else {
         btn.disabled = false;
         btn.innerText = "Sign In";
-        alertBox.innerText = "Invalid credentials. Please verify your username and password.";
+        alertBox.innerText = "Invalid credentials. Please verify your details.";
         alertBox.style.display = "block";
       }
     },
