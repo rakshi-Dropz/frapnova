@@ -19,13 +19,11 @@
     --accent-green: #059669;
     --sidebar-width: 220px;
 
-    /* HEALTHY BANNER: SOFT GREEN / NEUTRAL TINT */
     --banner-bg: #f0fdf4;
     --banner-border: #bbf7d0;
     --banner-badge-bg: #dcfce7;
     --banner-badge-text: #166534;
 
-    /* SCROLLBAR */
     color-scheme: light;
     scrollbar-color: #cbd5e1 transparent;
   }
@@ -85,7 +83,6 @@
     letter-spacing: -0.02em;
   }
 
-  /* CUSTOM FLEX SPACING UTILITIES (REPLACES BOOTSTRAP GAP) */
   .flex-row-gap-sm { display: flex; align-items: center; }
   .flex-row-gap-sm > * + * { margin-left: 8px; }
 
@@ -188,7 +185,6 @@
     color: var(--text-secondary);
   }
 
-  /* SIDEBAR FOOTER & USER */
   .sidebar-theme-row {
     padding: 6px 12px;
     margin-bottom: 8px;
@@ -277,7 +273,6 @@
     margin-top: 4px;
   }
 
-  /* HEALTHY BANNER (SEPARATE SPACING & QUIET BUTTON) */
   .unified-banner-card {
     background: var(--banner-bg);
     border: 1px solid var(--banner-border);
@@ -307,7 +302,6 @@
     margin: 0;
   }
 
-  /* CONTROL BAR (CLEAN ROW, WIDE SEARCH, NO WRAP) */
   .unified-control-bar {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
@@ -360,7 +354,7 @@
     outline: none;
   }
 
-  /* ACTIONS */
+  /* BUTTONS */
   .btn-action-primary {
     background: var(--accent-brand);
     color: #ffffff !important;
@@ -412,7 +406,7 @@
     cursor: pointer;
   }
 
-  /* PRODUCT CARDS (NEUTRAL INSET PHOTO MAT, NO BIG WHITE RECTANGLES) */
+  /* PRODUCT CARDS */
   .product-modern-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-subtle);
@@ -487,7 +481,6 @@
     border-top: 1px solid var(--border-subtle);
   }
 
-  /* TRANSLUCENT / QUIET IN-STOCK BADGE FOR DARK MODE */
   .stock-quiet-text {
     font-size: 0.75rem;
     font-weight: 500;
@@ -514,7 +507,7 @@
   .badge-lowstock { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
   .badge-outofstock { background: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2; }
 
-  /* APPROVALS TABLE (NO WHITE OVERFLOW SCROLLBAR) */
+  /* APPROVALS TABLE */
   .approvals-card-wrap {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
@@ -664,7 +657,6 @@
 </style>
 
 <div class="frap-app-shell">
-  
   <!-- SIDEBAR -->
   <aside class="frap-sidebar">
     <div>
@@ -761,7 +753,7 @@
       </nav>
     </div>
 
-    <!-- USER & THEME SECTION (THEME ON OWN DEDICATED ROW) -->
+    <!-- USER & THEME SECTION -->
     <div>
       <button type="button" class="sidebar-theme-row" onclick="toggleSharedTheme()">
         <span class="flex-row-gap-sm">
@@ -799,7 +791,6 @@
 
   <!-- MAIN CANVAS -->
   <main class="frap-main-canvas">
-    
     <div class="canvas-header-block">
       <h1 class="canvas-page-title">Stock Inventory</h1>
       <div class="canvas-greeting-sub" id="dynamicGreeting">
@@ -807,7 +798,7 @@
       </div>
     </div>
 
-    <!-- HEALTHY BANNER (QUIET BUTTON & VISUAL SEPARATION) -->
+    <!-- HEALTHY BANNER -->
     <div class="unified-banner-card" id="liveStockBanner">
       <div class="flex-row-gap-sm">
         <span class="banner-badge-tag" id="bannerBadge">Operational</span>
@@ -819,7 +810,7 @@
       </div>
     </div>
 
-    <!-- CONTROL BAR (1 ROW, FLEX:1 SEARCH, SCAN-FRAME ICON) -->
+    <!-- CONTROL BAR -->
     <div class="unified-control-bar">
       <div class="bar-left-cluster">
         <div class="search-input-wrapper">
@@ -842,7 +833,6 @@
 
       <div class="flex-row-gap-sm">
         <button type="button" class="btn-action-secondary" onclick="openQrScannerModal()">
-          <!-- SCAN-FRAME / VIEWFINDER ICON -->
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
             <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
             <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
@@ -865,7 +855,7 @@
       </div>
     </div>
 
-    <!-- CATALOG GRID (INSET NEUTRAL PHOTO MAT, SIMPLIFIED FOOTER) -->
+    <!-- CATALOG GRID -->
     <div class="row g-3" id="catalogGridContainer">
       {% for item in stock_items %}
       <div class="col-12 col-md-6 col-lg-4 catalog-item-wrapper" 
@@ -922,7 +912,7 @@
       {% endfor %}
     </div>
 
-    <!-- APPROVALS TABLE (UNIFIED COLUMN SHRINK & QUIET EMPTY STATE) -->
+    <!-- APPROVALS TABLE (MANAGERS ONLY) -->
     {% if is_manager %}
     <section class="approvals-card-wrap">
       <div class="approvals-card-head">
@@ -986,11 +976,11 @@
   </main>
 </div>
 
-<!-- PRODUCT QUICK VIEW POPUP (SINGLE SKU TITLE, PRIMARY ADD TO CART, QUIET DELETE) -->
+<!-- PRODUCT QUICK VIEW POPUP -->
 <div id="productQuickViewOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'productQuickViewOverlay')">
   <div class="shadcn-modal-dialog">
     <div class="modal-head">
-      <h5 class="fw-bold m-0" style="color: var(--text-primary); font-size: 0.95rem;">Product Details</h5>
+      <h5 class="fw-bold m-0 text-truncate" style="color: var(--text-primary); font-size: 0.95rem; max-width: 80%;" id="pv_modal_heading">Product Details</h5>
       <button type="button" class="btn-quiet-icon" onclick="closeProductQuickView()">✕</button>
     </div>
     
@@ -1041,7 +1031,7 @@
   </div>
 </div>
 
-<!-- ORDERS POPUP (DATE, ITEM+QTY, RIGHT ALIGNED AMOUNTS, DOWNLOAD ICON) -->
+<!-- ORDERS POPUP -->
 <div id="ordersModalOverlay" class="shadcn-modal-overlay" onclick="handleModalOverlayClick(event, 'ordersModalOverlay')">
   <div class="shadcn-modal-dialog" style="max-width: 620px;">
     <div class="modal-head">
@@ -1064,7 +1054,15 @@
           {% for order in my_orders %}
           <tr class="clickable-order-row" onclick="openOrderDetailModal('{{ order.name }}')" style="cursor: pointer;">
             <td><strong>{{ order.name }}</strong></td>
-            <td class="text-muted small">{{ order.creation.strftime('%d %b %Y') if order.creation else '—' }}</td>
+            <td class="text-muted small">
+              {% if order.creation and order.creation.strftime %}
+                {{ order.creation.strftime('%d %b %Y') }}
+              {% elif order.creation %}
+                {{ str(order.creation)[:10] }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
             <td>{{ order.item }} <span class="text-muted font-monospace">×{{ order.quantity }}</span></td>
             <td>
               {% if order.tracking_status == "Delivered" %}
@@ -1110,6 +1108,7 @@
     </div>
     
     <div class="modal-body-scroll">
+      <!-- 5-STEP TRACKING FLOW -->
       <div class="stepper-row">
         <div class="stepper-node" id="step_placed"><div class="stepper-dot">1</div><span>Placed</span></div>
         <div class="stepper-node" id="step_approved"><div class="stepper-dot">2</div><span>Approved</span></div>
@@ -1118,6 +1117,7 @@
         <div class="stepper-node" id="step_delivered"><div class="stepper-dot">5</div><span>Delivered</span></div>
       </div>
 
+      <!-- METADATA CARD WITH QR -->
       <div class="row align-items-center g-3 p-3 rounded-3 mb-3" style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle);">
         <div class="col-8">
           <div class="small text-muted">AWB / Tracking Number:</div>
@@ -1132,13 +1132,23 @@
         </div>
       </div>
 
-      {% if is_manager or is_admin %}
-      <div class="p-3 mb-3 rounded-2 border" style="background: var(--bg-surface);">
-        <span class="small fw-bold text-muted text-uppercase d-block mb-2" style="font-size: 0.68rem; letter-spacing: 0.06em;">Warehouse Milestone Update</span>
+      <!-- WAREHOUSE MILESTONE CONTROLS (VISIBLE ONLY TO ADMINISTRATOR) -->
+      {% if is_admin %}
+      <div class="p-3 mb-3 rounded-2 border" id="admin_milestone_controls" style="background: var(--bg-surface); border-color: var(--border-subtle);">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="small fw-bold text-muted text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.06em;">Warehouse Milestone Update</span>
+          <span class="badge-pill-status badge-lowstock" style="font-size: 0.65rem;">Admin</span>
+        </div>
         <div class="flex-row-gap-sm">
-          <button type="button" class="btn-action-secondary btn-sm" onclick="advanceOrderStatus('Packed')">Mark Packed</button>
-          <button type="button" class="btn-action-secondary btn-sm" onclick="promptDispatchDetails()">Mark Dispatched</button>
-          <button type="button" class="btn-action-primary btn-sm" onclick="advanceOrderStatus('Delivered')">Mark Delivered</button>
+          <button type="button" class="btn-action-secondary btn-sm" id="btn_step_packed" onclick="advanceOrderStatus('Packed')">
+            Mark Packed
+          </button>
+          <button type="button" class="btn-action-secondary btn-sm" id="btn_step_dispatched" onclick="promptDispatchDetails()">
+            Mark Dispatched
+          </button>
+          <button type="button" class="btn-action-primary btn-sm" id="btn_step_delivered" onclick="advanceOrderStatus('Delivered')">
+            Mark Delivered
+          </button>
         </div>
       </div>
       {% endif %}
@@ -1480,7 +1490,8 @@ function updateTrackingStepperUI(status) {
     var steps = ['placed', 'approved', 'packed', 'dispatched', 'delivered'];
     var currentIdx = 0;
 
-    if (status === 'Approved') currentIdx = 1;
+    if (status === 'Pending' || status === 'Placed') currentIdx = 0;
+    else if (status === 'Approved') currentIdx = 1;
     else if (status === 'Packed') currentIdx = 2;
     else if (status === 'Dispatched') currentIdx = 3;
     else if (status === 'Delivered') currentIdx = 4;
@@ -1522,9 +1533,10 @@ function openProductQuickView(card) {
     var category = card.getAttribute('data-category') || 'Uncategorized';
     var image = card.getAttribute('data-image');
 
+    document.getElementById('pv_modal_heading').innerText = itemName;
     document.getElementById('pv_item_title').innerText = itemName;
     document.getElementById('pv_item_rate').innerText = "₹" + parseFloat(rate).toLocaleString('en-IN', {minimumFractionDigits: 2});
-    document.getElementById('pv_item_category_badge').innerText = category;
+    document.getElementById('pv_item_category_badge').innerText = category + " • " + itemCode;
 
     var imgEl = document.getElementById('pv_item_image');
     if (image && image.trim() !== '') {
@@ -1598,6 +1610,7 @@ function closeProductQuickView() {
     }
 }
 
+// ORDER DETAIL & TRACKING MODAL
 function openOrderDetailModal(orderId) {
     currentActiveOrderId = orderId;
     frappe.call({
@@ -1638,8 +1651,10 @@ function closeOrderDetailModal() {
     if (modal) modal.style.display = 'none';
 }
 
+// ADMINISTRATOR MILESTONE ADVANCEMENT
 function advanceOrderStatus(nextStatus, courier, awb) {
     if (!currentActiveOrderId) return;
+    
     frappe.call({
         method: "stock_flow.api.update_order_tracking",
         args: {
@@ -1648,18 +1663,26 @@ function advanceOrderStatus(nextStatus, courier, awb) {
             courier_name: courier || "",
             tracking_number: awb || ""
         },
+        freeze: true,
+        freeze_message: "Updating shipment milestone to " + nextStatus + "...",
         callback: function(r) {
-            if (!r.exc) openOrderDetailModal(currentActiveOrderId);
+            if (!r.exc) {
+                frappe.show_alert({message: "Order updated to " + nextStatus, indicator: "green"});
+                openOrderDetailModal(currentActiveOrderId);
+            }
+        },
+        error: function(err) {
+            console.error("Tracking update error:", err);
         }
     });
 }
 
 function promptDispatchDetails() {
-    var courier = prompt("Courier Name (e.g., Blue Dart, Delhivery):", "Blue Dart");
+    var courier = prompt("Courier Name (e.g., Blue Dart, Delhivery, DTDC):", "Blue Dart");
     if (!courier) return;
     var awb = prompt("AWB / Tracking Number:", "AWB-" + Math.floor(100000 + Math.random() * 900000));
     if (!awb) return;
-    advanceOrderStatus("Dispatched", courier, awb);
+    advanceOrderStatus("Dispatched", courier.trim(), awb.trim());
 }
 
 function openQrScannerModal() {
@@ -1873,27 +1896,37 @@ function loadCartItems() {
 }
 
 function executeAddToCart(itemCode, itemName, availableStock, openCartAfterwards) {
-    if (availableStock <= 0) { alert(itemName + " is currently out of stock."); return; }
+    if (availableStock <= 0) { 
+        frappe.msgprint(itemName + " is currently out of stock."); 
+        return; 
+    }
+    
     var qty = prompt("Enter quantity for " + itemName + " (Available: " + availableStock + "):", "1");
     if (!qty) return;
+    
     var parsedQty = parseFloat(qty);
     if (isNaN(parsedQty) || parsedQty <= 0 || parsedQty > availableStock) {
-        alert("Invalid quantity. Maximum available: " + availableStock);
+        frappe.msgprint("Invalid quantity. Maximum available: " + availableStock);
         return;
     }
 
     frappe.call({
         method: "stock_flow.api.add_to_agent_cart",
         args: { item_code: itemCode, quantity: parsedQty },
+        freeze: true,
+        freeze_message: "Adding to cart...",
         callback: function(r) {
             if (!r.exc) { 
                 refreshAgentCounters();
                 if (openCartAfterwards) {
                     openCartModal();
                 } else {
-                    alert("Added to cart.");
+                    frappe.show_alert({message: "Added " + parsedQty + "x to cart", indicator: "green"});
                 }
             }
+        },
+        error: function(err) {
+            console.error("Cart error:", err);
         }
     });
 }
@@ -1917,8 +1950,16 @@ function checkoutCart() {
     frappe.call({
         method: "stock_flow.api.checkout_agent_cart",
         args: { shipping_address: shippingAddress, dispatch_notes: dispatchNotes },
+        freeze: true,
+        freeze_message: "Placing your order...",
         callback: function(r) {
-            if (!r.exc) { alert("Order placed successfully!"); location.reload(); }
+            if (!r.exc) { 
+                frappe.show_alert({message: "Order placed successfully!", indicator: "green"});
+                setTimeout(function() { location.reload(); }, 600);
+            }
+        },
+        error: function(err) {
+            console.error("Checkout error:", err);
         }
     });
 }

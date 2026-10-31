@@ -7,12 +7,10 @@ app_license = "mit"
 
 # Apps
 # ------------------
-
 # required_apps = []
 
 # Home Pages & Website Routing
 # -----------------------------
-# Route the root "/" directly to our Zerodha-style home landing page
 home_page = "home"
 
 website_route_rules = [
@@ -31,3 +29,16 @@ scheduler_events = {
         "stock_flow.tasks.check_low_stock_and_notify"
     ]
 }
+
+# Fixtures: Guarantees Print Format and Item Categories are preserved in Git
+# ---------------------------------------------------------------------------
+fixtures = [
+    {
+        "dt": "Print Format",
+        "filters": [["name", "in", ["Order Slip"]]]
+    },
+    {
+        "dt": "DocType",
+        "filters": [["name", "in", ["Item Category"]]]
+    }
+]

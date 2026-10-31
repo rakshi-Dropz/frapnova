@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe.utils import flt
 
 class StockOrder(Document):
     def validate(self):
@@ -13,43 +14,30 @@ class StockOrder(Document):
             or frappe.session.user == "Administrator"
         )
 
-        # 1. Enforce a valid agent email (clean literal strings)
-        if not self.agent or self.agent == "session.user":
+        # 1. Enforce a valid agent email
+        if not getattr(self, "agent", None) or self.agent == "session.user":
             self.agent = frappe.session.user if frappe.session.user != "Guest" else "agent@example.com"
 
-        # 2. Block unauthorized manual status changes to Approved
-        if self.status == "Approved" and self.docstatus == 0 and not is_manager:
+        # 2. Block unauthorized manual status changes to Approved in draft mode
+        if getattr(self, "status", None) == "Approved" and self.docstatus == 0 and not is_manager:
             frappe.throw("Permission denied: Only Stock Managers can approve orders.")
 
         # 3. Always recalculate total server-side
         if self.rate and self.quantity:
-            self.total_amount = float(self.rate) * float(self.quantity)
+            self.total_amount = flt(self.rate) * flt(self.quantity)
 
     def on_submit(self):
-        # 1. Update status
-        self.status = "Approved"
-        self.db_set("status", "Approved")
+        # 1. Update status fields
+        if hasattr(self, "status"):
+            self.db_set("status", "Approved")
+        if hasattr(self, "tracking_status") and not self.tracking_status:
+            self.db_set("tracking_status", "Approved")
 
-        # 2. Safely deduct inventory without hardcoded column assumptions
-        if self.item and self.quantity:
-            try:
-                # Find the actual quantity field in Stock Item
-                item_doc = frappe.get_doc("Stock Item", self.item)
-                qty_field = None
-                for candidate in ["quantity", "stock_quantity", "current_stock", "stock_qty", "available_quantity"]:
-                    if hasattr(item_doc, candidate):
-                        qty_field = candidate
-                        break
-                
-                if qty_field:
-                    current_val = getattr(item_doc, qty_field) or 0
-                    setattr(item_doc, qty_field, max(0, int(current_val) - int(self.quantity)))
-                    item_doc.save(ignore_permissions=True)
-            except Exception as e:
-                frappe.log_error(title="Inventory Deduction Error", message=str(e))
+        # NOTE: Inventory is already deducted when the agent checks out the cart.
+        # DO NOT deduct stock here to prevent double deduction!
 
-        # 3. Queue the HTML approval email to the Agent
-        recipient_email = self.agent or self.owner
+        # 2. Queue the HTML approval email to the Agent
+        recipient_email = getattr(self, "agent", None) or self.owner
         if recipient_email and "@" in recipient_email:
             message = f"""
             <p>Dear <b>{recipient_email}</b>,</p>
@@ -67,24 +55,35 @@ class StockOrder(Document):
                 <tr>
                   <td style="padding: 8px; border: 1px solid #e5e7eb;">{self.item}</td>
                   <td style="padding: 8px; border: 1px solid #e5e7eb;">{self.quantity}</td>
-                  <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{self.rate}</td>
-                  <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{self.total_amount}</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{self.rate:,.2f}</td>
+                  <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{self.total_amount:,.2f}</td>
                 </tr>
               </tbody>
             </table>
-            <p>Warehouse inventory has been updated accordingly.</p>
-            <p>Best regards,<br><b>Frapnova Operations Team</b></p>
+            <p>Best regards,<br><b>FRAPNORA Operations Team</b></p>
             """
 
-            frappe.sendmail(
-                recipients=[recipient_email],
-                subject=f"Order {self.name} Approved",
-                message=message,
-                reference_doctype="Stock Order",
-                reference_name=self.name,
-                now=False
-            )
+            try:
+                frappe.sendmail(
+                    recipients=[recipient_email],
+                    subject=f"Order {self.name} Approved",
+                    message=message,
+                    reference_doctype="Stock Order",
+                    reference_name=self.name,
+                    now=False
+                )
+            except Exception as e:
+                frappe.log_error(title="Approval Email Failed", message=str(e))
 
     def on_cancel(self):
-        self.status = "Rejected"
-        self.db_set("status", "Rejected")
+        # 1. Update status
+        if hasattr(self, "status"):
+            self.db_set("status", "Rejected")
+        if hasattr(self, "tracking_status"):
+            self.db_set("tracking_status", "Rejected")
+
+        # 2. Return deducted stock back to the catalog if cancelled/rejected
+        item_code = getattr(self, "item", getattr(self, "stock_item", None))
+        if item_code and frappe.db.exists("Stock Item", item_code):
+            current_stock = flt(frappe.db.get_value("Stock Item", item_code, "current_stock") or 0)
+            frappe.db.set_value("Stock Item", item_code, "current_stock", current_stock + flt(self.quantity or 0))
