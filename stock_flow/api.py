@@ -2,6 +2,27 @@ import frappe
 from frappe import _
 from frappe.utils import now_datetime, flt
 
+
+def get_recipient_email(user_id):
+    """Resolves a valid email address even if user is 'Administrator' or using a dummy local domain."""
+    if not user_id or user_id == "Administrator":
+        admin_email = frappe.db.get_value("User", "Administrator", "email")
+        if admin_email and "@" in admin_email and not (admin_email.endswith("@frapnora.com") or admin_email.endswith("@frapnora.local")):
+            return admin_email
+        return "rakshitha@dropz.in"
+
+    if "@" in user_id:
+        if user_id.endswith("@frapnora.com") or user_id.endswith("@frapnora.local"):
+            return "rakshitha@dropz.in"
+        return user_id
+
+    user_email = frappe.db.get_value("User", user_id, "email")
+    if user_email and "@" in user_email and not (user_email.endswith("@frapnora.com") or user_email.endswith("@frapnora.local")):
+        return user_email
+
+    return "rakshitha@dropz.in"
+
+
 def ensure_cart_and_wishlist_tables():
     """Ensures dedicated cart and wishlist storage exists."""
     frappe.db.sql("""
@@ -172,7 +193,7 @@ def checkout_agent_cart(shipping_address="", dispatch_notes=""):
         order.insert(ignore_permissions=True)
         created_orders.append(order.name)
 
-        # Single authoritative deduction at checkout
+        # Authoritative deduction at checkout
         new_stock = max(0, live_stock - req_qty)
         frappe.db.set_value("Stock Item", item_code, "current_stock", new_stock)
 
@@ -293,8 +314,39 @@ def update_order_tracking(order_id, status, courier_name="", tracking_number="")
         updates["tracking_number"] = tracking_number
 
     frappe.db.set_value("Stock Order", order_id, updates)
-    frappe.db.commit()
 
+    # ---------------------------------------------------------
+    # AUTOMATED DELIVERY CONFIRMATION EMAIL (Immediate Dispatch)
+    # ---------------------------------------------------------
+    if status == "Delivered":
+        order = frappe.get_doc("Stock Order", order_id)
+        recipient_user = getattr(order, "agent", None) or order.owner
+        recipient_email = get_recipient_email(recipient_user)
+
+        message = f"""
+        <p>Dear <b>{recipient_user}</b>,</p>
+        <p>Good news! Your FRAPNORA order <b>{order_id}</b> has been successfully <b>Delivered</b>.</p>
+        <p><b>Courier:</b> {courier_name or 'Standard Dispatch'}<br>
+        <b>Tracking / AWB:</b> {tracking_number or 'N/A'}</p>
+        <p>Thank you for choosing FRAPNORA.</p>
+        <p>Best regards,<br><b>FRAPNORA Warehouse & Logistics</b></p>
+        """
+
+        try:
+            frappe.sendmail(
+                recipients=[recipient_email],
+                sender="FRAPNORA Notifications <rakshitha@dropz.in>",
+                subject=f"Delivered: Order {order_id}",
+                message=message,
+                reference_doctype="Stock Order",
+                reference_name=order_id,
+                now=True  # Sends immediately via SMTP without staying in queued status
+            )
+        except Exception as e:
+            frappe.log_error(title="Delivery Email Failed", message=str(e))
+    # ---------------------------------------------------------
+
+    frappe.db.commit()
     return {"status": "success", "order_id": order_id, "new_status": status}
 
 
