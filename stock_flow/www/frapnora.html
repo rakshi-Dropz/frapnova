@@ -240,6 +240,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none !important;
   }
 
   .btn-quiet-icon:hover {
@@ -271,35 +272,6 @@
     font-size: 0.86rem;
     color: var(--text-muted);
     margin-top: 4px;
-  }
-
-  .unified-banner-card {
-    background: var(--banner-bg);
-    border: 1px solid var(--banner-border);
-    border-radius: 10px;
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .banner-badge-tag {
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 3px 8px;
-    border-radius: 5px;
-    background: var(--banner-badge-bg);
-    color: var(--banner-badge-text);
-    margin-right: 12px;
-  }
-
-  .banner-message-text {
-    font-size: 0.84rem;
-    color: var(--text-primary);
-    margin: 0;
   }
 
   .unified-control-bar {
@@ -737,18 +709,27 @@
             </a>
           </li>
 
+          <!-- ONLY "GO TO DESK" (Directly under Wishlist for Admins/Managers) -->
+          {% if is_admin or is_manager %}
           <li>
-            <a href="javascript:void(0)" class="sidebar-nav-item" onclick="checkLiveStockAlert()">
+            <a href="/app" class="sidebar-nav-item" target="_blank" rel="noopener noreferrer" title="Open Frappe Desk">
               <span class="sidebar-nav-item-left">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
-                <span>Alerts</span>
+                <span>Go to Desk</span>
               </span>
-              <span class="nav-badge-pill" id="sidebar-alerts-count" style="display: none;">0</span>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
             </a>
           </li>
+          {% endif %}
         </ul>
       </nav>
     </div>
@@ -795,18 +776,6 @@
       <h1 class="canvas-page-title">Stock Inventory</h1>
       <div class="canvas-greeting-sub" id="dynamicGreeting">
         Operations dashboard & catalog dispatch.
-      </div>
-    </div>
-
-    <!-- HEALTHY BANNER -->
-    <div class="unified-banner-card" id="liveStockBanner">
-      <div class="flex-row-gap-sm">
-        <span class="banner-badge-tag" id="bannerBadge">Operational</span>
-        <p class="banner-message-text" id="bannerMessage">Warehouse levels verified for daily dispatch.</p>
-      </div>
-      <div class="flex-row-gap-sm">
-        <button type="button" class="btn-action-secondary" style="padding: 4px 10px; font-size: 0.76rem;" onclick="checkLiveStockAlert()">Check Levels</button>
-        <button type="button" class="btn-quiet-icon" onclick="document.getElementById('liveStockBanner').style.display='none'">✕</button>
       </div>
     </div>
 
@@ -1451,41 +1420,6 @@ function applyCatalogFilters() {
     });
 }
 
-function checkLiveStockAlert() {
-    var banner = document.getElementById('liveStockBanner');
-    var badge = document.getElementById('bannerBadge');
-    var message = document.getElementById('bannerMessage');
-    var alertsBadge = document.getElementById('sidebar-alerts-count');
-    if (!banner) return;
-
-    var lowStockItems = [];
-    var cards = document.querySelectorAll('.catalog-item-wrapper');
-
-    cards.forEach(function(card) {
-        var title = card.getAttribute('data-item-title');
-        var stock = parseFloat(card.getAttribute('data-stock') || 0);
-        if (stock <= 5) lowStockItems.push(title + " (" + stock + " left)");
-    });
-
-    banner.style.display = 'flex';
-    if (lowStockItems.length > 0) {
-        badge.innerText = "Notice";
-        badge.style.background = "#ffedd5";
-        badge.style.color = "#c2410c";
-        message.innerText = "Low stock items detected: " + lowStockItems.join(", ");
-        if (alertsBadge) {
-            alertsBadge.innerText = lowStockItems.length;
-            alertsBadge.style.display = 'inline-block';
-        }
-    } else {
-        badge.innerText = "Operational";
-        badge.style.background = "var(--banner-badge-bg)";
-        badge.style.color = "var(--banner-badge-text)";
-        message.innerText = "All catalog items satisfy operational levels (5+ units).";
-        if (alertsBadge) alertsBadge.style.display = 'none';
-    }
-}
-
 function updateTrackingStepperUI(status) {
     var steps = ['placed', 'approved', 'packed', 'dispatched', 'delivered'];
     var currentIdx = 0;
@@ -1667,7 +1601,7 @@ function advanceOrderStatus(nextStatus, courier, awb) {
         freeze_message: "Updating shipment milestone to " + nextStatus + "...",
         callback: function(r) {
             if (!r.exc) {
-                frappe.show_alert({message: "Order updated to " + nextStatus, indicator: "green"});
+                frappe.show_alert({message: "Order updated to " + nextStatus, indicator: "green"}, 4);
                 openOrderDetailModal(currentActiveOrderId);
             }
         },
@@ -1897,7 +1831,7 @@ function loadCartItems() {
 
 function executeAddToCart(itemCode, itemName, availableStock, openCartAfterwards) {
     if (availableStock <= 0) { 
-        frappe.msgprint(itemName + " is currently out of stock."); 
+        frappe.show_alert({message: itemName + " is currently out of stock.", indicator: "red"}, 4); 
         return; 
     }
     
@@ -1906,7 +1840,7 @@ function executeAddToCart(itemCode, itemName, availableStock, openCartAfterwards
     
     var parsedQty = parseFloat(qty);
     if (isNaN(parsedQty) || parsedQty <= 0 || parsedQty > availableStock) {
-        frappe.msgprint("Invalid quantity. Maximum available: " + availableStock);
+        frappe.show_alert({message: "Invalid quantity. Maximum available: " + availableStock, indicator: "red"}, 4);
         return;
     }
 
@@ -1921,7 +1855,7 @@ function executeAddToCart(itemCode, itemName, availableStock, openCartAfterwards
                 if (openCartAfterwards) {
                     openCartModal();
                 } else {
-                    frappe.show_alert({message: "Added " + parsedQty + "x to cart", indicator: "green"});
+                    frappe.show_alert({message: "Added " + parsedQty + "x to cart", indicator: "green"}, 4);
                 }
             }
         },
@@ -1954,7 +1888,7 @@ function checkoutCart() {
         freeze_message: "Placing your order...",
         callback: function(r) {
             if (!r.exc) { 
-                frappe.show_alert({message: "Order placed successfully!", indicator: "green"});
+                frappe.show_alert({message: "Order placed successfully!", indicator: "green"}, 4);
                 setTimeout(function() { location.reload(); }, 600);
             }
         },
@@ -2000,7 +1934,10 @@ function executeAddToWishlist(itemCode) {
         method: "stock_flow.api.add_to_agent_wishlist",
         args: { item_code: itemCode },
         callback: function(r) {
-            if (!r.exc) { refreshAgentCounters(); alert("Added to wishlist."); }
+            if (!r.exc) { 
+                refreshAgentCounters(); 
+                frappe.show_alert({message: "Saved to wishlist.", indicator: "green"}, 4); 
+            }
         }
     });
 }
@@ -2020,7 +1957,11 @@ function moveToCartFromWishlist(itemCode, wishlistName) {
         method: "stock_flow.api.add_to_agent_cart",
         args: { item_code: itemCode, quantity: 1 },
         callback: function(r) {
-            if (!r.exc) { removeFromWishlist(wishlistName); refreshAgentCounters(); alert("Moved to cart!"); }
+            if (!r.exc) { 
+                removeFromWishlist(wishlistName); 
+                refreshAgentCounters(); 
+                frappe.show_alert({message: "Item moved to cart!", indicator: "green"}, 4); 
+            }
         }
     });
 }
@@ -2033,7 +1974,7 @@ function reorderPreviousItem(itemCode, quantity) {
             if (!r.exc) {
                 refreshAgentCounters();
                 closeOrderDetailModal();
-                alert(quantity + "x " + itemCode + " added to your cart!");
+                frappe.show_alert({message: quantity + "x " + itemCode + " added to your cart!", indicator: "green"}, 4);
                 openCartModal();
             }
         }
@@ -2080,7 +2021,7 @@ function saveNewStockItem() {
     var fileInput = document.getElementById('add_item_image_file');
 
     if (!name || rate === "" || stock === "") {
-        alert("Please enter Name, Price, and Stock.");
+        frappe.show_alert({message: "Please enter Name, Price, and Stock.", indicator: "red"}, 4);
         return;
     }
 
@@ -2103,7 +2044,7 @@ function saveNewStockItem() {
             if (data.message && data.message.file_url) {
                 createStockItemCall(name, category, rate, stock, data.message.file_url);
             } else {
-                alert("Upload failed.");
+                frappe.show_alert({message: "Image upload failed.", indicator: "red"}, 4);
                 if (addBtn) { addBtn.disabled = false; addBtn.innerText = "Save Item"; }
             }
         });
@@ -2131,7 +2072,7 @@ function saveEditedStockItem() {
     var fileInput = document.getElementById('edit_item_image_file');
 
     if (!itemCode || newRate === "" || newStock === "") {
-        alert("Price and Stock are required.");
+        frappe.show_alert({message: "Price and Stock are required.", indicator: "red"}, 4);
         return;
     }
 

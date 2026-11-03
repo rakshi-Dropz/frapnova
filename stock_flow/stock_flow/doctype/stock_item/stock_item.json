@@ -39,16 +39,16 @@
   },
   {
    "fieldname": "category",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Category",
-   "options": "Electronics,\nStationery,\nPackaging"
+   "options": "Item Category"
   }
  ],
  "grid_page_length": 50,
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-22 15:20:33.761041",
+ "modified": "2026-10-30 17:15:53.477493",
  "modified_by": "Administrator",
  "module": "Stock Flow",
  "name": "Stock item",
