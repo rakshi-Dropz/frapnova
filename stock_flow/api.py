@@ -66,10 +66,11 @@ def get_agent_cart():
         return []
 
     items = frappe.db.sql("""
-        SELECT name, item_code, item_name, rate, quantity
-        FROM `tabStockFlowCart`
-        WHERE user = %s
-        ORDER BY creation DESC
+        SELECT c.name, c.item_code, c.item_name, c.rate, c.quantity, i.image
+        FROM `tabStockFlowCart` c
+        LEFT JOIN `tabStock Item` i ON c.item_code = i.name
+        WHERE c.user = %s
+        ORDER BY c.creation DESC
     """, (user,), as_dict=True)
 
     return items
@@ -193,7 +194,7 @@ def checkout_agent_cart(shipping_address="", dispatch_notes=""):
         order.insert(ignore_permissions=True)
         created_orders.append(order.name)
 
-        # Authoritative deduction at checkout
+        # Single-point deduction at checkout
         new_stock = max(0, live_stock - req_qty)
         frappe.db.set_value("Stock Item", item_code, "current_stock", new_stock)
 
@@ -217,11 +218,13 @@ def get_agent_wishlist():
     if user == "Guest":
         return []
 
+    # Join Stock Item to return the image thumbnail
     items = frappe.db.sql("""
-        SELECT name, item_code, item_name, rate
-        FROM `tabStockFlowWishlist`
-        WHERE user = %s
-        ORDER BY creation DESC
+        SELECT w.name, w.item_code, w.item_name, w.rate, i.image
+        FROM `tabStockFlowWishlist` w
+        LEFT JOIN `tabStock Item` i ON w.item_code = i.name
+        WHERE w.user = %s
+        ORDER BY w.creation DESC
     """, (user,), as_dict=True)
 
     return items
@@ -276,9 +279,13 @@ def remove_from_agent_wishlist(name=None, wishlist_id=None):
 def get_order_tracking(order_id):
     order = frappe.get_doc("Stock Order", order_id)
     courier = getattr(order, "courier_name", None) or getattr(order, "courier_partner", "—")
+    item_code = getattr(order, "item", getattr(order, "stock_item", order_id))
+    item_title = frappe.db.get_value("Stock Item", item_code, "item_name") or item_code
+
     return {
         "name": order.name,
-        "item": getattr(order, "item", getattr(order, "stock_item", order_id)),
+        "item": item_code,
+        "item_name": item_title,
         "quantity": getattr(order, "quantity", 1),
         "total_amount": getattr(order, "total_amount", 0.0),
         "docstatus": order.docstatus,
@@ -290,19 +297,17 @@ def get_order_tracking(order_id):
 
 @frappe.whitelist()
 def update_order_tracking(order_id, status, courier_name="", tracking_number=""):
-    """Only the Administrator or System Manager is permitted to advance shipment milestones."""
     user = frappe.session.user
     user_roles = frappe.get_roles(user)
 
-    if user != "Administrator" and "System Manager" not in user_roles:
-        frappe.throw(_("Access Denied: Only the Administrator can update shipping milestones."))
+    if user != "Administrator" and "System Manager" not in user_roles and "Stock Manager" not in user_roles:
+        frappe.throw(_("Access Denied: You do not have permission to update shipment milestones."))
 
     allowed_statuses = ["Pending", "Approved", "Packed", "Dispatched", "Delivered", "Rejected"]
     if status not in allowed_statuses:
-        frappe.throw(_("Invalid status '{0}'. Must be one of: {1}").format(status, ", ".join(allowed_statuses)))
+        frappe.throw(_("Invalid status '{0}'.").format(status))
 
     updates = {"tracking_status": status}
-
     meta = frappe.get_meta("Stock Order")
     if courier_name:
         if meta.has_field("courier_name"):
@@ -315,9 +320,6 @@ def update_order_tracking(order_id, status, courier_name="", tracking_number="")
 
     frappe.db.set_value("Stock Order", order_id, updates)
 
-    # ---------------------------------------------------------
-    # AUTOMATED DELIVERY CONFIRMATION EMAIL (Immediate Dispatch)
-    # ---------------------------------------------------------
     if status == "Delivered":
         order = frappe.get_doc("Stock Order", order_id)
         recipient_user = getattr(order, "agent", None) or order.owner
@@ -340,11 +342,10 @@ def update_order_tracking(order_id, status, courier_name="", tracking_number="")
                 message=message,
                 reference_doctype="Stock Order",
                 reference_name=order_id,
-                now=True  # Sends immediately via SMTP without staying in queued status
+                now=True
             )
         except Exception as e:
             frappe.log_error(title="Delivery Email Failed", message=str(e))
-    # ---------------------------------------------------------
 
     frappe.db.commit()
     return {"status": "success", "order_id": order_id, "new_status": status}
@@ -359,9 +360,8 @@ def approve_stock_order(order_id):
 
     order = frappe.get_doc("Stock Order", order_id)
     if order.docstatus == 0:
-        order.submit()  # Triggers StockOrder.on_submit() cleanly without double-deduction
+        order.submit()
     
-    # Ensure tracking status is set to Approved
     frappe.db.set_value("Stock Order", order_id, "tracking_status", "Approved")
     frappe.db.commit()
     return {"message": "Order approved"}
@@ -376,10 +376,8 @@ def reject_stock_order(order_id):
 
     order = frappe.get_doc("Stock Order", order_id)
     if order.docstatus == 1:
-        # Cancel submitted doc (triggers on_cancel which returns the stock)
         order.cancel()
     else:
-        # Draft order: mark docstatus as cancelled and return stock
         order.docstatus = 2
         if hasattr(order, "tracking_status"):
             order.tracking_status = "Rejected"
@@ -394,13 +392,34 @@ def reject_stock_order(order_id):
     return {"message": "Order rejected"}
 
 
+# ==========================================
+# REVENUE & PERFORMANCE API (STRICT RBAC)
+# ==========================================
+
 @frappe.whitelist()
 def get_agent_performance_summary():
+    """
+    CRITICAL SECURITY CHECK:
+    Only Managers and Administrators are permitted to view company-wide sales
+    and agent performance metrics.
+    """
+    user = frappe.session.user
+    roles = frappe.get_roles(user)
+
+    if user != "Administrator" and "System Manager" not in roles and "Stock Manager" not in roles and "Manager" not in roles:
+        frappe.throw(_("Access Denied: You do not have permission to view revenue metrics."), frappe.PermissionError)
+
+    # Joins tabUser to obtain full_name instead of raw email
     data = frappe.db.sql("""
-        SELECT owner AS agent, COUNT(name) AS total_orders, SUM(total_amount) AS total_revenue
-        FROM `tabStock Order`
-        WHERE docstatus = 1
-        GROUP BY owner
+        SELECT 
+            COALESCE(u.full_name, o.owner) AS agent_name,
+            o.owner AS agent_email,
+            COUNT(o.name) AS total_orders, 
+            SUM(o.total_amount) AS total_revenue
+        FROM `tabStock Order` o
+        LEFT JOIN `tabUser` u ON o.owner = u.name
+        WHERE o.docstatus = 1
+        GROUP BY o.owner
         ORDER BY total_revenue DESC
     """, as_dict=True)
     return data

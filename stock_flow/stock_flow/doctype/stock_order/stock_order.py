@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe.model.naming import make_autoname
 from frappe.utils import flt
 
 
@@ -27,6 +28,10 @@ def get_recipient_email(user_id):
 
 
 class StockOrder(Document):
+    def autoname(self):
+        """Generates readable, unambiguous order IDs (e.g. ORD-2026-0001) instead of random hashes."""
+        self.name = make_autoname("ORD-.YYYY.-.####")
+
     def validate(self):
         user_roles = frappe.get_roles()
         is_manager = (
@@ -43,7 +48,14 @@ class StockOrder(Document):
         if getattr(self, "status", None) == "Approved" and self.docstatus == 0 and not is_manager:
             frappe.throw("Permission denied: Only Stock Managers can approve orders.")
 
-        # 3. Always recalculate total server-side
+        # 3. Always populate official item name from Stock Item record to prevent casing mismatches
+        item_code = getattr(self, "item", getattr(self, "stock_item", None))
+        if item_code and hasattr(self, "item_name"):
+            official_name = frappe.db.get_value("Stock Item", item_code, "item_name")
+            if official_name:
+                self.item_name = official_name
+
+        # 4. Always recalculate total server-side
         if self.rate and self.quantity:
             self.total_amount = flt(self.rate) * flt(self.quantity)
 
@@ -61,6 +73,10 @@ class StockOrder(Document):
         recipient_user = getattr(self, "agent", None) or self.owner
         recipient_email = get_recipient_email(recipient_user)
 
+        # Resolve clean display name for item instead of raw lowercase code
+        item_code = getattr(self, "item", getattr(self, "stock_item", "Item"))
+        item_display_name = frappe.db.get_value("Stock Item", item_code, "item_name") or item_code
+
         message = f"""
         <p>Dear <b>{recipient_user}</b>,</p>
         <p>Your stock order <b>{self.name}</b> has been officially approved and processed.</p>
@@ -68,17 +84,17 @@ class StockOrder(Document):
           <thead>
             <tr style="background-color: #f3f4f6; text-align: left;">
               <th style="padding: 8px; border: 1px solid #e5e7eb;">Item</th>
-              <th style="padding: 8px; border: 1px solid #e5e7eb;">Quantity</th>
-              <th style="padding: 8px; border: 1px solid #e5e7eb;">Rate</th>
-              <th style="padding: 8px; border: 1px solid #e5e7eb;">Total Amount</th>
+              <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">Quantity</th>
+              <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Rate</th>
+              <th style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">Total Amount</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="padding: 8px; border: 1px solid #e5e7eb;">{self.item}</td>
-              <td style="padding: 8px; border: 1px solid #e5e7eb;">{self.quantity}</td>
-              <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{self.rate:,.2f}</td>
-              <td style="padding: 8px; border: 1px solid #e5e7eb;">₹{self.total_amount:,.2f}</td>
+              <td style="padding: 8px; border: 1px solid #e5e7eb;">{item_display_name}</td>
+              <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">{self.quantity}</td>
+              <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">₹{self.rate:,.2f}</td>
+              <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">₹{self.total_amount:,.2f}</td>
             </tr>
           </tbody>
         </table>
