@@ -24,7 +24,7 @@ def get_recipient_email(user_id):
 
 
 def ensure_cart_and_wishlist_tables():
-    """Ensures dedicated cart and wishlist storage exists."""
+    """Ensures dedicated cart and wishlist storage exists with matching Frappe collation."""
     frappe.db.sql("""
         CREATE TABLE IF NOT EXISTS `tabStockFlowCart` (
             `name` varchar(140) PRIMARY KEY,
@@ -36,7 +36,7 @@ def ensure_cart_and_wishlist_tables():
             `creation` datetime,
             `modified` datetime,
             INDEX `idx_user` (`user`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     """)
 
     frappe.db.sql("""
@@ -49,7 +49,7 @@ def ensure_cart_and_wishlist_tables():
             `creation` datetime,
             `modified` datetime,
             INDEX `idx_user` (`user`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     """)
     frappe.db.commit()
 
@@ -68,7 +68,7 @@ def get_agent_cart():
     items = frappe.db.sql("""
         SELECT c.name, c.item_code, c.item_name, c.rate, c.quantity, i.image
         FROM `tabStockFlowCart` c
-        LEFT JOIN `tabStock Item` i ON c.item_code = i.name
+        LEFT JOIN `tabStock Item` i ON c.item_code = i.name COLLATE utf8mb4_unicode_ci
         WHERE c.user = %s
         ORDER BY c.creation DESC
     """, (user,), as_dict=True)
@@ -218,11 +218,11 @@ def get_agent_wishlist():
     if user == "Guest":
         return []
 
-    # Join Stock Item to return the image thumbnail
+    # Join Stock Item with explicit collation to return the image thumbnail without MariaDB 1267 collation error
     items = frappe.db.sql("""
         SELECT w.name, w.item_code, w.item_name, w.rate, i.image
         FROM `tabStockFlowWishlist` w
-        LEFT JOIN `tabStock Item` i ON w.item_code = i.name
+        LEFT JOIN `tabStock Item` i ON w.item_code = i.name COLLATE utf8mb4_unicode_ci
         WHERE w.user = %s
         ORDER BY w.creation DESC
     """, (user,), as_dict=True)
@@ -409,7 +409,6 @@ def get_agent_performance_summary():
     if user != "Administrator" and "System Manager" not in roles and "Stock Manager" not in roles and "Manager" not in roles:
         frappe.throw(_("Access Denied: You do not have permission to view revenue metrics."), frappe.PermissionError)
 
-    # Joins tabUser to obtain full_name instead of raw email
     data = frappe.db.sql("""
         SELECT 
             COALESCE(u.full_name, o.owner) AS agent_name,
@@ -417,7 +416,7 @@ def get_agent_performance_summary():
             COUNT(o.name) AS total_orders, 
             SUM(o.total_amount) AS total_revenue
         FROM `tabStock Order` o
-        LEFT JOIN `tabUser` u ON o.owner = u.name
+        LEFT JOIN `tabUser` u ON o.owner = u.name COLLATE utf8mb4_unicode_ci
         WHERE o.docstatus = 1
         GROUP BY o.owner
         ORDER BY total_revenue DESC
