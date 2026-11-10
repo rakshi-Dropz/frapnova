@@ -1,4 +1,6 @@
 import frappe
+from frappe.utils import cint, escape_html
+
 
 def check_low_stock_and_notify():
     """Background task to inspect inventory, broadcast SocketIO, and send alerts."""
@@ -22,8 +24,8 @@ def check_low_stock_and_notify():
             },
             user=None
         )
-    except Exception:
-        pass
+    except Exception as e:
+        frappe.log_error(title="Low Stock Realtime Alert Failed", message=str(e))
 
     # 2. Dispatch low stock email alert
     send_low_stock_email(low_stock_items)
@@ -53,9 +55,10 @@ def send_low_stock_email(items):
     if not valid_recipients:
         valid_recipients = ["rakshitha@dropz.in"]
 
-    # Build clean HTML list
+    # Build clean HTML list with escaped values to prevent HTML injection
     item_list_html = "".join([
-        f"<li style='margin-bottom: 6px;'>{i['item_name']}: <b style='color: #b91c1c;'>{int(i['current_stock'])} units remaining</b></li>"
+        f"<li style='margin-bottom: 6px;'>{escape_html(i.get('item_name') or i.get('name'))}: "
+        f"<b style='color: #b91c1c;'>{cint(i.get('current_stock', 0))} units remaining</b></li>"
         for i in items
     ])
 
@@ -73,9 +76,12 @@ def send_low_stock_email(items):
     """
 
     # sendmail with now=True builds valid MIME multipart HTML and dispatches immediately
-    frappe.sendmail(
-        recipients=list(set(valid_recipients)),
-        subject="Low Stock Inventory Warning",
-        message=html_message,
-        now=True
-    )
+    try:
+        frappe.sendmail(
+            recipients=list(set(valid_recipients)),
+            subject="Low Stock Inventory Warning",
+            message=html_message,
+            now=True
+        )
+    except Exception as e:
+        frappe.log_error(title="Low Stock Email Alert Failed", message=str(e))

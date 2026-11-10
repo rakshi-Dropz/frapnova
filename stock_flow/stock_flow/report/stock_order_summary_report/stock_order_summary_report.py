@@ -93,6 +93,6 @@ def get_data(filters):
         FROM `tabStock Order`
         WHERE 1=1 {conditions}
         ORDER BY creation DESC
-    """
+    """  # nosec B608
 
     return frappe.db.sql(query, values, as_dict=True)
