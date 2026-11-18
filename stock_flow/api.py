@@ -67,8 +67,8 @@ def get_agent_cart():
 
     items = frappe.db.sql("""
         SELECT c.name, c.item_code, c.item_name, c.rate, c.quantity, i.image
-        FROM `tabStockFlowCart` c
-        LEFT JOIN `tabStock Item` i ON c.item_code = i.name COLLATE utf8mb4_unicode_ci
+        FROM `tabStock Item` i
+        RIGHT JOIN `tabStockFlowCart` c ON c.item_code = i.name COLLATE utf8mb4_unicode_ci
         WHERE c.user = %s
         ORDER BY c.creation DESC
     """, (user,), as_dict=True)
@@ -218,7 +218,6 @@ def get_agent_wishlist():
     if user == "Guest":
         return []
 
-    # Join Stock Item with explicit collation to return the image thumbnail without MariaDB 1267 collation error
     items = frappe.db.sql("""
         SELECT w.name, w.item_code, w.item_name, w.rate, i.image
         FROM `tabStockFlowWishlist` w
@@ -278,6 +277,22 @@ def remove_from_agent_wishlist(name=None, wishlist_id=None):
 @frappe.whitelist()
 def get_order_tracking(order_id):
     order = frappe.get_doc("Stock Order", order_id)
+    order.check_permission("read")
+
+    current_user = frappe.session.user
+    roles = frappe.get_roles(current_user)
+    is_manager = current_user == "Administrator" or any(
+        r in roles for r in ["System Manager", "Stock Manager", "Manager"]
+    )
+
+    # Object-level authorization (IDOR / BOLA mitigation)
+    order_agent = getattr(order, "agent", None)
+    if not is_manager and order.owner != current_user and order_agent != current_user:
+        frappe.throw(
+            _("Access Denied: You do not have permission to view this order."),
+            frappe.PermissionError,
+        )
+
     courier = getattr(order, "courier_name", None) or getattr(order, "courier_partner", "—")
     item_code = getattr(order, "item", getattr(order, "stock_item", order_id))
     item_title = frappe.db.get_value("Stock Item", item_code, "item_name") or item_code
@@ -300,8 +315,8 @@ def update_order_tracking(order_id, status, courier_name="", tracking_number="")
     user = frappe.session.user
     user_roles = frappe.get_roles(user)
 
-    if user != "Administrator" and "System Manager" not in user_roles and "Stock Manager" not in user_roles:
-        frappe.throw(_("Access Denied: You do not have permission to update shipment milestones."))
+    if user != "Administrator" and "System Manager" not in user_roles and "Stock Manager" not in user_roles and "Manager" not in user_roles:
+        frappe.throw(_("Access Denied: You do not have permission to update shipment milestones."), frappe.PermissionError)
 
     allowed_statuses = ["Pending", "Approved", "Packed", "Dispatched", "Delivered", "Rejected"]
     if status not in allowed_statuses:
@@ -356,12 +371,20 @@ def approve_stock_order(order_id):
     user = frappe.session.user
     roles = frappe.get_roles(user)
     if user != "Administrator" and "System Manager" not in roles and "Stock Manager" not in roles and "Manager" not in roles:
-        frappe.throw(_("Access Denied: You do not have permission to approve orders."))
+        frappe.throw(_("Access Denied: You do not have permission to approve orders."), frappe.PermissionError)
 
     order = frappe.get_doc("Stock Order", order_id)
+
+    # Prevent approving cancelled orders
+    if order.docstatus == 2:
+        frappe.throw(
+            _("Invalid Action: Cannot approve an order that has been cancelled."),
+            frappe.ValidationError,
+        )
+
     if order.docstatus == 0:
         order.submit()
-    
+
     frappe.db.set_value("Stock Order", order_id, "tracking_status", "Approved")
     frappe.db.commit()
     return {"message": "Order approved"}
@@ -372,9 +395,15 @@ def reject_stock_order(order_id):
     user = frappe.session.user
     roles = frappe.get_roles(user)
     if user != "Administrator" and "System Manager" not in roles and "Stock Manager" not in roles and "Manager" not in roles:
-        frappe.throw(_("Access Denied: You do not have permission to reject orders."))
+        frappe.throw(_("Access Denied: You do not have permission to reject orders."), frappe.PermissionError)
 
     order = frappe.get_doc("Stock Order", order_id)
+    if order.docstatus == 2:
+        frappe.throw(
+            _("Invalid Action: Order has already been cancelled/rejected."),
+            frappe.ValidationError,
+        )
+
     if order.docstatus == 1:
         order.cancel()
     else:
@@ -382,7 +411,7 @@ def reject_stock_order(order_id):
         if hasattr(order, "tracking_status"):
             order.tracking_status = "Rejected"
         order.save(ignore_permissions=True)
-        
+
         item_code = getattr(order, "item", getattr(order, "stock_item", None))
         if item_code and frappe.db.exists("Stock Item", item_code):
             current_stock = flt(frappe.db.get_value("Stock Item", item_code, "current_stock") or 0)
@@ -425,11 +454,17 @@ def get_agent_performance_summary():
 
 
 # ==========================================
-# PRODUCT CRUD
+# PRODUCT CRUD (ROLE & PERMISSION CONTROLLED)
 # ==========================================
 
 @frappe.whitelist()
 def create_stock_item(item_name, category="", rate=0, current_stock=0, image_url=""):
+    if not frappe.has_permission("Stock Item", "create"):
+        frappe.throw(
+            _("Access Denied: You do not have permission to create Stock Items."),
+            frappe.PermissionError,
+        )
+
     doc = frappe.new_doc("Stock Item")
     doc.item_name = item_name
     doc.category = category
@@ -437,13 +472,19 @@ def create_stock_item(item_name, category="", rate=0, current_stock=0, image_url
     doc.current_stock = flt(current_stock)
     if image_url:
         doc.image = image_url
-    doc.insert(ignore_permissions=True)
+    doc.insert()
     frappe.db.commit()
     return doc.as_dict()
 
 
 @frappe.whitelist()
 def update_stock_item(item_code, rate, current_stock, category="", image_url=None):
+    if not frappe.has_permission("Stock Item", "write"):
+        frappe.throw(
+            _("Access Denied: You do not have permission to modify Stock Items."),
+            frappe.PermissionError,
+        )
+
     updates = {
         "rate": flt(rate),
         "current_stock": flt(current_stock)
@@ -460,6 +501,12 @@ def update_stock_item(item_code, rate, current_stock, category="", image_url=Non
 
 @frappe.whitelist()
 def delete_stock_item(item_code):
-    frappe.delete_doc("Stock Item", item_code, ignore_permissions=True)
+    if not frappe.has_permission("Stock Item", "delete"):
+        frappe.throw(
+            _("Access Denied: You do not have permission to delete Stock Items."),
+            frappe.PermissionError,
+        )
+
+    frappe.delete_doc("Stock Item", item_code)
     frappe.db.commit()
     return {"message": "Deleted"}
